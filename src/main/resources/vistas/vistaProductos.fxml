@@ -57,35 +57,41 @@
                 <Label prefHeight="20.0" prefWidth="131.0" style="-fx-font-weight:bold;" text="Unidad de medida" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                <GridPane.margin>
-                  <Insets top="25.0" />
+                  <Insets top="50.0" />
                </GridPane.margin>
                 </Label>
 
                 <Label style="-fx-font-weight:bold;" text="Precio de venta" GridPane.columnIndex="2" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                <GridPane.margin>
-                  <Insets top="25.0" />
+                  <Insets top="50.0" />
                </GridPane.margin>
                 </Label>
 
                 <Label style="-fx-font-weight:bold;" text="Monto total" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
+               <GridPane.margin>
+                  <Insets bottom="-5.0" top="-60.0" />
+               </GridPane.margin>
                 </Label>
-                <TextField prefHeight="29.0" prefWidth="150.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="5" />
+                <TextField prefHeight="29.0" prefWidth="150.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets top="-20.0" />
+               </GridPane.margin></TextField>
 
                 <Label style="-fx-font-weight:bold;" text="Descripción" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
                 <TextField prefHeight="54.0" prefWidth="150.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="3">
                <GridPane.margin>
-                  <Insets top="40.0" />
+                  <Insets bottom="50.0" />
                </GridPane.margin></TextField>
                 <Label layoutX="284.0" layoutY="150.0" prefHeight="20.0" prefWidth="125.0" style="-fx-font-weight:bold;" text="Nombre">
                     <font>
                         <Font size="14" />
                     </font>
                <GridPane.margin>
-                  <Insets top="25.0" />
+                  <Insets top="50.0" />
                </GridPane.margin>
                 </Label>
                 <TextField layoutX="284.0" layoutY="180.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="1" />
@@ -100,34 +106,66 @@
                         <Insets />
                     </GridPane.margin>
                     <children>
-                        <CheckBox mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Programada">
+                        <CheckBox mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Bombones">
                             <font>
                                 <Font name="System Bold" size="14.0" />
                             </font>
                         </CheckBox>
-                        <CheckBox layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Urgente">
+                        <CheckBox layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Tabletas">
                             <font>
                                 <Font name="System Bold" size="14.0" />
                             </font>
                         </CheckBox>
-                        <CheckBox layoutX="10.0" layoutY="30.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Emergencia">
+                        <CheckBox layoutX="10.0" layoutY="30.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Trufas">
                             <font>
                                 <Font name="System Bold" size="14.0" />
                             </font>
                         </CheckBox>
-                  <CheckBox layoutX="10.0" layoutY="50.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Emergencia">
+                  <CheckBox layoutX="10.0" layoutY="50.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Cacao en polvo">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox layoutX="10.0" layoutY="70.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Emergencia">
+                  <CheckBox layoutX="10.0" layoutY="70.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="156.0" text="Manteca de cacao">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </CheckBox>
                     </children>
                 </VBox>
-            <TextField layoutX="321.0" layoutY="234.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TextField layoutX="321.0" layoutY="234.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></TextField>
+            <Label layoutX="289.0" layoutY="230.0" prefHeight="20.0" prefWidth="131.0" style="-fx-font-weight:bold;" text="Tipos" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14" />
+               </font>
+            </Label>
+            <VBox layoutX="289.0" layoutY="260.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <children>
+                  <CheckBox mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Leche">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Negro">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox layoutX="10.0" layoutY="30.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Blanco">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox layoutX="10.0" layoutY="50.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Otro">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+               </children>
+            </VBox>
 
                 <columnConstraints>
                     <ColumnConstraints minWidth="100.0" prefWidth="150.0" />
