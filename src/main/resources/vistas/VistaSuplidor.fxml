@@ -8,94 +8,109 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
 
-
     <left>
         <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="121.0" spacing="16" style="-fx-background-color:#48295a;">
             <padding>
                 <Insets bottom="20" left="15" right="15" top="45" />
             </padding>
 
-            <Button maxWidth="Infinity" prefHeight="46" style="-fx-background-color:#8b5aa6;                            -fx-text-fill:white;                            -fx-font-weight:bold;                            -fx-background-radius:14;" text="Inicio">
+            <Button maxWidth="Infinity" prefHeight="46" style="-fx-background-color:#8b5aa6; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Inicio">
                 <font>
                     <Font size="18.0" />
-                </font></Button>
+                </font>
+            </Button>
 
-            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87;                            -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold;                            -fx-background-radius:12;" text="Registro de &#10;suplidores" />
-
-            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87;                            -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold;                            -fx-background-radius:12;" text="Clientes" />
-
-            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87;                            -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold;                            -fx-background-radius:12;" text="Pedidos" />
+            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de &#10;suplidores" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
             <Region prefHeight="159.0" prefWidth="63.0" VBox.vgrow="ALWAYS" />
             <Separator opacity="0.1" />
 
-            <Label style="-fx-text-fill:#eadcf2;                           -fx-font-weight:bold;" text="Yara Disla 7">
+            <Label style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Yara Disla 7">
                 <font>
                     <Font name="Courier New" size="10.0" />
-                </font></Label>
+                </font>
+            </Label>
 
-            <Button maxWidth="Infinity" prefHeight="42" style="-fx-background-color:#a83c5b;                            -fx-text-fill:white;                            -fx-font-weight:bold;                            -fx-background-radius:14;" text="Salir">
+            <Button maxWidth="Infinity" prefHeight="42" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Salir">
                 <font>
                     <Font size="18.0" />
-                </font></Button>
+                </font>
+            </Button>
         </VBox>
     </left>
 
-
     <center>
         <StackPane>
-
-
             <ImageView fitHeight="533.0" fitWidth="949.0" preserveRatio="true">
                 <image>
-                    <Image url="@VistaSuplidor.png" />
+                    <Image url="@../com/example/chocolateria/VistaSuplidor.png" />
                 </image>
             </ImageView>
 
+            <GridPane alignment="CENTER" hgap="45" prefHeight="376.0" prefWidth="914.0" vgap="10">
+                <StackPane.margin>
+                    <Insets top="50.0" />
+                </StackPane.margin>
 
-            <VBox alignment="CENTER" prefHeight="215.0" prefWidth="600.0" spacing="35" translateX="160" translateY="30" />
-
-            <!-- CAMPOS -->
-            <GridPane alignment="CENTER" hgap="40" prefHeight="516.0" prefWidth="907.0" vgap="20">
-
-                <Label style="-fx-font-weight:bold;" text="Nombre y Apellido">
-                    <font>
-                        <Font size="14" />
-                    </font>
+                <Label style="-fx-font-weight:bold;" text="Nombre y Apellido" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="32.0" prefWidth="270" GridPane.rowIndex="1" />
+                <TextField prefHeight="30.0" prefWidth="270" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
-                <Label style="-fx-font-weight:bold;" text="RNC" GridPane.columnIndex="1">
-                    <font>
-                        <Font size="14" />
-                    </font>
+                <Label style="-fx-font-weight:bold;" text="RNC" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="29.0" prefWidth="231" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField prefHeight="30.0" prefWidth="231" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label style="-fx-font-weight:bold;" text="Teléfono" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="14" />
-                    </font>
+                <Label style="-fx-font-weight:bold;" text="Teléfono" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="38" prefWidth="60.0" GridPane.rowIndex="3" />
+                <TextField prefHeight="30.0" prefWidth="270" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
                 <Label style="-fx-font-weight:bold;" text="Correo" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="14" />
-                    </font>
+                    <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="38" prefWidth="231" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <TextField prefHeight="30.0" prefWidth="231" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label style="-fx-font-weight:bold;" text="Ciudad" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField prefHeight="30.0" prefWidth="270" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+
                 <columnConstraints>
                     <ColumnConstraints />
                     <ColumnConstraints hgrow="NEVER" />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints maxHeight="22.0" minHeight="14.0" prefHeight="21.0" />
-                    <RowConstraints maxHeight="44.39999999999999" minHeight="36.39999999999999" prefHeight="37.39999999999999" />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
                     <RowConstraints />
                     <RowConstraints />
                 </rowConstraints>
             </GridPane>
+
+            <HBox alignment="BOTTOM_CENTER" prefHeight="401.0" prefWidth="948.0" spacing="30.0">
+                <StackPane.margin>
+                    <Insets bottom="35.0" />
+                </StackPane.margin>
+                <children>
+                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
+                        <font><Font size="14.0" /></font>
+                    </Button>
+
+                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
+                        <font><Font size="14.0" /></font>
+                    </Button>
+
+                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
+                        <font><Font size="14.0" /></font>
+                    </Button>
+                </children>
+            </HBox>
         </StackPane>
     </center>
 
