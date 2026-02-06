@@ -20,7 +20,7 @@
                 </font>
             </Button>
 
-            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Orden al &#10;Proveedor" />
+            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Orden de &#10;Producción" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
@@ -134,7 +134,15 @@
                     <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Borrar">
                         <font><Font size="14.0" /></font>
                     </Button>
+               <Button layoutX="568.0" layoutY="474.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Cancelar">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Button>
                 </children>
+            <opaqueInsets>
+               <Insets right="20.0" />
+            </opaqueInsets>
             </HBox>
         </StackPane>
     </center>

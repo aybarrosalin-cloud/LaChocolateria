@@ -55,11 +55,11 @@
                 </StackPane.margin>
             <DatePicker prefHeight="30.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label prefHeight="20.0" prefWidth="131.0" style="-fx-font-weight:bold;" text="Fecha de compra" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label prefHeight="20.0" prefWidth="131.0" style="-fx-font-weight:bold;" text="Fecha requerida" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                 </Label>
 
-                <Label style="-fx-font-weight:bold;" text="Fecha de entrega" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label style="-fx-font-weight:bold;" text="Prioridad" GridPane.columnIndex="2" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                 </Label>
 
@@ -83,7 +83,6 @@
                </font>
             </Label>
             <TextField layoutX="284.0" layoutY="180.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="1" />
-            <DatePicker layoutX="308.0" layoutY="180.0" prefHeight="30.0" prefWidth="206.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Label layoutX="113.0" layoutY="150.0" prefHeight="20.0" prefWidth="146.0" style="-fx-font-weight:bold;" text="Cantidad de pedido" GridPane.rowIndex="2">
                <font>
                   <Font size="14" />
@@ -117,6 +116,17 @@
                   </CheckBox>
                </children>
             </VBox>
+            <TextField layoutX="323.0" layoutY="234.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label layoutX="289.0" layoutY="204.0" style="-fx-font-weight:bold;" text="Producto/s" GridPane.columnIndex="2" GridPane.rowIndex="4">
+               <font>
+                  <Font size="14" />
+               </font>
+            </Label>
+            <TextField layoutX="94.0" layoutY="163.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets top="-40.0" />
+               </GridPane.margin>
+            </TextField>
 
                 <columnConstraints>
                <ColumnConstraints minWidth="100.0" prefWidth="150.0" />

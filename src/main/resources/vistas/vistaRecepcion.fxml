@@ -20,7 +20,7 @@
                 </font>
             </Button>
 
-            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Solicitud de &#10;Materiales" />
+            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Recepción" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
@@ -53,7 +53,7 @@
                 <StackPane.margin>
                     <Insets top="50.0" />
                 </StackPane.margin>
-                <DatePicker prefHeight="19.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <DatePicker prefHeight="32.0" prefWidth="250.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets bottom="-63.0" />
                </GridPane.margin></DatePicker>
@@ -65,35 +65,24 @@
                </GridPane.margin>
                 </Label>
 
-                <Label style="-fx-font-weight:bold;" text="Fecha solicitud" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                    <font><Font size="14" /></font>
-               <GridPane.margin>
-                  <Insets bottom="-35.0" />
-               </GridPane.margin>
-                </Label>
-
-                <Label style="-fx-font-weight:bold;" text="Solicitante" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label style="-fx-font-weight:bold;" text="Proveedor" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                <GridPane.margin>
                   <Insets bottom="-70.0" />
                </GridPane.margin>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <GridPane.margin>
-                  <Insets bottom="-39.0" />
-               </GridPane.margin></TextField>
 
-                <Label style="-fx-font-weight:bold;" text="Prioridad" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                <Label style="-fx-font-weight:bold;" text="Prioridad" GridPane.columnIndex="2" GridPane.rowIndex="1">
                     <font><Font size="14" /></font>
                <GridPane.margin>
-                  <Insets bottom="-70.0" />
+                  <Insets />
                </GridPane.margin>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="186.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                <TextField prefHeight="30.0" prefWidth="186.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets bottom="-40.0" />
                </GridPane.margin></TextField>
-                <Label layoutX="284.0" layoutY="150.0" prefHeight="20.0" prefWidth="125.0" style="-fx-font-weight:bold;" text="Nombre/s">
+                <Label layoutX="284.0" layoutY="150.0" prefHeight="20.0" prefWidth="144.0" style="-fx-font-weight:bold;" text="Cantidad Solicitada">
                     <font>
                         <Font size="14" />
                     </font>
@@ -101,15 +90,11 @@
                   <Insets bottom="-35.0" />
                </GridPane.margin>
                 </Label>
-                <TextField layoutX="284.0" layoutY="180.0" prefHeight="22.0" prefWidth="139.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="1">
+                <TextField layoutX="284.0" layoutY="180.0" prefHeight="22.0" prefWidth="139.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets bottom="-60.0" />
                </GridPane.margin></TextField>
-                <DatePicker layoutX="308.0" layoutY="180.0" prefHeight="1.0" prefWidth="186.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1">
-               <GridPane.margin>
-                  <Insets bottom="-65.0" />
-               </GridPane.margin></DatePicker>
-                <Label layoutX="113.0" layoutY="150.0" prefHeight="20.0" prefWidth="146.0" style="-fx-font-weight:bold;" text="Cantidad solicitada" GridPane.rowIndex="2">
+                <Label layoutX="113.0" layoutY="150.0" prefHeight="20.0" prefWidth="146.0" style="-fx-font-weight:bold;" text="ID Producto" GridPane.rowIndex="2">
                     <font>
                         <Font size="14" />
                     </font>
@@ -117,50 +102,11 @@
                   <Insets bottom="-30.0" top="40.0" />
                </GridPane.margin>
                 </Label>
-                <Label layoutX="308.0" layoutY="132.0" prefHeight="20.0" prefWidth="131.0" style="-fx-font-weight:bold;" text="Estado" GridPane.rowIndex="4">
-                    <font>
-                        <Font size="14" />
-                    </font>
+                <ChoiceBox prefHeight="31.0" prefWidth="150.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="2">
                <GridPane.margin>
-                  <Insets bottom="-60.0" />
-               </GridPane.margin>
-                </Label>
-                <ChoiceBox prefHeight="31.0" prefWidth="150.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="3">
-               <GridPane.margin>
-                  <Insets bottom="-40.0" />
+                  <Insets />
                </GridPane.margin></ChoiceBox>
-                <VBox GridPane.rowIndex="5">
-                    <GridPane.margin>
-                        <Insets top="30.0" />
-                    </GridPane.margin>
-                    <children>
-                        <CheckBox mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Pendiente">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                        </CheckBox>
-                        <CheckBox layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="En proceso">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                        </CheckBox>
-                        <CheckBox layoutX="10.0" layoutY="30.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Completada">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                        </CheckBox>
-                  <CheckBox layoutX="10.0" layoutY="50.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Cancelada">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </CheckBox>
-                  <CheckBox layoutX="10.0" layoutY="70.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Suspendida">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </CheckBox>
-                    </children>
-                </VBox>
+            <ChoiceBox layoutX="137.0" layoutY="220.0" prefHeight="31.0" prefWidth="150.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                 <columnConstraints>
                     <ColumnConstraints minWidth="100.0" prefWidth="150.0" />
@@ -193,7 +139,15 @@
                     <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
                         <font><Font size="14.0" /></font>
                     </Button>
+               <Button layoutX="294.0" layoutY="474.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Cancelar">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Button>
                 </children>
+            <padding>
+               <Insets left="-60.0" />
+            </padding>
             </HBox>
         </StackPane>
     </center>
