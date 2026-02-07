@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="533.0" prefWidth="949.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+    <center>
+        <HBox alignment="CENTER" fillHeight="true" maxHeight="460.0" maxWidth="880.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 8);">
+            <BorderPane.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </BorderPane.margin>
+
+            <VBox alignment="CENTER" maxWidth="440.0" minWidth="440.0" prefWidth="440.0" spacing="15.0">
+                <padding>
+                    <Insets left="40.0" right="40.0" />
+                </padding>
+
+                <VBox spacing="5">
+                    <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="INICIO DE SESIÓN">
+                        <font><Font size="22.0" /></font>
+                    </Label>
+                    <Label style="-fx-text-fill: #666666;" text="Accede según tu perfil de usuario" />
+                </VBox>
+
+                <VBox spacing="10" style="-fx-background-color: #D1C4E9; -fx-padding: 25; -fx-background-radius: 30;">
+                    <VBox spacing="2">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Tipo de Usuario" />
+                        <ComboBox fx:id="comboRol" maxWidth="Infinity" prefHeight="35.0" style="-fx-background-radius: 12;">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Cliente" />
+                                    <String fx:value="Empleado" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </VBox>
+                    <VBox spacing="2">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Usuario" />
+                        <TextField fx:id="txtUsuario" prefHeight="35.0" style="-fx-background-radius: 12;" />
+                    </VBox>
+                    <VBox spacing="2">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Contraseña" />
+                        <PasswordField fx:id="txtPassword" prefHeight="35.0" style="-fx-background-radius: 12;" />
+                    </VBox>
+                </VBox>
+
+                <Button maxWidth="Infinity" prefHeight="45.0" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="INGRESAR">
+                    <font><Font size="14.0" /></font>
+                </Button>
+            </VBox>
+
+            <StackPane maxWidth="440.0" minWidth="440.0" prefWidth="440.0" style="-fx-background-color: #D1C4E9; -fx-background-radius: 0 30 30 0;">
+                <children>
+                    <ImageView fitHeight="498.0" fitWidth="871.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../com/example/chocolateria/logo.png" />
+                        </image>
+                    </ImageView>
+                </children>
+            </StackPane>
+        </HBox>
+    </center>
+</BorderPane>
