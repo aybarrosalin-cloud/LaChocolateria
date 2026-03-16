@@ -6,50 +6,50 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto1.controlador.suplidorController">
 
     <left>
         <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="121.0" spacing="16" style="-fx-background-color:#48295a;">
+
             <padding>
                 <Insets bottom="20" left="15" right="15" top="45" />
             </padding>
 
             <Button maxWidth="Infinity" prefHeight="46" style="-fx-background-color:#8b5aa6; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Inicio">
-                <font>
-                    <Font size="18.0" />
-                </font>
+                <font><Font size="18.0" /></font>
             </Button>
 
-            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de &#10;suplidores" />
+            <Button maxWidth="Infinity" prefHeight="43.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de &#10;suplidores" />
+
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
+
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
-            <Region prefHeight="159.0" prefWidth="63.0" VBox.vgrow="ALWAYS" />
+            <Region VBox.vgrow="ALWAYS" />
+
             <Separator opacity="0.1" />
 
             <Label style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Yara Disla 7">
-                <font>
-                    <Font name="Courier New" size="10.0" />
-                </font>
+                <font><Font name="Courier New" size="10.0" /></font>
             </Label>
 
             <Button maxWidth="Infinity" prefHeight="42" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Salir">
-                <font>
-                    <Font size="18.0" />
-                </font>
+                <font><Font size="18.0" /></font>
             </Button>
         </VBox>
     </left>
 
     <center>
         <StackPane>
-            <ImageView fitHeight="533.0" fitWidth="949.0" preserveRatio="true">
+
+            <ImageView fitHeight="533.0" fitWidth="949.0" mouseTransparent="true" preserveRatio="true">
                 <image>
-                    <Image url="@../com/example/chocolateria/VistaSuplidor.png" />
+                    <Image url="@/fondoSuplidor.png" />
                 </image>
             </ImageView>
 
-            <GridPane alignment="CENTER" hgap="45" prefHeight="376.0" prefWidth="914.0" vgap="10">
+            <GridPane alignment="CENTER" hgap="45" pickOnBounds="false" prefHeight="650.0" prefWidth="950.0" vgap="10">
+
                 <StackPane.margin>
                     <Insets top="50.0" />
                 </StackPane.margin>
@@ -57,31 +57,40 @@
                 <Label style="-fx-font-weight:bold;" text="Nombre y Apellido" GridPane.columnIndex="0" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
-                <Label style="-fx-font-weight:bold;" text="RNC" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <TextField fx:id="txtNombre" prefHeight="26.0" prefWidth="186.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                <Label style="-fx-font-weight:bold;" text="RNC" GridPane.columnIndex="2" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="231" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <TextField fx:id="txtRNC" prefWidth="231" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
                 <Label style="-fx-font-weight:bold;" text="Teléfono" GridPane.columnIndex="0" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
-                <Label style="-fx-font-weight:bold;" text="Correo" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <TextField fx:id="txtCel" prefWidth="270" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+
+                <Label style="-fx-font-weight:bold;" text="Correo" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="231" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <TextField fx:id="txtCorreo" prefWidth="231" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
                 <Label style="-fx-font-weight:bold;" text="Ciudad" GridPane.columnIndex="0" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                <ComboBox fx:id="cmbCiudad" onShown="#MostrarCiudad" prefWidth="150.0" GridPane.rowIndex="5" />
 
+                <Button fx:id="btnBuscar" onAction="#fnbuscar" prefHeight="26.0" prefWidth="33.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text=" 🔎" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <opaqueInsets>
+                        <Insets left="70.0" />
+                    </opaqueInsets></Button>
                 <columnConstraints>
                     <ColumnConstraints />
-                    <ColumnConstraints hgrow="NEVER" />
+                    <ColumnConstraints />
+                    <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
                 </columnConstraints>
                 <rowConstraints>
                     <RowConstraints />
@@ -91,27 +100,37 @@
                     <RowConstraints />
                     <RowConstraints />
                 </rowConstraints>
+
             </GridPane>
 
-            <HBox alignment="BOTTOM_CENTER" prefHeight="401.0" prefWidth="948.0" spacing="30.0">
+            <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30">
+
                 <StackPane.margin>
                     <Insets bottom="35.0" />
                 </StackPane.margin>
-                <children>
-                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
-                        <font><Font size="14.0" /></font>
-                    </Button>
 
-                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
-                        <font><Font size="14.0" /></font>
-                    </Button>
+                <Button onAction="#guardarSuplidor" prefWidth="105" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar" />
 
-                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
-                        <font><Font size="14.0" /></font>
-                    </Button>
-                </children>
+                <Button onAction="#fnEditar" prefWidth="106" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar" />
+                <Button layoutX="364.0" layoutY="484.0" onAction="#limpiarCampos" prefWidth="105" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar" />
+                <Button layoutX="432.0" layoutY="650.0" prefWidth="106" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Borrar" />
+
             </HBox>
+
         </StackPane>
     </center>
-
+    <bottom>
+        <BorderPane prefHeight="387.0" prefWidth="1070.0" BorderPane.alignment="CENTER">
+            <top>
+                <TableView fx:id="tablaSuplidores" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <columns>
+                        <TableColumn fx:id="colNombre" prefWidth="150" text="Nombre" />
+                        <TableColumn fx:id="colRnc" prefWidth="120" text="RNC" />
+                        <TableColumn fx:id="colTelefono" prefWidth="130" text="Teléfono" />
+                        <TableColumn fx:id="colCorreo" prefWidth="220" text="Correo" />
+                        <TableColumn fx:id="colCiudad" prefWidth="120" text="Ciudad" />
+                    </columns>
+                </TableView>
+            </top></BorderPane>
+    </bottom>
 </BorderPane>
