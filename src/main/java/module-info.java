@@ -10,6 +10,8 @@ module com.example.chocolateria {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.sql;
+    requires java.desktop;
 
     opens com.example.chocolateria to javafx.fxml;
     exports com.example.chocolateria;

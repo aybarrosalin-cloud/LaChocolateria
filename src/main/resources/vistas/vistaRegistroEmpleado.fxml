@@ -16,13 +16,13 @@
 
             <VBox alignment="CENTER" maxWidth="440.0" minWidth="440.0" prefWidth="440.0" spacing="12.0">
                 <padding>
-                    <Insets left="40.0" right="40.0" />
+                    <Insets bottom="25.0" left="40.0" right="45.0" top="15.0" />
                 </padding>
 
                 <VBox spacing="5">
-                    <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="REGISTRO DE NUEVO EMPLEADO">
+                    <Label prefHeight="26.0" prefWidth="345.0" style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="REGISTRO DE NUEVO EMPLEADO">
                         <font>
-                            <Font size="20.0" />
+                            <Font size="22.0" />
                         </font>
                     </Label>
                     <Label style="-fx-text-fill: #666666;" text="Ingresa la información del cliente debajo.">
@@ -31,7 +31,7 @@
                         </opaqueInsets></Label>
                 </VBox>
 
-                <VBox spacing="8" style="-fx-background-color: #D1C4E9; -fx-padding: 20; -fx-background-radius: 30;">
+                <VBox prefHeight="393.0" prefWidth="355.0" spacing="8" style="-fx-background-color: #D1C4E9; -fx-padding: 20; -fx-background-radius: 30;">
                     <VBox spacing="2">
                         <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Nombre" />
                         <TextField fx:id="txtNombre" prefHeight="32.0" style="-fx-background-radius: 10;" />
@@ -50,27 +50,30 @@
                     </VBox>
                     <VBox spacing="2">
                         <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Tipo de empleado" />
-                        <ComboBox fx:id="" prefHeight="32.0" style="-fx-background-radius: 10;" />
+                        <ComboBox fx:id="" prefHeight="26.0" prefWidth="54.0" style="-fx-background-radius: 10;" />
                     </VBox>
                     <VBox layoutX="30.0" layoutY="30.0" spacing="2">
                         <children>
                             <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Rol en la base de datos" />
-                            <ComboBox fx:id="" prefHeight="32.0" style="-fx-background-radius: 10;" />
+                            <ComboBox fx:id="" prefHeight="26.0" prefWidth="117.0" style="-fx-background-radius: 10;" />
                         </children>
                     </VBox>
                 </VBox>
 
-                <Button maxWidth="Infinity" prefHeight="45.0" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="Registrarse">
+                <Button graphicTextGap="7.0" maxWidth="Infinity" prefHeight="0.0" prefWidth="360.0" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="Registrarse">
                     <font><Font size="14.0" /></font>
                     <opaqueInsets>
-                        <Insets top="100.0" />
+                        <Insets top="20.0" />
                     </opaqueInsets>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
                 </Button>
             </VBox>
 
-            <StackPane maxWidth="440.0" minWidth="440.0" prefWidth="440.0" style="-fx-background-color: #D1C4E9; -fx-background-radius: 0 30 30 0;">
+            <StackPane maxWidth="440.0" minWidth="399.0" prefHeight="480.0" prefWidth="399.0" style="-fx-background-color: #D1C4E9; -fx-background-radius: 0 30 30 0;">
                 <children>
-                    <ImageView fitHeight="540.0" fitWidth="876.0" pickOnBounds="true" preserveRatio="true">
+                    <ImageView fitHeight="494.0" fitWidth="1018.0" pickOnBounds="true" preserveRatio="true">
                         <image>
                             <Image url="@../com/example/chocolateria/logo.png" />
                         </image>
