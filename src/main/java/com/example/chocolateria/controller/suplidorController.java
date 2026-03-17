@@ -1,4 +1,4 @@
-package controller;
+package com.example.chocolateria.controller;
 
 import baseDeDatos.conexion;
 import javafx.collections.FXCollections;
@@ -8,8 +8,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import com.example.chocolateria.modelo.suplidorModelo;
 import javafx.scene.control.TextField;
 import javax.swing.*;
 import java.net.URL;
@@ -95,8 +94,6 @@ public class suplidorController implements Initializable {
 
     private void cargarDesdeBD() {
 
-        listaObservable.clear();
-
         try {
             // conexion conexion = new conexion();
             Connection con = conexion.establecerConexion();
@@ -114,15 +111,12 @@ public class suplidorController implements Initializable {
                         rs.getString("correo"),
                         rs.getString("ciudad")
                 );
-
-                listaObservable.add(s);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }0
-            .
 
     ObservableList<String> Ciudad = FXCollections.observableArrayList();
 
@@ -143,30 +137,28 @@ public class suplidorController implements Initializable {
     }
 
     public void fnEditar(ActionEvent actionEvent){
-        int idSpulidor=parseInt(this.txt)
         String Nombre=(this.txtNombre.getText().trim());
         String RNC=(this.txtRNC.getText().trim());
         String Telefono=(this.txtCel.getText().trim());
         String Correo=(this.txtCorreo.getText().trim());
 
         String sql="update Suplidor set nombre ='" + Nombre + "',RNC='" + RNC + "',Telefono='" + Telefono +
-                "',correo='" + Correo + "'where idSuplidor='" + idSpulidor + "'";
+                "',correo='" + Correo + "'where idSuplidor='" + RNC + "'";
         System.out.println(sql);
         EjecutarSQL(sql);
         actualizarDatos();
     }
 
     public void actualizarDatos() {
-        // tener las columnas con el modelo
-        colNombre.setCellValueFactory(data -> data.getValue().nombreProperty());
-        colRnc.setCellValueFactory(data -> data.getValue().rncProperty());
-        colTelefono.setCellValueFactory(data -> data.getValue().telefonoProperty());
-        colCorreo.setCellValueFactory(data -> data.getValue().correoProperty());
-        colCiudad.setCellValueFactory(data -> data.getValue().ciudadProperty());
-
-        // conectar tabla con la lista
-        tablaSuplidores.setItems(listaObservable);
-
+//        // tener las columnas con el modelo
+//        colNombre.setCellValueFactory(data -> data.getValue().nombreProperty());
+//        colRnc.setCellValueFactory(data -> data.getValue().rncProperty());
+//        colTelefono.setCellValueFactory(data -> data.getValue().telefonoProperty());
+//        colCorreo.setCellValueFactory(data -> data.getValue().correoProperty());
+//        colCiudad.setCellValueFactory(data -> data.getValue().ciudadProperty());
+//
+//        // conectar tabla con la lista
+//        tablaSuplidores.setItems(listaObservable);
         cargarDesdeBD();
     }
 
@@ -225,7 +217,7 @@ public class suplidorController implements Initializable {
                 "VALUES (?,?,?,?,?,?)";
 
         try {
-            PreparedStatement pstmt = connection.prepareStatement(sql);
+            PreparedStatement pstmt = conexion.preparedStatement(sql);
             pstmt.setString(1, "caroline");
             pstmt.setString(2, "herrera");
             pstmt.setString(3, "caracas venezuela");
@@ -246,7 +238,7 @@ public class suplidorController implements Initializable {
         String query = "delete from persona where idpersona=?";
 
         try {
-            PreparedStatement pstmt = connection.prepareStatement(query);
+            PreparedStatement pstmt = conexion.prepareStatement(query);
             pstmt.setInt(1, id);
             int filasborrada = pstmt.executeUpdate();
             System.out.println("Registro borrado: " + filasborrada);
@@ -286,5 +278,4 @@ public class suplidorController implements Initializable {
             JOptionPane.showMessageDialog(null, "Error al leer/mostrar datos" + e.toString());
         }
     }
-}
 }

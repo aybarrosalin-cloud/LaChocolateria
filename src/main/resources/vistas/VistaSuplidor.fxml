@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto1.controlador.suplidorController">
+<BorderPane style="-fx-padding: 0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.suplidorController">
 
     <left>
         <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="121.0" spacing="16" style="-fx-background-color:#48295a;">
@@ -40,18 +40,18 @@
     </left>
 
     <center>
-        <StackPane>
+        <StackPane alignment="TOP_LEFT">
 
-            <ImageView fitHeight="533.0" fitWidth="949.0" mouseTransparent="true" preserveRatio="true">
+            <ImageView fitHeight="533.0" fitWidth="949.0" mouseTransparent="true" preserveRatio="false">
                 <image>
-                    <Image url="@/fondoSuplidor.png" />
+                    <Image url="@../com/example/chocolateria/VistaSuplidor.png" />
                 </image>
             </ImageView>
 
             <GridPane alignment="CENTER" hgap="45" pickOnBounds="false" prefHeight="650.0" prefWidth="950.0" vgap="10">
 
                 <StackPane.margin>
-                    <Insets top="50.0" />
+                    <Insets top="0.0" />
                 </StackPane.margin>
 
                 <Label style="-fx-font-weight:bold;" text="Nombre y Apellido" GridPane.columnIndex="0" GridPane.rowIndex="0">
@@ -116,21 +116,6 @@
                 <Button layoutX="432.0" layoutY="650.0" prefWidth="106" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Borrar" />
 
             </HBox>
-
         </StackPane>
     </center>
-    <bottom>
-        <BorderPane prefHeight="387.0" prefWidth="1070.0" BorderPane.alignment="CENTER">
-            <top>
-                <TableView fx:id="tablaSuplidores" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <columns>
-                        <TableColumn fx:id="colNombre" prefWidth="150" text="Nombre" />
-                        <TableColumn fx:id="colRnc" prefWidth="120" text="RNC" />
-                        <TableColumn fx:id="colTelefono" prefWidth="130" text="Teléfono" />
-                        <TableColumn fx:id="colCorreo" prefWidth="220" text="Correo" />
-                        <TableColumn fx:id="colCiudad" prefWidth="120" text="Ciudad" />
-                    </columns>
-                </TableView>
-            </top></BorderPane>
-    </bottom>
 </BorderPane>
