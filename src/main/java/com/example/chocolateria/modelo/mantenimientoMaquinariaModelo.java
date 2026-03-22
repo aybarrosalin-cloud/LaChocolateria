@@ -6,8 +6,8 @@ public class mantenimientoMaquinariaModelo {
 
     private int id;
     private LocalDate fechaMantenimiento;
-    private String maquina;        // Nombre de la máquina desde tbl_maquinaria
-    private String tecnico;        // Nombre del técnico desde tbl_tecnico
+    private String maquina;
+    private String tecnico;
     private double costo;
     private String estadoMaquina;
     private String tipoMantenimiento;
