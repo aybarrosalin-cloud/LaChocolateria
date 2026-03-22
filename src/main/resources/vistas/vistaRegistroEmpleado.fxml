@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="533.0" prefWidth="949.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="533.0" prefWidth="949.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.empleadoController">
 
     <center>
         <HBox alignment="CENTER" fillHeight="true" maxHeight="480.0" maxWidth="880.0" spacing="0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 8);">
@@ -28,47 +28,61 @@
                     <Label style="-fx-text-fill: #666666;" text="Ingresa la información del cliente debajo.">
                         <opaqueInsets>
                             <Insets />
-                        </opaqueInsets></Label>
+                        </opaqueInsets>
+                    </Label>
                 </VBox>
 
                 <VBox prefHeight="393.0" prefWidth="355.0" spacing="8" style="-fx-background-color: #D1C4E9; -fx-padding: 20; -fx-background-radius: 30;">
+
                     <VBox spacing="2">
                         <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Nombre" />
                         <TextField fx:id="txtNombre" prefHeight="32.0" style="-fx-background-radius: 10;" />
                     </VBox>
+
                     <VBox spacing="2">
                         <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Apellido" />
-                        <TextField fx:id="txtCedula" prefHeight="32.0" style="-fx-background-radius: 10;" />
+                        <TextField fx:id="txtApellido" prefHeight="32.0" style="-fx-background-radius: 10;" />
                     </VBox>
+
                     <VBox spacing="2">
                         <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Cédula" />
-                        <TextField fx:id="txtCorreo" prefHeight="32.0" style="-fx-background-radius: 10;" />
+                        <TextField fx:id="txtCedula" prefHeight="32.0" style="-fx-background-radius: 10;" />
                     </VBox>
+
                     <VBox spacing="2">
                         <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Teléfono" />
                         <TextField fx:id="txtTelefono" prefHeight="32.0" style="-fx-background-radius: 10;" />
                     </VBox>
+
+                    <VBox spacing="2">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Codigo" />
+                        <TextField fx:id="txtCodigo" prefHeight="32.0" style="-fx-background-radius: 10;" />
+                    </VBox>
+
                     <VBox spacing="2">
                         <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Tipo de empleado" />
-                        <ComboBox fx:id="" prefHeight="26.0" prefWidth="54.0" style="-fx-background-radius: 10;" />
+                        <ComboBox fx:id="cbTipoEmpleado" prefHeight="26.0" prefWidth="136.0" style="-fx-background-radius: 10;" />
                     </VBox>
+
                     <VBox layoutX="30.0" layoutY="30.0" spacing="2">
                         <children>
                             <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Rol en la base de datos" />
-                            <ComboBox fx:id="" prefHeight="26.0" prefWidth="117.0" style="-fx-background-radius: 10;" />
+                            <ComboBox fx:id="cbRol" prefHeight="26.0" prefWidth="117.0" style="-fx-background-radius: 10;" />
                         </children>
                     </VBox>
+
                 </VBox>
 
-                <Button graphicTextGap="7.0" maxWidth="Infinity" prefHeight="0.0" prefWidth="360.0" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="Registrarse">
+                <Button graphicTextGap="7.0" maxWidth="Infinity" onAction="#guardarEmpleado" prefHeight="0.0" prefWidth="360.0" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="Registrarse">
                     <font><Font size="14.0" /></font>
                     <opaqueInsets>
                         <Insets top="20.0" />
                     </opaqueInsets>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
                 </Button>
+
             </VBox>
 
             <StackPane maxWidth="440.0" minWidth="399.0" prefHeight="480.0" prefWidth="399.0" style="-fx-background-color: #D1C4E9; -fx-background-radius: 0 30 30 0;">
@@ -80,6 +94,7 @@
                     </ImageView>
                 </children>
             </StackPane>
+
         </HBox>
     </center>
 </BorderPane>
