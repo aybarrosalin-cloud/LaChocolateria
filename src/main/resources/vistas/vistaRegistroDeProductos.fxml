@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.productoController">
+
+    <left>
+        <VBox alignment="TOP_CENTER" prefHeight="36.0" prefWidth="117.0" spacing="16" style="-fx-background-color:#48295a;">
+            <padding>
+                <Insets bottom="20" left="15" right="15" top="45" />
+            </padding>
+
+            <Button maxWidth="Infinity" prefHeight="46" style="-fx-background-color:#8b5aa6; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Inicio">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Button>
+
+            <Button maxWidth="Infinity" prefHeight="43.0" prefWidth="178.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de &#10;Productos" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
+
+            <Region prefHeight="159.0" prefWidth="63.0" VBox.vgrow="ALWAYS" />
+            <Separator opacity="0.1" />
+
+            <Label style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Yara Disla 7">
+                <font>
+                    <Font name="Courier New" size="10.0" />
+                </font>
+            </Label>
+
+            <Button maxWidth="Infinity" prefHeight="42" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Salir">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Button>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane>
+            <ImageView fitHeight="533.0" fitWidth="1149.0" preserveRatio="true">
+                <image>
+                    <Image url="@../com/example/chocolateria/fondoProducto.png" />
+                </image>
+            </ImageView>
+
+            <GridPane alignment="CENTER" hgap="40.0" prefHeight="376.0" prefWidth="914.0" vgap="5.0">
+                <StackPane.margin>
+                    <Insets top="170.0" />
+                </StackPane.margin>
+                <Label prefHeight="20.0" prefWidth="131.0" style="-fx-font-weight:bold;" text="Precio al por mayor" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <font><Font size="14" /></font>
+                </Label>
+                <Label style="-fx-font-weight:bold;" text="Nombre" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <font><Font size="14" /></font>
+                </Label>
+                <Label style="-fx-font-weight:bold;" text="Categoría" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <font><Font size="14" /></font>
+                </Label>
+                <Label style="-fx-font-weight:bold;" text="Descripción" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                    <font><Font size="14" /></font>
+                </Label>
+
+                <Label layoutX="113.0" layoutY="150.0" prefHeight="20.0" prefWidth="146.0" style="-fx-font-weight:bold;" text="Precio unitario" GridPane.rowIndex="2">
+                    <font><Font size="14" /></font>
+                </Label>
+
+                <VBox prefHeight="0.0" prefWidth="268.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <children>
+                        <CheckBox fx:id="chkBombones" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Bombones">
+                            <font><Font name="System Bold" size="14.0" /></font>
+                        </CheckBox>
+                        <CheckBox fx:id="chkTabletas" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Tabletas">
+                            <font><Font name="System Bold" size="14.0" /></font>
+                        </CheckBox>
+                        <CheckBox fx:id="chkTrufas" layoutX="10.0" layoutY="30.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Trufas">
+                            <font><Font name="System Bold" size="14.0" /></font>
+                        </CheckBox>
+                  <CheckBox fx:id="chkCacao" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Cacao en polvo">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chkManteca" layoutX="10.0" layoutY="70.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="149.0" text="Manteca de cacao">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                    </children>
+                </VBox>
+
+                <Label layoutX="289.0" layoutY="204.0" style="-fx-font-weight:bold;" text="Tipo" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                    <font><Font size="14" /></font>
+                </Label>
+
+                <TextArea fx:id="txtDescripcion" prefHeight="55.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                <Label layoutX="292.0" layoutY="136.0" prefHeight="20.0" prefWidth="131.0" style="-fx-font-weight:bold;" text="Unidad de medida" GridPane.rowIndex="4">
+                    <font>
+                        <Font size="14" />
+                    </font>
+                </Label>
+                <TextField fx:id="txtCodigo" layoutX="96.0" layoutY="213.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="1" />
+                <Label layoutX="604.0" layoutY="253.0" style="-fx-font-weight:bold;" text="Codigo">
+                    <font>
+                        <Font size="14" />
+                    </font>
+                </Label>
+            <VBox prefHeight="31.0" prefWidth="202.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <children>
+                  <CheckBox fx:id="chkLeche" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Leche">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chkNegro" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Negro">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chkBlanco" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Blanco">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="chkOtro" layoutX="10.0" layoutY="50.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="127.0" text="Otro">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </CheckBox>
+               </children>
+            </VBox>
+            <TextField fx:id="txtUnidadMedida" layoutX="637.0" layoutY="156.0" prefHeight="30.0" prefWidth="202.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets bottom="70.0" />
+               </GridPane.margin>
+            </TextField>
+            <TextField fx:id="txtNombre" layoutX="324.0" layoutY="125.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtPrecioUnitario" layoutX="323.0" layoutY="52.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="3" />
+            <TextField fx:id="txtPrecioMayor" layoutX="100.0" layoutY="125.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <columnConstraints>
+                    <ColumnConstraints maxWidth="182.40000000000003" minWidth="100.0" prefWidth="182.40000000000003" />
+                    <ColumnConstraints maxWidth="263.0" minWidth="236.0" prefWidth="236.0" />
+                    <ColumnConstraints hgrow="NEVER" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                </rowConstraints>
+            </GridPane>
+
+            <!-- BOTONES ABAJO -->
+            <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30.0">
+                <StackPane.margin>
+                    <Insets bottom="10.0" />
+                </StackPane.margin>
+                <children>
+                    <Button mnemonicParsing="false" onAction="#guardarProducto" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
+                        <font><Font size="14.0" /></font>
+                    </Button>
+
+                    <Button mnemonicParsing="false" onAction="#fnEditar" prefHeight="35.0" prefWidth="108.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
+                        <font><Font size="14.0" /></font>
+                    </Button>
+
+                    <Button mnemonicParsing="false" onAction="#fnlimpiar" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
+                        <font><Font size="14.0" /></font>
+                    </Button>
+
+                    <Button layoutX="636.0" layoutY="498.0" mnemonicParsing="false" onAction="#fnbuscar" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Button>
+                </children>
+            </HBox>
+        </StackPane>
+    </center>
+
+</BorderPane>
