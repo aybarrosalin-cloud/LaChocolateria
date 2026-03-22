@@ -10,7 +10,7 @@ public class productoApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // Línea de debug para verificar que el FXML se carga correctamente
+
         System.out.println(getClass().getResource("/vistas/vistaRegistroDeProductos.fxml"));
 
         FXMLLoader loader = new FXMLLoader(

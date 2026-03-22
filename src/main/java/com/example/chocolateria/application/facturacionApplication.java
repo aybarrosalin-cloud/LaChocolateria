@@ -10,7 +10,7 @@ public class facturacionApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // Línea de debug (MUY IMPORTANTE)
+
         System.out.println(getClass().getResource("/vistas/vistaFacturacion.fxml"));
 
         FXMLLoader loader = new FXMLLoader(

@@ -10,7 +10,7 @@ public class mantenimientoMaquinariaApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // Línea de debug (MUY IMPORTANTE)
+
         System.out.println(getClass().getResource("/vistas/vistaMantenimientoMaquinaria.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
