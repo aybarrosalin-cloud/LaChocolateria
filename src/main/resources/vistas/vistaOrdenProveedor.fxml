@@ -66,7 +66,6 @@
                 <Label style="-fx-font-weight:bold;" text="Estado de pago" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                 <Label style="-fx-font-weight:bold;" text="Monto total" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
@@ -76,7 +75,6 @@
                 <Label style="-fx-font-weight:bold;" text="Descripción" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
                 </Label>
-                <TextField prefHeight="66.0" prefWidth="270.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label layoutX="284.0" layoutY="150.0" prefHeight="20.0" prefWidth="125.0" style="-fx-font-weight:bold;" text="RNC Proveedor">
                <font>
                   <Font size="14" />
@@ -116,17 +114,23 @@
                   </CheckBox>
                </children>
             </VBox>
-            <TextField layoutX="323.0" layoutY="234.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Label layoutX="289.0" layoutY="204.0" style="-fx-font-weight:bold;" text="Producto/s" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <font>
                   <Font size="14" />
                </font>
             </Label>
-            <TextField layoutX="94.0" layoutY="163.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="5">
-               <GridPane.margin>
-                  <Insets top="-40.0" />
-               </GridPane.margin>
-            </TextField>
+            <ComboBox prefHeight="27.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox layoutX="289.0" layoutY="236.0" prefHeight="27.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <padding>
+                  <Insets bottom="2.0" />
+               </padding>
+            </ComboBox>
+            <ComboBox layoutX="605.0" layoutY="164.0" prefHeight="27.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </ComboBox>
+            <TextArea prefHeight="55.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
                 <columnConstraints>
                <ColumnConstraints minWidth="100.0" prefWidth="150.0" />

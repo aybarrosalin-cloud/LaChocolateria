@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.reclamoController">
 
 
     <left>
@@ -20,9 +20,7 @@
             </Button>
 
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Producción" />
-
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Inventario" />
-
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
             <Region VBox.vgrow="ALWAYS" />
@@ -53,68 +51,66 @@
                     <Insets top="100" />
                 </StackPane.margin>
 
-
+                <!-- CODIGO -->
                 <Label style="-fx-font-weight:bold;" text="Código">
                     <font><Font size="14" /></font>
                 </Label>
 
+                <TextField fx:id="txtCodigo" prefWidth="270" style="-fx-background-color:white; -fx-text-fill:black; -fx-border-color:purple;" GridPane.rowIndex="1" />
 
+                <!-- CLIENTE -->
                 <Label style="-fx-font-weight:bold;" text="Cliente" GridPane.columnIndex="1">
                     <font><Font size="14" /></font>
                 </Label>
 
-                <TextField prefWidth="270" style="-fx-background-color:white; -fx-text-fill:black; -fx-border-color:purple;" GridPane.rowIndex="1" />
+                <ComboBox fx:id="cmbCliente" prefWidth="272" style="-fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-
+                <!-- TIPO RECLAMO -->
                 <Label style="-fx-font-weight:bold;" text="Tipo de reclamo" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
 
+                <ChoiceBox fx:id="chTipoReclamo" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="3" />
 
+                <!-- ESTADO -->
                 <Label style="-fx-font-weight:bold;" text="Estado" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
 
+                <ChoiceBox fx:id="chEstado" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
+                <!-- ORDEN -->
                 <Label style="-fx-font-weight:bold;" text="Orden relacionada" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
 
-                <ChoiceBox prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <ComboBox fx:id="cmbOrden" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
-
+                <!-- DESCRIPCION -->
                 <Label style="-fx-font-weight:bold;" text="Descripción" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
                 </Label>
 
-                <TextArea prefHeight="60" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="5" />
-            <Label layoutX="34.0" layoutY="250.0" style="-fx-font-weight:bold;" text="Prioridad" GridPane.columnIndex="1" GridPane.rowIndex="4">
-               <font>
-                  <Font size="14" />
-               </font>
-            </Label>
-            <ChoiceBox layoutX="664.0" layoutY="212.0" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="3" />
-            <VBox prefHeight="0.0" prefWidth="270.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-               <children>
-                  <RadioButton mnemonicParsing="false" text="Alta">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </RadioButton>
-                  <RadioButton mnemonicParsing="false" text="Media">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </RadioButton>
-                  <RadioButton mnemonicParsing="false" text="Baja">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </RadioButton>
-               </children>
-            </VBox>
-            <ComboBox prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <ComboBox layoutX="724.0" layoutY="212.0" prefHeight="27.0" prefWidth="272.0" style="-fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextArea fx:id="txtDescripcion" prefHeight="60" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="5" />
+
+                <!-- PRIORIDAD -->
+                <Label style="-fx-font-weight:bold;" text="Prioridad" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <font><Font size="14" /></font>
+                </Label>
+
+                <VBox prefWidth="270.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <children>
+                        <RadioButton fx:id="rbAlta" text="Alta">
+                            <font><Font name="System Bold" size="14.0" /></font>
+                        </RadioButton>
+                        <RadioButton fx:id="rbMedia" text="Media">
+                            <font><Font name="System Bold" size="14.0" /></font>
+                        </RadioButton>
+                        <RadioButton fx:id="rbBaja" text="Baja">
+                            <font><Font name="System Bold" size="14.0" /></font>
+                        </RadioButton>
+                    </children>
+                </VBox>
 
                 <columnConstraints>
                     <ColumnConstraints minWidth="100" />
@@ -133,23 +129,29 @@
 
             </GridPane>
 
-            <HBox alignment="BOTTOM_CENTER" prefHeight="427.0" prefWidth="948.0" spacing="30">
+            <!-- BOTONES -->
+            <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30.0">
 
                 <StackPane.margin>
                     <Insets bottom="35" />
                 </StackPane.margin>
 
-                <Button prefWidth="118" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
+                <Button onAction="#guardar" prefWidth="118" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
                     <font><Font size="14" /></font>
                 </Button>
 
-                <Button prefWidth="116" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
+                <Button onAction="#fnEditar" prefWidth="116" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
                     <font><Font size="14" /></font>
                 </Button>
 
-                <Button prefWidth="117" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
+                <Button onAction="#limpiarCampos" prefWidth="117" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
                     <font><Font size="14" /></font>
                 </Button>
+            <Button layoutX="573.0" layoutY="480.0" onAction="#fnbuscar" prefWidth="117" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar">
+               <font>
+                  <Font size="14" />
+               </font>
+            </Button>
 
             </HBox>
 
