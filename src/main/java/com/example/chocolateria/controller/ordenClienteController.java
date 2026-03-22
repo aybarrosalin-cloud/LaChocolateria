@@ -1,7 +1,6 @@
 package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
-import com.example.chocolateria.modelo.ordenClienteModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,6 +10,7 @@ import javafx.scene.control.*;
 import javax.swing.*;
 import java.net.URL;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ordenClienteController implements Initializable {
@@ -25,6 +25,8 @@ public class ordenClienteController implements Initializable {
     @FXML private ChoiceBox<String> cbEstado;
     @FXML private ChoiceBox<String> cbMetodoPago;
 
+    private ArrayList<String> productosSeleccionados = new ArrayList<>();
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conexion conexion = new conexion();
@@ -36,7 +38,7 @@ public class ordenClienteController implements Initializable {
 
         spCantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 1));
 
-        cmbCliente.setItems(llenarCombo("SELECT nombre_apellido FROM tbl_cliente", "nombre_apellido"));
+        cmbCliente.setItems(llenarCombo("SELECT nombre FROM tbl_cliente", "nombre"));
         cmbProducto.setItems(llenarCombo("SELECT nombre FROM tbl_producto", "nombre"));
     }
 
@@ -55,30 +57,51 @@ public class ordenClienteController implements Initializable {
     }
 
     @FXML
+    private void agregarProducto(ActionEvent event) {
+        String producto = cmbProducto.getValue();
+        String categoria = cmbCategoria.getValue();
+        int cantidad = spCantidad.getValue();
+
+        if (producto == null || categoria == null) {
+            JOptionPane.showMessageDialog(null, "Seleccione producto y categoría");
+            return;
+        }
+
+        String linea = producto + " - " + categoria + " x" + cantidad;
+        if (!productosSeleccionados.contains(linea)) {
+            productosSeleccionados.add(linea);
+            JOptionPane.showMessageDialog(null, "Producto agregado: " + linea);
+        } else {
+            JOptionPane.showMessageDialog(null, "Ese producto ya fue agregado");
+        }
+    }
+
+    @FXML
     private void guardar(ActionEvent event) {
         try {
+            if (productosSeleccionados.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Agregue al menos un producto");
+                return;
+            }
+
             String codigo = txtCodigo.getText();
             String cliente = cmbCliente.getValue();
-            String producto = cmbProducto.getValue();
-            String categoria = cmbCategoria.getValue();
             String estado = cbEstado.getValue();
             String metodoPago = cbMetodoPago.getValue();
-            int cantidad = spCantidad.getValue();
+            String productosConcatenados = String.join(", ", productosSeleccionados);
 
             conexion conexion = new conexion();
             Connection con = conexion.establecerConexion();
 
-            String sql = "INSERT INTO tbl_orden_cliente (id_orden, cliente, fecha, producto, categoria, cantidad, estado, metodo_pago) VALUES (?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO tbl_orden_cliente (id_orden, cliente, fecha, producto, estado, metodo_pago) VALUES (?,?,?,?,?,?)";
 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, Integer.parseInt(codigo));
             ps.setString(2, cliente);
             ps.setDate(3, java.sql.Date.valueOf(dpFecha.getValue()));
-            ps.setString(4, producto);
-            ps.setString(5, categoria);
-            ps.setInt(6, cantidad);
-            ps.setString(7, estado);
-            ps.setString(8, metodoPago);
+            ps.setString(4, productosConcatenados);
+            ps.setString(5, estado);
+            ps.setString(6, metodoPago);
             ps.executeUpdate();
 
             JOptionPane.showMessageDialog(null, "Orden guardada correctamente");
@@ -99,15 +122,12 @@ public class ordenClienteController implements Initializable {
     public void fnEditar(ActionEvent event) {
         String codigo = txtCodigo.getText().trim();
         String cliente = cmbCliente.getValue();
-        String producto = cmbProducto.getValue();
-        String categoria = cmbCategoria.getValue();
         String estado = cbEstado.getValue();
         String metodoPago = cbMetodoPago.getValue();
-        int cantidad = spCantidad.getValue();
+        String productosConcatenados = String.join(", ", productosSeleccionados);
 
-        String sql = "UPDATE tbl_orden_cliente SET cliente='" + cliente + "', producto='" + producto +
-                "', categoria='" + categoria + "', cantidad=" + cantidad + ", estado='" + estado +
-                "', metodo_pago='" + metodoPago + "' WHERE id_orden='" + codigo + "'";
+        String sql = "UPDATE tbl_orden_cliente SET cliente='" + cliente + "', producto='" + productosConcatenados +
+                "', estado='" + estado + "', metodo_pago='" + metodoPago + "' WHERE id_orden='" + codigo + "'";
         EjecutarSQL(sql);
     }
 
@@ -119,11 +139,17 @@ public class ordenClienteController implements Initializable {
                 txtCodigo.setText(String.valueOf(rs.getInt("id_orden")));
                 cmbCliente.getSelectionModel().select(rs.getString("cliente"));
                 dpFecha.setValue(rs.getDate("fecha").toLocalDate());
-                cmbProducto.getSelectionModel().select(rs.getString("producto"));
-                cmbCategoria.getSelectionModel().select(rs.getString("categoria"));
-                spCantidad.getValueFactory().setValue(rs.getInt("cantidad"));
                 cbEstado.getSelectionModel().select(rs.getString("estado"));
                 cbMetodoPago.getSelectionModel().select(rs.getString("metodo_pago"));
+
+                productosSeleccionados.clear();
+                String productos = rs.getString("producto");
+                if (productos != null && !productos.isEmpty()) {
+                    String[] lista = productos.split(",\\s*");
+                    for (String p : lista) {
+                        productosSeleccionados.add(p);
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -152,5 +178,6 @@ public class ordenClienteController implements Initializable {
         spCantidad.getValueFactory().setValue(1);
         cbEstado.getSelectionModel().clearSelection();
         cbMetodoPago.getSelectionModel().clearSelection();
+        productosSeleccionados.clear();
     }
 }

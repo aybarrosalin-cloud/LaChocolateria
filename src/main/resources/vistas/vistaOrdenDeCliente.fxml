@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.ordenClienteController">
 
     <left>
         <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="121.0" spacing="16" style="-fx-background-color:#48295a;">
@@ -53,7 +53,7 @@
                 <StackPane.margin>
                     <Insets top="50.0" />
                 </StackPane.margin>
-                <DatePicker prefHeight="30.0" prefWidth="242.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                <DatePicker fx:id="dpFecha" prefHeight="30.0" prefWidth="242.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
                 <Label prefHeight="20.0" prefWidth="152.0" style="-fx-font-weight:bold;" text="Cliente" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
@@ -71,7 +71,7 @@
                         <Font size="14" />
                     </font>
                 </Label>
-                <TextField layoutX="284.0" layoutY="180.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="1" />
+                <TextField fx:id="txtCodigo" layoutX="284.0" layoutY="180.0" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="1" />
                 <Label layoutX="113.0" layoutY="150.0" prefHeight="20.0" prefWidth="146.0" style="-fx-font-weight:bold;" text="Productos" GridPane.rowIndex="2">
                     <font>
                         <Font size="14" />
@@ -87,17 +87,17 @@
                         <Font size="14" />
                     </font>
                 </Label>
-                <ComboBox layoutX="605.0" layoutY="184.0" prefHeight="27.0" prefWidth="237.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <ChoiceBox layoutX="95.0" layoutY="324.0" prefHeight="27.0" prefWidth="236.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="5" />
-            <ComboBox layoutX="307.0" layoutY="186.0" prefHeight="27.0" prefWidth="237.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ChoiceBox layoutX="111.0" layoutY="256.0" prefHeight="27.0" prefWidth="237.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <ComboBox fx:id="cmbCliente" layoutX="605.0" layoutY="184.0" prefHeight="27.0" prefWidth="237.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ChoiceBox fx:id="cbEstado" layoutX="95.0" layoutY="324.0" prefHeight="27.0" prefWidth="236.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.rowIndex="5" />
+            <ComboBox fx:id="cmbCategoria" layoutX="307.0" layoutY="186.0" prefHeight="27.0" prefWidth="237.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ChoiceBox fx:id="cbMetodoPago" layoutX="111.0" layoutY="256.0" prefHeight="27.0" prefWidth="237.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label layoutX="111.0" layoutY="154.0" prefHeight="20.0" prefWidth="125.0" style="-fx-font-weight:bold;" text="Método de pago" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <font>
                   <Font size="14" />
                </font>
             </Label>
-            <ComboBox layoutX="307.0" layoutY="186.0" prefHeight="27.0" prefWidth="237.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.rowIndex="3" />
-            <Spinner prefHeight="27.0" prefWidth="241.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <ComboBox fx:id="cmbProducto" layoutX="307.0" layoutY="186.0" prefHeight="27.0" prefWidth="237.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.rowIndex="3" />
+            <Spinner fx:id="spCantidad" prefHeight="27.0" prefWidth="241.0" style="-fx-text-fill: black; -fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
                 <columnConstraints>
                     <ColumnConstraints minWidth="100.0" prefWidth="150.0" />
@@ -114,23 +114,28 @@
                 </rowConstraints>
             </GridPane>
 
-            <HBox alignment="BOTTOM_CENTER" prefHeight="401.0" prefWidth="948.0" spacing="30.0">
+            <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30.0">
                 <StackPane.margin>
                     <Insets bottom="35.0" />
                 </StackPane.margin>
                 <children>
-                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
+                    <Button mnemonicParsing="false" onAction="#guardar" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
                         <font><Font size="14.0" /></font>
                     </Button>
 
-                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
+                    <Button mnemonicParsing="false" onAction="#fnEditar" prefHeight="35.0" prefWidth="108.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
                         <font><Font size="14.0" /></font>
                     </Button>
 
-                    <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
+                    <Button mnemonicParsing="false" onAction="#limpiarCampos" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
                         <font><Font size="14.0" /></font>
                     </Button>
-               <Button layoutX="568.0" layoutY="474.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Agregar">
+               <Button layoutX="568.0" layoutY="474.0" mnemonicParsing="false" onAction="#agregarProducto" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Agregar">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Button>
+               <Button layoutX="636.0" layoutY="474.0" mnemonicParsing="false" onAction="#fnbuscar" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar">
                   <font>
                      <Font size="14.0" />
                   </font>
