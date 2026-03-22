@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ordenProveedorController implements Initializable {
@@ -33,6 +34,9 @@ public class ordenProveedorController implements Initializable {
     @FXML private CheckBox chkUrgente;
     @FXML private CheckBox chkEmergencia;
 
+    // Lista interna de productos seleccionados
+    private ArrayList<String> productosSeleccionados = new ArrayList<>();
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conexion conexion = new conexion();
@@ -43,8 +47,6 @@ public class ordenProveedorController implements Initializable {
         chCantidad.setItems(FXCollections.observableArrayList("1-10", "11-50", "50+"));
 
         cmbProducto.setItems(llenarProductos());
-
-        actualizarDatos();
     }
 
     public ObservableList<String> llenarProductos() {
@@ -66,11 +68,19 @@ public class ordenProveedorController implements Initializable {
         return lista;
     }
 
+    // BOTON AGREGAR: añade producto a la lista interna
+    @FXML
+    private void agregarProducto(ActionEvent event){
+        String producto = cmbProducto.getValue();
+        if(producto != null && !productosSeleccionados.contains(producto)){
+            productosSeleccionados.add(producto);
+            JOptionPane.showMessageDialog(null, "Producto agregado: " + producto);
+        }
+    }
+
     @FXML
     private void guardar(ActionEvent event) {
-
         try {
-
             String codigo = txtCodigo.getText();
             String rnc = txtRNC.getText();
             LocalDate fecha = dpFecha.getValue();
@@ -79,7 +89,6 @@ public class ordenProveedorController implements Initializable {
             String estadoPago = cmbEstadoPago.getValue();
             String monto = txtMonto.getText();
             String descripcion = txtDescripcion.getText();
-            String producto = cmbProducto.getValue();
 
             // CATEGORIA (CHECKBOX)
             String categoria = "";
@@ -87,9 +96,12 @@ public class ordenProveedorController implements Initializable {
             if (chkUrgente.isSelected()) categoria += "Urgente ";
             if (chkEmergencia.isSelected()) categoria += "Emergencia ";
 
-            String sql = "INSERT INTO tbl_orden_proveedor VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // Concatenar productos en un solo String
+            String productosConcatenados = String.join(", ", productosSeleccionados);
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            // Insertar orden principal
+            String sqlOrden = "INSERT INTO tbl_orden_proveedor(codigo, rnc_proveedor, fecha_requerida, prioridad, cantidad_pedido, estado_pago, monto_total, categoria, descripcion, producto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = con.prepareStatement(sqlOrden);
             ps.setString(1, codigo);
             ps.setString(2, rnc);
             ps.setDate(3, Date.valueOf(fecha));
@@ -99,11 +111,10 @@ public class ordenProveedorController implements Initializable {
             ps.setDouble(7, Double.parseDouble(monto));
             ps.setString(8, categoria);
             ps.setString(9, descripcion);
-            ps.setString(10, producto);
-
+            ps.setString(10, productosConcatenados); // <- todos los productos juntos
             ps.executeUpdate();
 
-            JOptionPane.showMessageDialog(null, "Orden guardada");
+            JOptionPane.showMessageDialog(null, "Orden guardada correctamente");
             limpiarCampos();
 
         } catch (Exception e) {
@@ -111,6 +122,7 @@ public class ordenProveedorController implements Initializable {
         }
     }
 
+    @FXML
     public void fnbuscar(ActionEvent event) {
         String codigo = txtCodigo.getText().trim();
         String sql = "SELECT * FROM tbl_orden_proveedor WHERE codigo='" + codigo + "'";
@@ -118,23 +130,36 @@ public class ordenProveedorController implements Initializable {
     }
 
     private void buscarDatos(String sql) {
-
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-
+                // Campos principales
                 txtCodigo.setText(rs.getString("codigo"));
                 txtRNC.setText(rs.getString("rnc_proveedor"));
                 dpFecha.setValue(rs.getDate("fecha_requerida").toLocalDate());
                 cmbPrioridad.setValue(rs.getString("prioridad"));
                 chCantidad.setValue(rs.getString("cantidad_pedido"));
                 cmbEstadoPago.setValue(rs.getString("estado_pago"));
-                txtMonto.setText(rs.getString("monto_total"));
+                txtMonto.setText(String.valueOf(rs.getDouble("monto_total")));
                 txtDescripcion.setText(rs.getString("descripcion"));
-                cmbProducto.setValue(rs.getString("producto"));
 
+                // Categoría (CHECKBOX)
+                String categoria = rs.getString("categoria");
+                chkProgramada.setSelected(categoria.contains("Programada"));
+                chkUrgente.setSelected(categoria.contains("Urgente"));
+                chkEmergencia.setSelected(categoria.contains("Emergencia"));
+
+                // Productos (COMBOBOX)
+                String productos = rs.getString("producto"); // ahora todos los productos están en una sola columna
+                productosSeleccionados.clear();
+                if(productos != null && !productos.isEmpty()) {
+                    String[] listaProd = productos.split(",\\s*");
+                    for(String prod : listaProd) {
+                        productosSeleccionados.add(prod);
+                    }
+                }
             }
 
         } catch (Exception e) {
@@ -142,39 +167,42 @@ public class ordenProveedorController implements Initializable {
         }
     }
 
-    public void fnEditar(ActionEvent event) {
-
-        String codigo = txtCodigo.getText().trim();
-
-        String sql = "UPDATE tbl_orden_proveedor SET " +
-                "rnc_proveedor='" + txtRNC.getText() + "', " +
-                "fecha_requerida='" + dpFecha.getValue() + "', " +
-                "prioridad='" + cmbPrioridad.getValue() + "', " +
-                "cantidad_pedido='" + chCantidad.getValue() + "', " +
-                "estado_pago='" + cmbEstadoPago.getValue() + "', " +
-                "monto_total='" + txtMonto.getText() + "', " +
-                "descripcion='" + txtDescripcion.getText() + "', " +
-                "producto='" + cmbProducto.getValue() + "' " +
-                "WHERE codigo='" + codigo + "'";
-
-        EjecutarSQL(sql);
-        actualizarDatos();
-    }
-
-    public void EjecutarSQL(String sql){
+    @FXML
+    private void fnEditar(ActionEvent event) {
         try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            int result = ps.executeUpdate();
-            if (result == 1) {
-                JOptionPane.showMessageDialog(null, "Accion realizada correctamente");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "error " + e.toString());
-        }
-    }
+            String codigo = txtCodigo.getText().trim();
 
-    public void actualizarDatos() {
-        // opcional
+            // Actualizar orden
+            String sql = "UPDATE tbl_orden_proveedor SET rnc_proveedor=?, fecha_requerida=?, prioridad=?, cantidad_pedido=?, estado_pago=?, monto_total=?, categoria=?, descripcion=?, producto=? WHERE codigo=?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, txtRNC.getText());
+            ps.setDate(2, Date.valueOf(dpFecha.getValue()));
+            ps.setString(3, cmbPrioridad.getValue());
+            ps.setString(4, chCantidad.getValue());
+            ps.setString(5, cmbEstadoPago.getValue());
+            ps.setDouble(6, Double.parseDouble(txtMonto.getText()));
+
+            // CATEGORIA
+            String categoria = "";
+            if (chkProgramada.isSelected()) categoria += "Programada ";
+            if (chkUrgente.isSelected()) categoria += "Urgente ";
+            if (chkEmergencia.isSelected()) categoria += "Emergencia ";
+            ps.setString(7, categoria);
+
+            ps.setString(8, txtDescripcion.getText());
+
+            // Concatenar productos para actualizar
+            String productosConcatenados = String.join(", ", productosSeleccionados);
+            ps.setString(9, productosConcatenados);
+
+            ps.setString(10, codigo);
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Orden editada correctamente");
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -192,5 +220,7 @@ public class ordenProveedorController implements Initializable {
         chkProgramada.setSelected(false);
         chkUrgente.setSelected(false);
         chkEmergencia.setSelected(false);
+
+        productosSeleccionados.clear();
     }
 }
