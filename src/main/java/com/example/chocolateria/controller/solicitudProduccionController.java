@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class solicitudProduccionController {
 
+    @FXML private TextField TxtCodigoProducto;
     @FXML private ChoiceBox<String> cbProducto;
     @FXML private TextField txtCantidad;
     @FXML private DatePicker dpFechaSolicitud;
@@ -72,7 +73,7 @@ public class solicitudProduccionController {
 
     @FXML
     public void guardar() {
-        String codigoProducto = txtCodigoProducto.getText(); // Tomamos el código manual
+        String codigoProducto = txtCodigoProducto.getText();
         String nombreProducto = cbProducto.getValue();
         String nombreResponsable = cbResponsable.getValue();
 
@@ -80,7 +81,6 @@ public class solicitudProduccionController {
             new Alert(Alert.AlertType.WARNING, "Ingrese el código del producto").show();
             return;
         }
-
         if (nombreProducto == null) {
             new Alert(Alert.AlertType.WARNING, "Seleccione un producto").show();
             return;
@@ -96,20 +96,20 @@ public class solicitudProduccionController {
             Connection cn = con.establecerConexion();
 
             String sql = "INSERT INTO tbl_solicitud_produccion " +
-                    "(id_producto, cantidad, fecha_solicitud, fecha_produccion, prioridad, responsable, observaciones) " +
-                    "VALUES (?,?,?,?,?,?,?)";
+                    "(id_solicitud, producto, cantidad, fecha_solicitud, fecha_produccion, prioridad, responsable, observaciones) " +
+                    "VALUES (?,?,?,?,?,?,?,?)";
 
             PreparedStatement ps = cn.prepareStatement(sql);
-            ps.setString(1, codigoProducto); // usamos el código del TextField
-            ps.setInt(2, Integer.parseInt(txtCantidad.getText()));
-            ps.setDate(3, java.sql.Date.valueOf(dpFechaSolicitud.getValue()));
-            ps.setDate(4, java.sql.Date.valueOf(dpFechaProduccion.getValue()));
-            ps.setString(5, cbPrioridad.getValue());
-            ps.setInt(6, idResponsable);
-            ps.setString(7, txtObservaciones.getText());
+            ps.setInt(1, Integer.parseInt(codigoProducto));
+            ps.setString(2, nombreProducto);
+            ps.setInt(3, Integer.parseInt(txtCantidad.getText()));
+            ps.setDate(4, java.sql.Date.valueOf(dpFechaSolicitud.getValue()));
+            ps.setDate(5, java.sql.Date.valueOf(dpFechaProduccion.getValue()));
+            ps.setString(6, cbPrioridad.getValue());
+            ps.setInt(7, idResponsable);
+            ps.setString(8, txtObservaciones.getText());
 
             ps.executeUpdate();
-
             new Alert(Alert.AlertType.INFORMATION, "Guardado correctamente").show();
 
         } catch (Exception e) {
