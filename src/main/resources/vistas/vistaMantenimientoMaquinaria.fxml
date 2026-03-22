@@ -33,7 +33,7 @@
     <center>
         <StackPane>
 
-            <!-- Imagen de fondo -->
+
             <ImageView fitHeight="533.0" fitWidth="949.0" mouseTransparent="true" pickOnBounds="false" preserveRatio="true">
                 <image>
                     <Image url="@../com/example/chocolateria/MantenimientoMaquinaria.png" />
@@ -46,31 +46,30 @@
                     <Insets top="100" />
                 </StackPane.margin>
 
-                <!-- Fecha -->
+
                 <Label style="-fx-font-weight:bold;" text="Fecha mantenimiento" />
                 <DatePicker fx:id="dpFechaMantenimiento" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="1" />
 
-                <!-- Máquina -->
+
                 <Label style="-fx-font-weight:bold;" text="Máquina" GridPane.columnIndex="1" />
                 <ChoiceBox fx:id="cbMaquina" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <!-- Técnico -->
                 <Label style="-fx-font-weight:bold;" text="Técnico responsable" GridPane.columnIndex="2" />
                 <ChoiceBox fx:id="cbTecnico" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
-                <!-- Costo -->
+
                 <Label style="-fx-font-weight:bold;" text="Costo del mantenimiento" GridPane.rowIndex="2" />
                 <TextField fx:id="txtCosto" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="3" />
 
-                <!-- Estado máquina -->
+
                 <Label style="-fx-font-weight:bold;" text="Estado de la máquina" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <ChoiceBox fx:id="cbEstadoMaquina" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                <!-- Tipo mantenimiento -->
+
                 <Label style="-fx-font-weight:bold;" text="Tipo de mantenimiento" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                 <ChoiceBox fx:id="cbTipoMantenimiento" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
-                <!-- Observaciones -->
+
                 <Label style="-fx-font-weight:bold;" text="Observaciones" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                 <TextArea fx:id="taObservaciones" prefHeight="70" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
@@ -91,7 +90,7 @@
 
             </GridPane>
 
-            <!-- Botones -->
+
             <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30">
                 <StackPane.margin>
                     <Insets bottom="35" />

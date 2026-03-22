@@ -136,7 +136,6 @@
                 </rowConstraints>
             </GridPane>
 
-            <!-- BOTONES ABAJO -->
             <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30.0">
                 <StackPane.margin>
                     <Insets bottom="10.0" />
@@ -154,7 +153,6 @@
                         <font><Font size="14.0" /></font>
                     </Button>
 
-                    <!-- Botón AGREGAR ahora llama a agregarProducto -->
                     <Button mnemonicParsing="false" onAction="#agregarProducto" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Agregar">
                         <font><Font size="14.0" /></font>
                     </Button>

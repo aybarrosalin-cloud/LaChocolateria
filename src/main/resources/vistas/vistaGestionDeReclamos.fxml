@@ -51,49 +51,49 @@
                     <Insets top="100" />
                 </StackPane.margin>
 
-                <!-- CODIGO -->
+
                 <Label style="-fx-font-weight:bold;" text="Código">
                     <font><Font size="14" /></font>
                 </Label>
 
                 <TextField fx:id="txtCodigo" prefWidth="270" style="-fx-background-color:white; -fx-text-fill:black; -fx-border-color:purple;" GridPane.rowIndex="1" />
 
-                <!-- CLIENTE -->
+
                 <Label style="-fx-font-weight:bold;" text="Cliente" GridPane.columnIndex="1">
                     <font><Font size="14" /></font>
                 </Label>
 
                 <ComboBox fx:id="cmbCliente" prefWidth="272" style="-fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <!-- TIPO RECLAMO -->
+
                 <Label style="-fx-font-weight:bold;" text="Tipo de reclamo" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
 
                 <ChoiceBox fx:id="chTipoReclamo" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="3" />
 
-                <!-- ESTADO -->
+
                 <Label style="-fx-font-weight:bold;" text="Estado" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
 
                 <ChoiceBox fx:id="chEstado" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                <!-- ORDEN -->
+
                 <Label style="-fx-font-weight:bold;" text="Orden relacionada" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
 
                 <ComboBox fx:id="cmbOrden" prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
-                <!-- DESCRIPCION -->
+
                 <Label style="-fx-font-weight:bold;" text="Descripción" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
                 </Label>
 
                 <TextArea fx:id="txtDescripcion" prefHeight="60" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="5" />
 
-                <!-- PRIORIDAD -->
+
                 <Label style="-fx-font-weight:bold;" text="Prioridad" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
                 </Label>
@@ -129,7 +129,7 @@
 
             </GridPane>
 
-            <!-- BOTONES -->
+
             <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30.0">
 
                 <StackPane.margin>
