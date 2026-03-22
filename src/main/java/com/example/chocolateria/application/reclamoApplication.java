@@ -10,7 +10,6 @@ public class reclamoApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // Línea de debug (MUY IMPORTANTE)
         System.out.println(getClass().getResource("/vistas/vistaGestionDeReclamos.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
