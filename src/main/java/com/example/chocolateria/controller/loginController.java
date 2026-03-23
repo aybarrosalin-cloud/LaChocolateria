@@ -1,0 +1,72 @@
+package com.example.chocolateria.controller;
+
+import com.example.chocolateria.baseDeDatos.conexion;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class loginController {
+
+    @FXML private TextField txtUsuario;
+    @FXML private PasswordField txtPassword;
+
+    @FXML
+    private void iniciarSesion() {
+        String usuario  = txtUsuario.getText();
+        String password = txtPassword.getText();
+
+        if (usuario.isBlank() || password.isBlank()) {
+            new Alert(Alert.AlertType.WARNING, "Por favor ingresa usuario y contraseña.").show();
+            return;
+        }
+
+        if (validarCredenciales(usuario, password)) {
+            abrirMenuPrincipal();
+        } else {
+            new Alert(Alert.AlertType.ERROR, "Usuario o contraseña incorrectos.").show();
+            txtPassword.clear();
+        }
+    }
+
+    private boolean validarCredenciales(String usuario, String password) {
+        conexion con = new conexion();
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT * FROM tbl_usuario WHERE usuario = ? AND password = ?")) {
+
+            ps.setString(1, usuario);
+            ps.setString(2, password);
+
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error de conexión: " + e.getMessage()).show();
+            return false;
+        }
+    }
+
+    private void abrirMenuPrincipal() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/com/example/chocolateria/hello-view.fxml")); // cambia por tu fxml principal
+            Parent root = loader.load();
+
+            Stage stage = (Stage) txtUsuario.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir el menú: " + e.getMessage()).show();
+        }
+    }
+}

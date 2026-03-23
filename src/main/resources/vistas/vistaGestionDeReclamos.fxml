@@ -19,7 +19,7 @@
                 <font><Font size="18" /></font>
             </Button>
 
-            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Producción" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Reclamos" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Inventario" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
