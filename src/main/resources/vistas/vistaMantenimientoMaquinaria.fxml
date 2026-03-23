@@ -47,30 +47,51 @@
                 </StackPane.margin>
 
 
-                <Label style="-fx-font-weight:bold;" text="Fecha mantenimiento" />
+                <Label style="-fx-font-weight:bold;" text="Fecha mantenimiento">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
                 <DatePicker fx:id="dpFechaMantenimiento" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="1" />
 
 
-                <Label style="-fx-font-weight:bold;" text="Máquina" GridPane.columnIndex="1" />
+                <Label style="-fx-font-weight:bold;" text="Máquina" GridPane.columnIndex="1">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
                 <ChoiceBox fx:id="cbMaquina" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <Label style="-fx-font-weight:bold;" text="Técnico responsable" GridPane.columnIndex="2" />
+                <Label style="-fx-font-weight:bold;" text="Técnico responsable" GridPane.columnIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
                 <ChoiceBox fx:id="cbTecnico" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
 
-                <Label style="-fx-font-weight:bold;" text="Costo del mantenimiento" GridPane.rowIndex="2" />
+                <Label style="-fx-font-weight:bold;" text="Costo del mantenimiento" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
                 <TextField fx:id="txtCosto" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.rowIndex="3" />
 
 
-                <Label style="-fx-font-weight:bold;" text="Estado de la máquina" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label style="-fx-font-weight:bold;" text="Estado de la máquina" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
                 <ChoiceBox fx:id="cbEstadoMaquina" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
 
-                <Label style="-fx-font-weight:bold;" text="Tipo de mantenimiento" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                <Label style="-fx-font-weight:bold;" text="Tipo de mantenimiento" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
                 <ChoiceBox fx:id="cbTipoMantenimiento" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
 
 
-                <Label style="-fx-font-weight:bold;" text="Observaciones" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <Label style="-fx-font-weight:bold;" text="Observaciones" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
                 <TextArea fx:id="taObservaciones" prefHeight="70" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
                 <columnConstraints>
@@ -97,15 +118,11 @@
                 </StackPane.margin>
 
 
-                <Button fx:id="btnGuardar" mouseTransparent="false" onAction="#guardarMantenimiento" prefHeight="30.0" prefWidth="121.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
+                <Button fx:id="btnGuardar" mouseTransparent="false" onAction="#guardarMantenimiento" prefHeight="31.0" prefWidth="131.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
                     <font><Font size="14.0" /></font>
                 </Button>
 
-                <Button fx:id="btnEditar" mouseTransparent="false" prefHeight="29.0" prefWidth="129.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
-                    <font><Font size="14.0" /></font>
-                </Button>
-
-                <Button fx:id="btnLimpiar" mouseTransparent="false" onAction="#LimpiarCampos" prefHeight="31.0" prefWidth="132.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
+                <Button fx:id="btnLimpiar" mouseTransparent="false" onAction="#LimpiarCampos" prefHeight="28.0" prefWidth="135.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
                     <font><Font size="14.0" /></font>
                 </Button>
 
