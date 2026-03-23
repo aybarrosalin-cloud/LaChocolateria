@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.chocolateria.controller.recepcionController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.recepcionController">
 
     <left>
         <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="121.0" spacing="16" style="-fx-background-color:#48295a;">
@@ -33,7 +32,7 @@
 
     <center>
         <StackPane>
-            <ImageView fitHeight="533.0" fitWidth="949.0" preserveRatio="true" mouseTransparent="true" pickOnBounds="false">
+            <ImageView fitHeight="533.0" fitWidth="949.0" mouseTransparent="true" pickOnBounds="false" preserveRatio="true">
                 <image>
                     <Image url="@../com/example/chocolateria/fondoRecepcion.png" />
                 </image>
@@ -111,14 +110,11 @@
                 </rowConstraints>
             </GridPane>
 
-            <HBox alignment="BOTTOM_CENTER" prefHeight="401.0" prefWidth="948.0" spacing="30.0" pickOnBounds="false">
+            <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" prefHeight="401.0" prefWidth="948.0" spacing="30.0">
                 <StackPane.margin>
                     <Insets bottom="35.0" />
                 </StackPane.margin>
                 <Button mnemonicParsing="false" onAction="#guardarRecepcion" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
-                    <font><Font size="14.0" /></font>
-                </Button>
-                <Button mnemonicParsing="false" prefHeight="35.0" prefWidth="108.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
                     <font><Font size="14.0" /></font>
                 </Button>
                 <Button mnemonicParsing="false" onAction="#limpiarCampos" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
