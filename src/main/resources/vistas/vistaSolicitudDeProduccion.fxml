@@ -18,7 +18,7 @@
                 <font><Font size="18" /></font>
             </Button>
 
-            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Producción" />
+            <Button maxWidth="Infinity" prefHeight="38.0" prefWidth="101.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="S.Produccion" />
 
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Inventario" />
 
@@ -121,10 +121,6 @@
                 </StackPane.margin>
 
                 <Button onAction="#guardar" prefWidth="118" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
-                    <font><Font size="14" /></font>
-                </Button>
-
-                <Button prefWidth="116" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
                     <font><Font size="14" /></font>
                 </Button>
 
