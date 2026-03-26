@@ -20,7 +20,7 @@
                 </font>
             </Button>
 
-            <Button maxWidth="Infinity" prefHeight="52.0" prefWidth="91.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="ORDEN DE&#10;CLIENTE" />
+            <Button maxWidth="Infinity" prefHeight="52.0" prefWidth="91.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Orden de &#10;cliente" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 

@@ -160,7 +160,7 @@
                 </rowConstraints>
             </GridPane>
 
-            <!-- BOTONES ABAJO -->
+
             <HBox alignment="BOTTOM_CENTER" pickOnBounds="false" spacing="30.0">
                 <StackPane.margin>
                     <Insets bottom="10.0" />
