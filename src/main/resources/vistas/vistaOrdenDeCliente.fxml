@@ -9,7 +9,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.ordenClienteController">
 
     <left>
-        <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="121.0" spacing="16" style="-fx-background-color:#48295a;">
+        <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="104.0" spacing="16" style="-fx-background-color:#48295a;">
             <padding>
                 <Insets bottom="20" left="15" right="15" top="45" />
             </padding>
@@ -130,11 +130,6 @@
                     <Button mnemonicParsing="false" onAction="#limpiarCampos" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
                         <font><Font size="14.0" /></font>
                     </Button>
-               <Button layoutX="568.0" layoutY="474.0" mnemonicParsing="false" onAction="#agregarProducto" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Agregar">
-                  <font>
-                     <Font size="14.0" />
-                  </font>
-               </Button>
                <Button layoutX="636.0" layoutY="474.0" mnemonicParsing="false" onAction="#fnbuscar" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar">
                   <font>
                      <Font size="14.0" />
@@ -144,5 +139,84 @@
             </HBox>
         </StackPane>
     </center>
+   <bottom>
+       <StackPane style="     -fx-background-image: url('@../com/example/chocolateria/fondo simple.png');     -fx-background-size: cover;     -fx-background-position: center;     -fx-background-repeat: no-repeat; ">
+           <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #C5A8E8; -fx-border-radius: 10; -fx-padding: 15;" VBox.vgrow="ALWAYS">
+
+               <HBox alignment="CENTER_LEFT" spacing="10">
+                   <Label style="-fx-text-fill: #3B1A5C; -fx-font-size: 14px; -fx-font-weight: bold;" text="Orden de cliente " />
+
+                   <Region HBox.hgrow="ALWAYS" />
+
+                   <TextField promptText="🔍 Buscar..." style="-fx-background-radius: 15; -fx-border-radius: 15;" />
+               </HBox>
+
+               <TableView fx:id="tablaProductos" prefHeight="300" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #C5A8E8;" VBox.vgrow="ALWAYS">
+
+                   <columns>
+                       <TableColumn text="Código" />
+                       <TableColumn text="Cliente" />
+                       <TableColumn text="Fecha" />
+                       <TableColumn text="Producto(s)" />
+                       <TableColumn text="Cantidad" />
+                       <TableColumn text="Estado" />
+                       <TableColumn text="Método Pago" />
+                   </columns>
+
+                   <columnResizePolicy>
+                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                   </columnResizePolicy>
+
+               </TableView>
+
+           </VBox>
+
+       </StackPane>   </bottom>
+   <right>
+       <StackPane style="     -fx-background-image: url('@../com/example/chocolateria/fondo simple.png');     -fx-background-size: cover;     -fx-background-position: center;     -fx-background-repeat: no-repeat;">
+
+           <VBox prefWidth="244.0" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #C5A8E8; -fx-border-radius: 10; -fx-padding: 15;">
+
+               <Label style="-fx-text-fill: #3B1A5C; -fx-font-size: 14px; -fx-font-weight: bold;" text="Agregar Producto" />
+
+               <Separator />
+
+               <GridPane hgap="10" vgap="8">
+
+                   <Label text="ID Producto" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                   <TextField fx:id="txtIdProducto" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                   <Label text="Nombre" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                   <TextField fx:id="txtNombreProducto" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                   <Label text="Cantidad" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                   <TextField fx:id="txtCantidad" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+
+                   <Label text="Precio" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                   <TextField fx:id="txtPrecio" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+
+               </GridPane>
+
+               <HBox spacing="10">
+                   <Button style="-fx-background-color: #8B5DBF; -fx-text-fill: white; -fx-background-radius: 15;" text="Buscar" />
+
+                   <Button style="-fx-background-color: #5A2D90; -fx-text-fill: white; -fx-background-radius: 15;" text="Agregar" />
+
+                   <Button style="-fx-background-color: #C04A5A; -fx-text-fill: white; -fx-background-radius: 15;" text="Eliminar" />
+               </HBox>
+
+           </VBox>
+
+       </StackPane>   </right>
 
 </BorderPane>
