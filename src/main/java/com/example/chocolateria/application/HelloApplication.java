@@ -1,4 +1,4 @@
-package com.example.chocolateria;
+package com.example.chocolateria.application;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

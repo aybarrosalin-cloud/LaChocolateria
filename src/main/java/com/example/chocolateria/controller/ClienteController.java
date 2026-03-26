@@ -1,7 +1,7 @@
-package com.example.chocolateria;
+package com.example.chocolateria.controller;
 
 import com.example.chocolateria.Database.Conexion;
-import com.example.chocolateria.Cliente;
+import com.example.chocolateria.modelo.Cliente;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
