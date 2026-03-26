@@ -8,18 +8,13 @@
 
 <BorderPane style="-fx-background-color: #f3eaf8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.ordenClienteController">
 
-    <!-- ═══════════════════════════════════════════════════════════
-         LEFT  –  Sidebar vertical
-    ═══════════════════════════════════════════════════════════════ -->
+
     <left>
         <VBox alignment="TOP_CENTER" prefWidth="120" spacing="16" style="-fx-background-color:#48295a;">
             <padding>
                 <Insets bottom="20" left="15" right="15" top="30" />
             </padding>
 
-            <!-- StackPane con tamaño FIJO (minHeight=maxHeight=prefHeight).
-                 La imagen puede cambiar fitHeight sin mover NADA de lo que
-                 está debajo, porque el StackPane nunca cambia de alto. -->
             <StackPane maxHeight="90" maxWidth="90" minHeight="90" minWidth="90" prefHeight="90" prefWidth="90" style="-fx-clip-by-bounds:true;">
                 <ImageView fx:id="imgFotoPerfil" fitHeight="115.0" fitWidth="207.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -54,15 +49,12 @@
         </VBox>
     </left>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         CENTER  –  Banner decorativo + contenido
-    ═══════════════════════════════════════════════════════════════ -->
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
 
             <VBox spacing="16" style="-fx-padding: 0 0 20 0; -fx-background-color: #f3eaf8;">
 
-                <!-- ─── BANNER ──────────────────────────────────────────── -->
+
                 <StackPane maxWidth="Infinity" style="-fx-border-color:#9b59b6; -fx-border-width:0 0 2 0;">
                     <ImageView fx:id="imgBanner" fitHeight="144.0" fitWidth="963.0" pickOnBounds="true" preserveRatio="false" smooth="true">
                         <image>
@@ -71,10 +63,10 @@
                     </ImageView>
                 </StackPane>
 
-                <!-- ─── Contenido principal ─────────────────────────────── -->
+
                 <VBox spacing="16" style="-fx-padding: 4 24 0 24;">
 
-                    <!-- ─── SECTION 1: form card ──────────────────────────── -->
+
                     <VBox spacing="14" style="-fx-background-color: white; -fx-background-radius: 12;                                  -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                  -fx-padding: 20;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:16px; -fx-font-weight:bold;" text="NUEVA ORDEN DE CLIENTE">
@@ -83,7 +75,7 @@
                      </font></Label>
                         <Separator />
 
-                        <!-- ── Row 1: Código | Cliente | Fecha ───────────── -->
+
                         <HBox alignment="CENTER_LEFT" spacing="20">
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
@@ -102,7 +94,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- ── Row 2: Categoría | Producto | Cantidad ──────── -->
+
                         <HBox alignment="CENTER_LEFT" spacing="20">
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
@@ -121,7 +113,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- ── Row 3: Método de Pago | Estado ──────────────── -->
+
                         <HBox alignment="CENTER_LEFT" spacing="20">
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
@@ -134,13 +126,13 @@
                                 <ChoiceBox fx:id="cbEstado" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                   -fx-border-color:purple;" />
                             </VBox>
 
-                            <!-- Columna vacía para mantener alineación de 3 columnas -->
+
                             <VBox HBox.hgrow="ALWAYS" />
                         </HBox>
 
                         <Separator />
 
-                        <!-- Botones de acción -->
+
                         <HBox alignment="CENTER" spacing="30">
                             <Button mnemonicParsing="false" onAction="#guardar" prefHeight="35" prefWidth="105" style="-fx-background-color:#6d3c87; -fx-text-fill:white;                                            -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
                                 <font><Font size="14.0" /></font>
@@ -157,10 +149,10 @@
                         </HBox>
                     </VBox>
 
-                    <!-- ─── SECTION 2: paneles lado a lado ───────────────── -->
+
                     <HBox spacing="16" VBox.vgrow="ALWAYS">
 
-                        <!-- Panel Agregar Producto -->
+
                         <VBox prefWidth="280" spacing="10" style="-fx-background-color:white; -fx-background-radius:12;                                      -fx-border-color:#C5A8E8; -fx-border-radius:12;                                      -fx-padding:16;                                      -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                             <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="Agregar Producto" />
@@ -198,7 +190,7 @@
                             </HBox>
                         </VBox>
 
-                        <!-- Tabla Orden de cliente -->
+
                         <VBox spacing="10" style="-fx-background-color:white; -fx-background-radius:12;                                      -fx-border-color:#C5A8E8; -fx-border-radius:12;                                      -fx-padding:16;                                      -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);" HBox.hgrow="ALWAYS">
 
                             <HBox alignment="CENTER_LEFT" spacing="10">
