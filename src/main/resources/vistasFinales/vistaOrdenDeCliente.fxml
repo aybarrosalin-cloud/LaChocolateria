@@ -10,7 +10,7 @@
 
 
     <left>
-        <VBox alignment="TOP_CENTER" prefWidth="120" spacing="16" style="-fx-background-color:#48295a;">
+        <VBox alignment="TOP_CENTER" prefHeight="942.0" prefWidth="166.0" spacing="16" style="-fx-background-color:#48295a;">
             <padding>
                 <Insets bottom="20" left="15" right="15" top="30" />
             </padding>
@@ -33,7 +33,7 @@
                 <font><Font size="14" /></font>
             </Button>
 
-            <Button maxWidth="Infinity" prefHeight="52" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Orden de&#10;cliente" />
+            <Button maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Orden de cliente" />
 
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
 
@@ -71,7 +71,7 @@
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:16px; -fx-font-weight:bold;" text="NUEVA ORDEN DE CLIENTE">
                      <font>
-                        <Font name="Arial Black" size="12.0" />
+                        <Font name="Arial" size="12.0" />
                      </font></Label>
                         <Separator />
 
@@ -85,12 +85,12 @@
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Cliente" />
-                                <ComboBox fx:id="cmbCliente" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                  -fx-border-color:purple;" />
+                                <ComboBox fx:id="cmbCliente" maxWidth="Infinity" prefHeight="32" prefWidth="102.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple; -fx-border-radius: 6; -fx-background-radius: 6;" />
                             </VBox>
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Fecha" />
-                                <DatePicker fx:id="dpFecha" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                    -fx-border-color:purple;" />
+                                <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Fecha de registro" />
+                                <DatePicker fx:id="dpFecha" maxWidth="Infinity" prefHeight="32" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple; -fx-border-radius: 6; -fx-background-radius: 6;" />
                             </VBox>
                         </HBox>
 
@@ -98,36 +98,34 @@
                         <HBox alignment="CENTER_LEFT" spacing="20">
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Categoría" />
-                                <ComboBox fx:id="cmbCategoria" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                  -fx-border-color:purple;" />
-                            </VBox>
+                        <children>
+                           <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Fecha de entrega" />
+                           <DatePicker fx:id="dpFecha1" maxWidth="Infinity" prefHeight="32" prefWidth="144.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                        </children></VBox>
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Productos" />
-                                <ComboBox fx:id="cmbProducto" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                  -fx-border-color:purple;" />
-                            </VBox>
+                        <children>
+                           <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Método de pago" />
+                                   <ChoiceBox fx:id="cbMetodoPago" maxWidth="Infinity" prefHeight="32" prefWidth="1.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                        </children></VBox>
 
                             <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Cantidad" />
-                                <Spinner fx:id="spCantidad" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                 -fx-border-color:purple;" />
-                            </VBox>
+                        <children>
+                           <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Estado" />
+                           <ChoiceBox fx:id="cbMetodoPago1" maxWidth="Infinity" prefHeight="32" prefWidth="0.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                        </children></VBox>
                         </HBox>
 
 
                         <HBox alignment="CENTER_LEFT" spacing="20">
 
-                            <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Método de pago" />
-                                <ChoiceBox fx:id="cbMetodoPago" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                   -fx-border-color:purple;" />
-                            </VBox>
 
-                            <VBox minHeight="60" spacing="5" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Estado" />
-                                <ChoiceBox fx:id="cbEstado" maxWidth="Infinity" prefHeight="32" style="-fx-background-color:white; -fx-text-fill:black;                                                   -fx-border-color:purple;" />
-                            </VBox>
-
-
-                            <VBox HBox.hgrow="ALWAYS" />
+                            <VBox HBox.hgrow="ALWAYS">
+                        <children>
+                           <Label prefHeight="22.0" prefWidth="267.0" style="-fx-font-weight:bold; -fx-font-size:13px; -fx-text-fill:#3B1A5C;" text="Observaciones" />
+                           <TextArea prefHeight="70.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                        </children></VBox>
+                     <VBox minHeight="60" spacing="5" />
                         </HBox>
 
                         <Separator />
@@ -155,7 +153,7 @@
 
                         <VBox prefWidth="280" spacing="10" style="-fx-background-color:white; -fx-background-radius:12;                                      -fx-border-color:#C5A8E8; -fx-border-radius:12;                                      -fx-padding:16;                                      -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
-                            <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="Agregar Producto" />
+                            <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="Agregar Producto a la orden" />
                             <Separator />
 
                             <GridPane hgap="10" vgap="8">
