@@ -10,7 +10,7 @@ public class suplidorApplication extends Application {
         @Override
         public void start(Stage stage) throws Exception {
 
-            // LÍNEA DE DEBUG - agrégala temporalmente
+            // LÍNEA DE DEBUG
             System.out.println(getClass().getResource("/vistas/vistaSuplidor.fxml"));
 
             FXMLLoader loader = new FXMLLoader(
