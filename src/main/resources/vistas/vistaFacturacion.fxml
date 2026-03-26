@@ -1,14 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.chocolateria.controller.facturacionController">
 
-</AnchorPane>
+    <left>
+        <VBox alignment="TOP_CENTER" prefHeight="534.0" prefWidth="121.0" spacing="16" style="-fx-background-color:#48295a;">
+            <padding>
+                <Insets bottom="20" left="15" right="15" top="45" />
+            </padding>
+            <Button maxWidth="Infinity" prefHeight="46" style="-fx-background-color:#8b5aa6; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Inicio">
+                <font><Font size="18.0" /></font>
+            </Button>
+            <Button maxWidth="Infinity" prefHeight="52.0" prefWidth="91.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Facturación" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
+            <Region prefHeight="159.0" prefWidth="63.0" VBox.vgrow="ALWAYS" />
+            <Separator opacity="0.1" />
+            <Label style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Yara Disla 7">
+                <font><Font name="Courier New" size="10.0" /></font>
+            </Label>
+            <Button maxWidth="Infinity" prefHeight="42" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="Salir">
+                <font><Font size="18.0" /></font>
+            </Button>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane>
+            <ImageView fitHeight="533.0" fitWidth="949.0" preserveRatio="true" mouseTransparent="true" pickOnBounds="false">
+                <image>
+                    <Image url="@../com/example/chocolateria/facturacion.png" />
+                </image>
+            </ImageView>
+
+            <GridPane alignment="CENTER" hgap="45" prefHeight="376.0" prefWidth="914.0" vgap="10">
+                <StackPane.margin>
+                    <Insets top="50.0" />
+                </StackPane.margin>
+
+
+                <Label style="-fx-font-weight:bold;" text="N° Factura" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtNumeroFactura" prefHeight="30.0" prefWidth="206.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                <Label style="-fx-font-weight:bold;" text="Fecha de venta" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <font><Font size="14" /></font>
+                </Label>
+                <DatePicker fx:id="dpFechaFactura" prefHeight="30.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+
+                <Label style="-fx-font-weight:bold;" text="RNC Cliente" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtRncCliente" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+
+                <Label style="-fx-font-weight:bold;" text="Producto" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtProducto" prefHeight="30.0" prefWidth="206.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+
+                <Label style="-fx-font-weight:bold;" text="Cantidad" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtCantidad" prefHeight="30.0" prefWidth="268.0" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+
+                <Label style="-fx-font-weight:bold;" text="Precio unitario" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtPrecioUnitario" prefHeight="30.0" prefWidth="270" style="-fx-background-color: white; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+
+
+                <Label style="-fx-font-weight:bold;" text="Subtotal" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtSubtotal" editable="false" prefHeight="30.0" prefWidth="206.0" style="-fx-background-color: #f0e6f6; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+
+
+                <Label style="-fx-font-weight:bold;" text="ITBIS (18%)" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtItbis" editable="false" prefHeight="30.0" prefWidth="268.0" style="-fx-background-color: #f0e6f6; -fx-text-fill: black; -fx-border-color: purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+
+                <Label style="-fx-font-weight:bold;" text="Total a pagar" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                    <font><Font size="14" /></font>
+                </Label>
+                <TextField fx:id="txtTotal" editable="false" prefHeight="30.0" prefWidth="270" style="-fx-background-color: #f0e6f6; -fx-text-fill: black; -fx-border-color: purple; -fx-font-weight:bold;" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100.0" prefWidth="150.0" />
+                    <ColumnConstraints />
+                    <ColumnConstraints hgrow="NEVER" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints /><RowConstraints /><RowConstraints />
+                    <RowConstraints /><RowConstraints /><RowConstraints />
+                </rowConstraints>
+            </GridPane>
+
+            <HBox alignment="BOTTOM_CENTER" prefHeight="401.0" prefWidth="948.0" spacing="30.0" pickOnBounds="false">
+                <StackPane.margin>
+                    <Insets bottom="35.0" />
+                </StackPane.margin>
+                <Button mnemonicParsing="false" onAction="#calcular" prefHeight="35.0" prefWidth="105.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Calcular">
+                    <font><Font size="14.0" /></font>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#guardarFactura" prefHeight="35.0" prefWidth="108.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
+                    <font><Font size="14.0" /></font>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#limpiarCampos" prefHeight="35.0" prefWidth="106.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
+                    <font><Font size="14.0" /></font>
+                </Button>
+            </HBox>
+
+        </StackPane>
+    </center>
+
+</BorderPane>

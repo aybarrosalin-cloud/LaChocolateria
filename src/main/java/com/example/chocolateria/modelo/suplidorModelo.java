@@ -19,7 +19,7 @@ public class suplidorModelo {
         this.ciudad = new SimpleStringProperty(ciudad);
     }
 
-    // GETTERS NORMALES (opcionales pero recomendados)
+
 
     public String getNombre() {
         return nombre.get();
@@ -41,7 +41,6 @@ public class suplidorModelo {
         return ciudad.get();
     }
 
-    // PROPERTY METHODS (NECESARIAS PARA LA TABLA)
 
     public StringProperty nombreProperty() {
         return nombre;

@@ -1,4 +1,24 @@
 package com.example.chocolateria.application;
 
-public class ordenProduccionApplication {
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class ordenProduccionApplication extends Application {
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
+        System.out.println(getClass().getResource("/vistas/vistaOrdenProduccion.fxml"));
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/vistas/vistaOrdenProduccion.fxml")
+        );
+
+        Scene scene = new Scene(loader.load());
+        stage.setTitle("Orden de produccion");
+        stage.setScene(scene);
+        stage.show();
+    }
 }

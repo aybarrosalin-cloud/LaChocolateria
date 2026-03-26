@@ -11,7 +11,7 @@ public class registrarempleadoApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         System.out.println(getClass().getResource("/vistas/vistaRegistroEmpleado.fxml"));
-        // Linea de debug (MUY IMPORTANTE)
+
         System.out.println(getClass().getResource("vistas/vistaRegistroEmpleado.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
