@@ -10,7 +10,7 @@
 
 
     <left>
-        <VBox alignment="TOP_CENTER" prefHeight="942.0" prefWidth="166.0" spacing="16" style="-fx-background-color:#48295a;">
+        <VBox alignment="TOP_CENTER" prefHeight="942.0" prefWidth="186.0" spacing="16" style="-fx-background-color:#48295a;">
             <padding>
                 <Insets bottom="20" left="15" right="15" top="30" />
             </padding>
@@ -34,12 +34,20 @@
             </Button>
 
             <Button maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Orden de cliente" />
+         <Button layoutX="25.0" layoutY="584.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Solicitud de producción" />
 
-            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Orden de producción" />
 
-            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
-
-            <Region VBox.vgrow="ALWAYS" />
+            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Orden a proveedor" />
+         <Button layoutX="25.0" layoutY="265.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="147.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de productos" />
+         <Button layoutX="25.0" layoutY="396.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de empleado" />
+         <Button layoutX="25.0" layoutY="443.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de cliente" />
+         <Button layoutX="25.0" layoutY="726.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de suplidor" />
+         <Button layoutX="25.0" layoutY="490.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Gestión de envios" />
+         <Button layoutX="25.0" layoutY="537.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Gestión de reclamos" />
+         <Button layoutX="25.0" layoutY="632.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Mantenimiento " />
+         <Button layoutX="25.0" layoutY="679.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Registro de máquinas" />
+         <Button layoutX="25.0" layoutY="773.0" maxWidth="Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="CONSULTAS" />
 
             <Separator opacity="0.1" />
 
