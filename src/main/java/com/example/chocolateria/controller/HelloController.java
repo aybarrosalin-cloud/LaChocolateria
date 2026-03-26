@@ -1,4 +1,4 @@
-package com.example.chocolateria;
+package com.example.chocolateria.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

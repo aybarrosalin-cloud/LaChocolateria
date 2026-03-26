@@ -9,10 +9,10 @@ public class ordenClienteApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println(getClass().getResource("/vistas/vistaOrdenDeCliente.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaOrdenDeCliente.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaOrdenDeCliente.fxml")
+                getClass().getResource("/vistasFinales/vistaOrdenDeCliente.fxml")
         );
 
         Scene scene = new Scene(loader.load());

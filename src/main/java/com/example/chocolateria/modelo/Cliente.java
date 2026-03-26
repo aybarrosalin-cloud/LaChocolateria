@@ -1,4 +1,4 @@
-package com.example.chocolateria;
+package com.example.chocolateria.modelo;
 
 
 public class Cliente {
