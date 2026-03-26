@@ -16,14 +16,14 @@
             </padding>
 
             <StackPane maxHeight="90" maxWidth="90" minHeight="90" minWidth="90" prefHeight="90" prefWidth="90" style="-fx-clip-by-bounds:true;">
-                <ImageView fx:id="imgFotoPerfil" fitHeight="115.0" fitWidth="207.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="imgFotoPerfil" fitHeight="152.0" fitWidth="204.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../com/example/chocolateria/perfil.png" />
+                        <Image url="@../com/example/chocolateria/perfilr.png" />
                     </image>
                 </ImageView>
             </StackPane>
 
-            <Label alignment="CENTER" prefWidth="73.0" style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Yara Disla 7" wrapText="true">
+            <Label alignment="CENTER" prefHeight="24.0" prefWidth="87.0" style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Rosalin Aybar" wrapText="true">
                 <font><Font name="Courier New" size="10" /></font>
             </Label>
 
@@ -38,8 +38,10 @@
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
 
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
-
-            <Region VBox.vgrow="ALWAYS" />
+         <Button layoutX="25.0" layoutY="364.0" maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
+         <Button layoutX="25.0" layoutY="404.0" maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
+         <Button layoutX="25.0" layoutY="444.0" maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
+         <Button layoutX="25.0" layoutY="484.0" maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7;                            -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
             <Separator opacity="0.1" />
 
