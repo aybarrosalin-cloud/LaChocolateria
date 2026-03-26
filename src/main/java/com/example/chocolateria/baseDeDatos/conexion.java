@@ -18,7 +18,7 @@ public class conexion {
             String cadena = "jdbc:sqlserver://" + server + ":" + puerto + ";"
                     + "databaseName=" + db + ";" + "encrypt=true" + ";" + "trustServerCertificate=true";
             connection = DriverManager.getConnection(cadena, usuario, contrase);
-            JOptionPane.showMessageDialog(null, "se conecto a la bd");
+
 
             // imprime el error
         } catch (Exception e) {
