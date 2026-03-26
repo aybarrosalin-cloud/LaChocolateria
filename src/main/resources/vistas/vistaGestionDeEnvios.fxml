@@ -20,11 +20,11 @@
                 </font>
             </Button>
 
-            <Button maxWidth="Infinity" prefHeight="52.0" prefWidth="91.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="GESTIÓN DE ENVÍOS &#10;" />
+            <Button maxWidth="Infinity" prefHeight="52.0" prefWidth="91.0" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Gestion de&#10;envios &#10;" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Clientes" />
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:#f5f0f7; -fx-font-weight:bold; -fx-background-radius:12;" text="Pedidos" />
 
-            <Region prefHeight="159.0" prefWidth="63.0" VBox.vgrow="ALWAYS" />
+            <Region prefHeight="103.0" prefWidth="91.0" VBox.vgrow="ALWAYS" />
             <Separator opacity="0.1" />
 
             <Label style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Yara Disla 7">

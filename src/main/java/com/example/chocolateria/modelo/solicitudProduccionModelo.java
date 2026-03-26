@@ -14,10 +14,10 @@ public class solicitudProduccionModelo {
     private String responsable;
     private String observaciones;
 
-    // Constructor vacío
+
     public solicitudProduccionModelo() {}
 
-    // Constructor con todos los campos (sin id)
+
     public solicitudProduccionModelo(String codigoProducto, String producto, int cantidad,
                                      LocalDate fechaSolicitud, LocalDate fechaProduccion,
                                      String prioridad, String responsable, String observaciones) {
@@ -31,7 +31,6 @@ public class solicitudProduccionModelo {
         this.observaciones = observaciones;
     }
 
-    // Constructor con id (opcional, si quieres usarlo al leer de la BD)
     public solicitudProduccionModelo(int id, String codigoProducto, String producto, int cantidad,
                                      LocalDate fechaSolicitud, LocalDate fechaProduccion,
                                      String prioridad, String responsable, String observaciones) {
@@ -46,7 +45,7 @@ public class solicitudProduccionModelo {
         this.observaciones = observaciones;
     }
 
-    // Getters y Setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

@@ -18,7 +18,7 @@
                 <font><Font size="18" /></font>
             </Button>
 
-            <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Producción" />
+            <Button maxWidth="Infinity" prefHeight="38.0" prefWidth="101.0" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="S.Produccion" />
 
             <Button maxWidth="Infinity" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Inventario" />
 
@@ -40,7 +40,7 @@
 
         <StackPane>
 
-            <!-- FONDO -->
+
             <ImageView fitHeight="533" fitWidth="949" mouseTransparent="true" preserveRatio="true">
                 <image>
                     <Image url="@../com/example/chocolateria/SolicitudDeProduccion.png" />
@@ -52,62 +52,56 @@
                     <Insets top="100" />
                 </StackPane.margin>
 
-                <!-- Código del producto -->
+
                 <Label style="-fx-font-weight:bold;" text="Código de la solicitud" GridPane.columnIndex="0" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                 </Label>
                 <TextField fx:id="txtCodigoProducto" prefWidth="270" style="-fx-background-color:white; -fx-text-fill:black; -fx-border-color:purple;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
-                <!-- Producto a producir -->
+
                 <Label style="-fx-font-weight:bold;" text="Producto a producir" GridPane.columnIndex="0" GridPane.rowIndex="6">
                     <font><Font size="14" /></font>
                 </Label>
                 <ChoiceBox fx:id="cbProducto" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="0" GridPane.rowIndex="7" />
 
-                <!-- Cantidad solicitada -->
+
                 <Label style="-fx-font-weight:bold;" text="Cantidad solicitada" GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                 </Label>
                 <TextField fx:id="txtCantidad" prefWidth="270" style="-fx-background-color:white; -fx-text-fill:black; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                <!-- Fecha de solicitud -->
+
                 <Label style="-fx-font-weight:bold;" text="Fecha de solicitud" GridPane.columnIndex="0" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
                 <DatePicker fx:id="dpFechaSolicitud" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
-                <!-- Fecha estimada de producción -->
                 <Label style="-fx-font-weight:bold;" text="Fecha estimada producción" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <font><Font size="14" /></font>
                 </Label>
                 <DatePicker fx:id="dpFechaProduccion" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                <!-- Prioridad -->
                 <Label style="-fx-font-weight:bold;" text="Prioridad" GridPane.columnIndex="2" GridPane.rowIndex="0">
                     <font><Font size="14" /></font>
                 </Label>
                 <ChoiceBox fx:id="cbPrioridad" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
-                <!-- Responsable -->
                 <Label style="-fx-font-weight:bold;" text="Responsable" GridPane.columnIndex="0" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
                 </Label>
                 <ChoiceBox fx:id="cbResponsable" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
 
-                <!-- Observaciones -->
                 <Label style="-fx-font-weight:bold;" text="Observaciones" GridPane.columnIndex="1" GridPane.rowIndex="4">
                     <font><Font size="14" /></font>
                 </Label>
                 <TextArea fx:id="txtObservaciones" prefHeight="60" prefWidth="270" style="-fx-background-color:white; -fx-border-color:purple;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-                <!-- Columnas -->
                 <columnConstraints>
                     <ColumnConstraints minWidth="100" />
                     <ColumnConstraints />
                     <ColumnConstraints />
                 </columnConstraints>
 
-                <!-- Filas -->
                 <rowConstraints>
                     <RowConstraints />
                     <RowConstraints />
@@ -127,10 +121,6 @@
                 </StackPane.margin>
 
                 <Button onAction="#guardar" prefWidth="118" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
-                    <font><Font size="14" /></font>
-                </Button>
-
-                <Button prefWidth="116" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
                     <font><Font size="14" /></font>
                 </Button>
 

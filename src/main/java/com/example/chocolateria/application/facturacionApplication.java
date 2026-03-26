@@ -5,25 +5,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class productoApplication extends Application {
+public class facturacionApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
 
 
-        System.out.println(getClass().getResource("/vistas/vistaRegistroDeProductos.fxml"));
+        System.out.println(getClass().getResource("/vistas/vistaFacturacion.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaRegistroDeProductos.fxml")
+                getClass().getResource("/vistas/vistaFacturacion.fxml")
         );
 
         Scene scene = new Scene(loader.load());
-        stage.setTitle("Registro de Productos");
+        stage.setTitle("Facturacion");
         stage.setScene(scene);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
