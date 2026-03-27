@@ -7,7 +7,7 @@ module com.example.chocolateria {
     opens com.example.chocolateria to javafx.fxml;
     opens com.example.chocolateria.controller to javafx.fxml;
 
-    exports com.example.chocolateria;
+
     exports com.example.chocolateria.application;
     exports com.example.chocolateria.modelo;
     opens com.example.chocolateria.modelo to javafx.fxml;
