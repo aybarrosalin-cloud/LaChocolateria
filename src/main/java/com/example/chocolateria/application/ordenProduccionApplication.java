@@ -10,10 +10,10 @@ public class ordenProduccionApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        System.out.println(getClass().getResource("/vistas/vistaOrdenProduccion.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaOrdenProduccion.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaOrdenProduccion.fxml")
+                getClass().getResource("/vistasFinales/vistaOrdenProduccion.fxml")
         );
 
         Scene scene = new Scene(loader.load());
