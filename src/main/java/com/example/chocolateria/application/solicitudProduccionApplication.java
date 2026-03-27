@@ -9,11 +9,11 @@ public class solicitudProduccionApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println(getClass().getResource("/vistas/vistaSolicitudDeProduccion.fxml"));
-        System.out.println(getClass().getResource("/vistas/vistaSolicitudDeProduccion.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaSolicitudDeProduccion.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaSolicitudDeProduccion.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaSolicitudDeProduccion.fxml")
+                getClass().getResource("/vistasFinales/vistaSolicitudDeProduccion.fxml")
         );
 
         Scene scene = new Scene(loader.load());

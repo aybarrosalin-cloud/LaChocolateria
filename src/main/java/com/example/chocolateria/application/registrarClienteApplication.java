@@ -11,12 +11,13 @@ public class registrarClienteApplication extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaRegistroCliente.fxml")
+                getClass().getResource("/vistasFinales/vistaRegistroDeCliente.fxml")
         );
 
         Scene scene = new Scene(loader.load());
-        stage.setTitle("Registro Cliente");
+        stage.setTitle("Registro del cliente");
         stage.setScene(scene);
+        stage.setResizable(true);
         stage.show();
     }
 

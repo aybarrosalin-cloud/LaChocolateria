@@ -10,10 +10,10 @@ public class loginApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        System.out.println(getClass().getResource("/vistas/vistaPrincipal.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaPrincipal.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaPrincipal.fxml")
+                getClass().getResource("/vistasFinales/vistaPrincipal.fxml")
         );
 
         Scene scene = new Scene(loader.load());

@@ -10,10 +10,10 @@ public class recepcionApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        System.out.println(getClass().getResource("/vistas/vistaRecepcion.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaRecepcion.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaRecepcion.fxml")
+                getClass().getResource("/vistasFinales/vistaRecepcion.fxml")
         );
 
         Scene scene = new Scene(loader.load());

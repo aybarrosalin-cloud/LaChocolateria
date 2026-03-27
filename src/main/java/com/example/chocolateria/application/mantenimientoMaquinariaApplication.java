@@ -11,10 +11,10 @@ public class mantenimientoMaquinariaApplication extends Application {
     public void start(Stage stage) throws Exception {
 
 
-        System.out.println(getClass().getResource("/vistas/vistaMantenimientoMaquinaria.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaMantenimientoMaquinaria.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaMantenimientoMaquinaria.fxml")
+                getClass().getResource("/vistasFinales/vistaMantenimientoMaquinaria.fxml")
         );
 
         Scene scene = new Scene(loader.load());
