@@ -9,16 +9,20 @@ public class ordenProveedorApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
-        System.out.println(getClass().getResource("/vistas/vistaOrdenProveedor.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaOrdenProveedor.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaOrdenProveedor.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaOrdenProveedor.fxml")
+                getClass().getResource("/vistasFinales/vistaOrdenProveedor.fxml")
         );
 
         Scene scene = new Scene(loader.load());
         stage.setTitle("Orden a Proveedor");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }

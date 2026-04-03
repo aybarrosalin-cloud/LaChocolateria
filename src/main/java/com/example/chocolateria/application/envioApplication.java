@@ -9,16 +9,20 @@ public class envioApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
-        System.out.println(getClass().getResource("/vistas/vistaGestionDeEnvios.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaGestionEnvios.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaGestionEnvios.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistas/vistaGestionDeEnvios.fxml")
+                getClass().getResource("/vistasFinales/vistaGestionEnvios.fxml")
         );
 
         Scene scene = new Scene(loader.load());
-        stage.setTitle("Gestión de Envíos");
+        stage.setTitle("Registro de Suplidor");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }
