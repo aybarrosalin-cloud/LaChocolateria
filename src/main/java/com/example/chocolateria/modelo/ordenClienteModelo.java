@@ -1,45 +1,54 @@
 package com.example.chocolateria.modelo;
 
 import javafx.beans.property.*;
+import java.time.LocalDate;
 
 public class ordenClienteModelo {
 
-    private IntegerProperty idOrden;
-    private StringProperty cliente;
-    private StringProperty fecha;
-    private StringProperty producto;
-    private StringProperty categoria;
-    private IntegerProperty cantidad;
-    private StringProperty estado;
-    private StringProperty metodoPago;
+    private final SimpleIntegerProperty            idOrden;
+    private final SimpleIntegerProperty            idCliente;
+    private final SimpleStringProperty             cliente;
+    private final SimpleObjectProperty<LocalDate>  fechaRegistro;
+    private final SimpleObjectProperty<LocalDate>  fechaEntrega;
+    private final SimpleStringProperty             metodoPago;
+    private final SimpleStringProperty             estado;
+    private final SimpleStringProperty             observaciones;
 
-    public ordenClienteModelo(int idOrden, String cliente, String fecha, String producto,
-                              String categoria, int cantidad, String estado, String metodoPago) {
-        this.idOrden = new SimpleIntegerProperty(idOrden);
-        this.cliente = new SimpleStringProperty(cliente);
-        this.fecha = new SimpleStringProperty(fecha);
-        this.producto = new SimpleStringProperty(producto);
-        this.categoria = new SimpleStringProperty(categoria);
-        this.cantidad = new SimpleIntegerProperty(cantidad);
-        this.estado = new SimpleStringProperty(estado);
-        this.metodoPago = new SimpleStringProperty(metodoPago);
+    public ordenClienteModelo(int idOrden, int idCliente, String cliente,
+                               LocalDate fechaRegistro, LocalDate fechaEntrega,
+                               String metodoPago, String estado, String observaciones) {
+        this.idOrden       = new SimpleIntegerProperty(idOrden);
+        this.idCliente     = new SimpleIntegerProperty(idCliente);
+        this.cliente       = new SimpleStringProperty(cliente);
+        this.fechaRegistro = new SimpleObjectProperty<>(fechaRegistro);
+        this.fechaEntrega  = new SimpleObjectProperty<>(fechaEntrega);
+        this.metodoPago    = new SimpleStringProperty(metodoPago);
+        this.estado        = new SimpleStringProperty(estado);
+        this.observaciones = new SimpleStringProperty(observaciones);
     }
 
-    public int getIdOrden() { return idOrden.get(); }
-    public String getCliente() { return cliente.get(); }
-    public String getFecha() { return fecha.get(); }
-    public String getProducto() { return producto.get(); }
-    public String getCategoria() { return categoria.get(); }
-    public int getCantidad() { return cantidad.get(); }
-    public String getEstado() { return estado.get(); }
-    public String getMetodoPago() { return metodoPago.get(); }
+    public int       getIdOrden()       { return idOrden.get(); }
+    public int       getIdCliente()     { return idCliente.get(); }
+    public String    getCliente()       { return cliente.get(); }
+    public LocalDate getFechaRegistro() { return fechaRegistro.get(); }
+    public LocalDate getFechaEntrega()  { return fechaEntrega.get(); }
+    public String    getMetodoPago()    { return metodoPago.get(); }
+    public String    getEstado()        { return estado.get(); }
+    public String    getObservaciones() { return observaciones.get(); }
 
-    public IntegerProperty idOrdenProperty() { return idOrden; }
-    public StringProperty clienteProperty() { return cliente; }
-    public StringProperty fechaProperty() { return fecha; }
-    public StringProperty productoProperty() { return producto; }
-    public StringProperty categoriaProperty() { return categoria; }
-    public IntegerProperty cantidadProperty() { return cantidad; }
-    public StringProperty estadoProperty() { return estado; }
-    public StringProperty metodoPagoProperty() { return metodoPago; }
+    public void setCliente(String v)          { cliente.set(v); }
+    public void setFechaRegistro(LocalDate v) { fechaRegistro.set(v); }
+    public void setFechaEntrega(LocalDate v)  { fechaEntrega.set(v); }
+    public void setMetodoPago(String v)       { metodoPago.set(v); }
+    public void setEstado(String v)           { estado.set(v); }
+    public void setObservaciones(String v)    { observaciones.set(v); }
+
+    public SimpleIntegerProperty           idOrdenProperty()       { return idOrden; }
+    public SimpleIntegerProperty           idClienteProperty()     { return idCliente; }
+    public SimpleStringProperty            clienteProperty()       { return cliente; }
+    public SimpleObjectProperty<LocalDate> fechaRegistroProperty() { return fechaRegistro; }
+    public SimpleObjectProperty<LocalDate> fechaEntregaProperty()  { return fechaEntrega; }
+    public SimpleStringProperty            metodoPagoProperty()    { return metodoPago; }
+    public SimpleStringProperty            estadoProperty()        { return estado; }
+    public SimpleStringProperty            observacionesProperty() { return observaciones; }
 }
