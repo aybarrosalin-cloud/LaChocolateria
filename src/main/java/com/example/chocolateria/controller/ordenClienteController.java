@@ -1,184 +1,543 @@
 package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
+import com.example.chocolateria.modelo.ordenClienteModelo;
+import com.example.chocolateria.modelo.ordenDetalleModelo;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javax.swing.*;
-import java.net.URL;
+
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
 
-public class ordenClienteController implements Initializable {
-    private Connection con;
+public class ordenClienteController {
 
-    @FXML private TextField txtCodigo;
+    // Formulario
+    @FXML private TextField        txtCodigo;
     @FXML private ComboBox<String> cmbCliente;
-    @FXML private DatePicker dpFecha;
-    @FXML private ComboBox<String> cmbProducto;
-    @FXML private ComboBox<String> cmbCategoria;
-    @FXML private Spinner<Integer> spCantidad;
-    @FXML private ChoiceBox<String> cbEstado;
+    @FXML private DatePicker       dpFecha;
+    @FXML private DatePicker       dpFecha1;
     @FXML private ChoiceBox<String> cbMetodoPago;
+    @FXML private ChoiceBox<String> cbEstado;
+    @FXML private TextArea         txtObservaciones;
 
-    private ArrayList<String> productosSeleccionados = new ArrayList<>();
+    // Agregar producto
+    @FXML private TextField txtIdProducto;
+    @FXML private TextField txtNombreProducto;
+    @FXML private TextField txtCantidad;
+    @FXML private TextField txtPrecio;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        conexion conexion = new conexion();
-        con = conexion.establecerConexion();
+    // Tabla detalle (productos de la orden en curso)
+    @FXML private TableView<ordenDetalleModelo>               tablaDetalle;
+    @FXML private TableColumn<ordenDetalleModelo, String>     colDetCodigo;
+    @FXML private TableColumn<ordenDetalleModelo, String>     colDetProducto;
+    @FXML private TableColumn<ordenDetalleModelo, Number>     colDetCantidad;
+    @FXML private TableColumn<ordenDetalleModelo, Number>     colDetPrecio;
 
-        cbEstado.getItems().addAll("Pendiente", "Confirmada", "Completada", "Cancelada");
-        cbMetodoPago.getItems().addAll("Efectivo", "Tarjeta", "Transferencia");
-        cmbCategoria.getItems().addAll("Leche", "Negro", "Blanco", "Otro");
+    // Tabla historial órdenes
+    @FXML private TextField                                       txtBuscar;
+    @FXML private TableView<ordenClienteModelo>                   tablaProductos;
+    @FXML private TableColumn<ordenClienteModelo, Number>         colId;
+    @FXML private TableColumn<ordenClienteModelo, String>         colCliente;
+    @FXML private TableColumn<ordenClienteModelo, LocalDate>      colFechaReg;
+    @FXML private TableColumn<ordenClienteModelo, LocalDate>      colFechaEnt;
+    @FXML private TableColumn<ordenClienteModelo, String>         colEstadoTabla;
+    @FXML private TableColumn<ordenClienteModelo, String>         colMetodoPago;
+    @FXML private TableColumn<ordenClienteModelo, String>         colProductos;
 
-        spCantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 1));
+    private final ObservableList<ordenClienteModelo>  listaOrdenes = FXCollections.observableArrayList();
+    private final ObservableList<ordenDetalleModelo>  listaDetalle = FXCollections.observableArrayList();
+    private final conexion con = new conexion();
+    private int idClienteSeleccionado = 0;
 
-        cmbCliente.setItems(llenarCombo("SELECT nombre FROM tbl_cliente", "nombre"));
-        cmbProducto.setItems(llenarCombo("SELECT nombre FROM tbl_producto", "nombre"));
+    @FXML
+    public void initialize() {
+
+        cbMetodoPago.setItems(FXCollections.observableArrayList(
+            "Efectivo", "Transferencia", "Tarjeta", "Cheque", "Crédito"));
+
+        cbEstado.setItems(FXCollections.observableArrayList(
+            "Pendiente", "En proceso", "Completada", "Cancelada", "Entregada"));
+
+        cargarClientes();
+
+        // Columnas detalle
+        colDetCodigo.setCellValueFactory(d   -> d.getValue().codigoProperty());
+        colDetProducto.setCellValueFactory(d -> d.getValue().productoProperty());
+        colDetCantidad.setCellValueFactory(d -> d.getValue().cantidadProperty());
+        colDetPrecio.setCellValueFactory(d   -> d.getValue().precioProperty());
+        tablaDetalle.setItems(listaDetalle);
+
+        // Columnas historial
+        colId.setCellValueFactory(d          -> d.getValue().idOrdenProperty());
+        colCliente.setCellValueFactory(d     -> d.getValue().clienteProperty());
+        colFechaReg.setCellValueFactory(d    -> d.getValue().fechaRegistroProperty());
+        colFechaEnt.setCellValueFactory(d    -> d.getValue().fechaEntregaProperty());
+        colEstadoTabla.setCellValueFactory(d -> d.getValue().estadoProperty());
+        colMetodoPago.setCellValueFactory(d  -> d.getValue().metodoPagoProperty());
+        colProductos.setCellValueFactory(d   ->
+            new SimpleStringProperty(cargarResumenProductos(d.getValue().getIdOrden())));
+
+        // Color por estado
+        tablaProductos.setRowFactory(tv -> new TableRow<>() {
+            @Override
+            protected void updateItem(ordenClienteModelo o, boolean empty) {
+                super.updateItem(o, empty);
+                if (o == null || empty) { setStyle(""); return; }
+                switch (o.getEstado()) {
+                    case "Completada", "Entregada" -> setStyle("-fx-background-color:#e8f5e9;");
+                    case "Cancelada"               -> setStyle("-fx-background-color:#fde8e8;");
+                    case "En proceso"              -> setStyle("-fx-background-color:#fff8e1;");
+                    default                        -> setStyle("");
+                }
+            }
+        });
+
+        // Filtro
+        FilteredList<ordenClienteModelo> listaFiltrada = new FilteredList<>(listaOrdenes, p -> true);
+        txtBuscar.textProperty().addListener((obs, oldVal, newVal) ->
+            listaFiltrada.setPredicate(o -> {
+                if (newVal == null || newVal.isBlank()) return true;
+                String f = newVal.toLowerCase();
+                return o.getCliente().toLowerCase().contains(f)
+                    || o.getEstado().toLowerCase().contains(f)
+                    || String.valueOf(o.getIdOrden()).contains(f);
+            })
+        );
+        tablaProductos.setItems(listaFiltrada);
+
+        // Click en historial → cargar formulario
+        tablaProductos.getSelectionModel().selectedItemProperty().addListener(
+            (obs, old, sel) -> {
+                if (sel != null) {
+                    cargarEnFormulario(sel);
+                    cargarDetalle(sel.getIdOrden());
+                }
+            }
+        );
+
+        cargarOrdenes();
+        generarSiguienteId();
     }
 
-    public ObservableList<String> llenarCombo(String sql, String columna) {
-        ObservableList<String> lista = FXCollections.observableArrayList();
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+    private void cargarClientes() {
+        try (Connection conn = con.establecerConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(
+                 "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_clientes ORDER BY nombre")) {
             while (rs.next()) {
-                lista.add(rs.getString(columna));
+                String nombre = rs.getString("nombre_completo");
+                cmbCliente.getItems().add(nombre);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
-        return lista;
     }
 
     @FXML
-    private void agregarProducto(ActionEvent event) {
-        String producto = cmbProducto.getValue();
-        String categoria = cmbCategoria.getValue();
-        int cantidad = spCantidad.getValue();
-
-        if (producto == null || categoria == null) {
-            JOptionPane.showMessageDialog(null, "Seleccione producto y categoría");
+    private void buscarProducto() {
+        String codigo = txtIdProducto.getText().trim();
+        if (codigo.isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe el código del producto.");
             return;
         }
-
-        String linea = producto + " - " + categoria + " x" + cantidad;
-        if (!productosSeleccionados.contains(linea)) {
-            productosSeleccionados.add(linea);
-            JOptionPane.showMessageDialog(null, "Producto agregado: " + linea);
-        } else {
-            JOptionPane.showMessageDialog(null, "Ese producto ya fue agregado");
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(
+                 "SELECT nombre, precio_unitario FROM tbl_producto WHERE codigo = ?")) {
+            ps.setString(1, codigo);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                txtNombreProducto.setText(rs.getString("nombre"));
+                txtPrecio.setText(rs.getString("precio_unitario"));
+            } else {
+                txtNombreProducto.clear();
+                txtPrecio.clear();
+                mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
+                    "No existe producto con código " + codigo + ".");
+            }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
     }
 
     @FXML
-    private void guardar(ActionEvent event) {
+    private void agregarProducto() {
+        if (txtNombreProducto.getText().trim().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un producto antes de agregar.");
+            return;
+        }
+        if (txtCantidad.getText().trim().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Ingresa la cantidad.");
+            return;
+        }
         try {
-            if (productosSeleccionados.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Agregue al menos un producto");
+            int    cantidad = Integer.parseInt(txtCantidad.getText().trim());
+            double precio   = txtPrecio.getText().trim().isEmpty()
+                ? 0.0 : Double.parseDouble(txtPrecio.getText().trim());
+
+            if (cantidad <= 0) {
+                mostrarAlerta(Alert.AlertType.WARNING, "Cantidad inválida", "La cantidad debe ser mayor a 0.");
                 return;
             }
 
-            String codigo = txtCodigo.getText();
-            String cliente = cmbCliente.getValue();
-            String estado = cbEstado.getValue();
-            String metodoPago = cbMetodoPago.getValue();
-            String productosConcatenados = String.join(", ", productosSeleccionados);
+            String codigo = txtIdProducto.getText().trim();
+            for (ordenDetalleModelo d : listaDetalle) {
+                if (d.getCodigo().equals(codigo)) {
+                    mostrarAlerta(Alert.AlertType.WARNING, "Duplicado", "Este producto ya está en la lista.");
+                    return;
+                }
+            }
 
-            conexion conexion = new conexion();
-            Connection con = conexion.establecerConexion();
+            listaDetalle.add(new ordenDetalleModelo(0, 0, codigo,
+                txtNombreProducto.getText().trim(), "", cantidad, precio));
 
-            String sql = "INSERT INTO tbl_orden_cliente (id_orden, cliente, fecha, producto, estado, metodo_pago) VALUES (?,?,?,?,?,?)";
+            txtIdProducto.clear();
+            txtNombreProducto.clear();
+            txtCantidad.clear();
+            txtPrecio.clear();
 
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, Integer.parseInt(codigo));
-            ps.setString(2, cliente);
-            ps.setDate(3, java.sql.Date.valueOf(dpFecha.getValue()));
-            ps.setString(4, productosConcatenados);
-            ps.setString(5, estado);
-            ps.setString(6, metodoPago);
+        } catch (NumberFormatException ex) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Valor inválido", "Cantidad y precio deben ser números válidos.");
+        }
+    }
+
+    @FXML
+    private void quitarProducto() {
+        ordenDetalleModelo sel = tablaDetalle.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona un producto para quitarlo.");
+            return;
+        }
+        listaDetalle.remove(sel);
+    }
+
+    @FXML
+    private void guardar() {
+        if (!validarCampos()) return;
+
+        String sql = "INSERT INTO tbl_orden_cliente (id_cliente, cliente, fecha_registro, fecha_entrega, metodo_pago, estado, observaciones) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            String clienteNombre = cmbCliente.getValue();
+            int idCliente = buscarIdCliente(conn, clienteNombre);
+
+            ps.setInt(1, idCliente);
+            ps.setString(2, clienteNombre);
+            ps.setDate(3, Date.valueOf(dpFecha.getValue()));
+            ps.setObject(4, dpFecha1.getValue() != null ? Date.valueOf(dpFecha1.getValue()) : null);
+            ps.setString(5, cbMetodoPago.getValue());
+            ps.setString(6, cbEstado.getValue());
+            ps.setString(7, txtObservaciones.getText().trim());
             ps.executeUpdate();
 
-            JOptionPane.showMessageDialog(null, "Orden guardada correctamente");
+            ResultSet rs = ps.getGeneratedKeys();
+            if (!rs.next()) throw new SQLException("No se obtuvo ID de la orden.");
+            int nuevoId = rs.getInt(1);
+
+            // Insertar detalle
+            String sqlDet = "INSERT INTO tbl_orden_detalle (id_orden, codigo, producto, categoria, cantidad, precio) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement psDet = conn.prepareStatement(sqlDet)) {
+                for (ordenDetalleModelo d : listaDetalle) {
+                    psDet.setInt(1, nuevoId);
+                    psDet.setString(2, d.getCodigo());
+                    psDet.setString(3, d.getProducto());
+                    psDet.setString(4, d.getCategoria());
+                    psDet.setInt(5, d.getCantidad());
+                    psDet.setDouble(6, d.getPrecio());
+                    psDet.addBatch();
+                }
+                psDet.executeBatch();
+            }
+
+            listaOrdenes.add(0, new ordenClienteModelo(nuevoId, idCliente, clienteNombre,
+                dpFecha.getValue(), dpFecha1.getValue(),
+                cbMetodoPago.getValue(), cbEstado.getValue(),
+                txtObservaciones.getText().trim()));
+
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito",
+                "Orden #" + nuevoId + " guardada con " + listaDetalle.size() + " producto(s).");
             limpiarCampos();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al guardar", e.getMessage());
         }
     }
 
-    public void fnbuscar(ActionEvent event) {
-        String codigo = txtCodigo.getText().trim();
-        String sql = "SELECT * FROM tbl_orden_cliente WHERE id_orden='" + codigo + "'";
-        buscarDatos(sql);
+    @FXML
+    private void fnEditar() {
+        ordenClienteModelo sel = tablaProductos.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una orden para editar.");
+            return;
+        }
+        if (!validarCampos()) return;
+
+        String sql = "UPDATE tbl_orden_cliente SET cliente=?, fecha_registro=?, fecha_entrega=?, " +
+                     "metodo_pago=?, estado=?, observaciones=? WHERE id_orden=?";
+
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, cmbCliente.getValue());
+            ps.setDate(2, Date.valueOf(dpFecha.getValue()));
+            ps.setObject(3, dpFecha1.getValue() != null ? Date.valueOf(dpFecha1.getValue()) : null);
+            ps.setString(4, cbMetodoPago.getValue());
+            ps.setString(5, cbEstado.getValue());
+            ps.setString(6, txtObservaciones.getText().trim());
+            ps.setInt(7, sel.getIdOrden());
+            ps.executeUpdate();
+
+            // Reemplazar detalle
+            try (PreparedStatement psDel = conn.prepareStatement(
+                 "DELETE FROM tbl_orden_detalle WHERE id_orden=?")) {
+                psDel.setInt(1, sel.getIdOrden());
+                psDel.executeUpdate();
+            }
+            String sqlDet = "INSERT INTO tbl_orden_detalle (id_orden, codigo, producto, categoria, cantidad, precio) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement psDet = conn.prepareStatement(sqlDet)) {
+                for (ordenDetalleModelo d : listaDetalle) {
+                    psDet.setInt(1, sel.getIdOrden());
+                    psDet.setString(2, d.getCodigo());
+                    psDet.setString(3, d.getProducto());
+                    psDet.setString(4, d.getCategoria());
+                    psDet.setInt(5, d.getCantidad());
+                    psDet.setDouble(6, d.getPrecio());
+                    psDet.addBatch();
+                }
+                psDet.executeBatch();
+            }
+
+            sel.setCliente(cmbCliente.getValue());
+            sel.setFechaRegistro(dpFecha.getValue());
+            sel.setFechaEntrega(dpFecha1.getValue());
+            sel.setMetodoPago(cbMetodoPago.getValue());
+            sel.setEstado(cbEstado.getValue());
+            sel.setObservaciones(txtObservaciones.getText().trim());
+            tablaProductos.refresh();
+
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Orden actualizada correctamente.");
+            limpiarCampos();
+
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al editar", e.getMessage());
+        }
     }
 
-    public void fnEditar(ActionEvent event) {
-        String codigo = txtCodigo.getText().trim();
-        String cliente = cmbCliente.getValue();
-        String estado = cbEstado.getValue();
-        String metodoPago = cbMetodoPago.getValue();
-        String productosConcatenados = String.join(", ", productosSeleccionados);
+    @FXML
+    private void fnEliminar() {
+        ordenClienteModelo sel = tablaProductos.getSelectionModel().getSelectedItem();
+        if (sel == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una orden para eliminar.");
+            return;
+        }
 
-        String sql = "UPDATE tbl_orden_cliente SET cliente='" + cliente + "', producto='" + productosConcatenados +
-                "', estado='" + estado + "', metodo_pago='" + metodoPago + "' WHERE id_orden='" + codigo + "'";
-        EjecutarSQL(sql);
-    }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar eliminación");
+        confirm.setHeaderText(null);
+        confirm.setContentText("¿Eliminar la orden #" + sel.getIdOrden() + " de " + sel.getCliente() + "?");
 
-    private void buscarDatos(String sql) {
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                txtCodigo.setText(String.valueOf(rs.getInt("id_orden")));
-                cmbCliente.getSelectionModel().select(rs.getString("cliente"));
-                dpFecha.setValue(rs.getDate("fecha").toLocalDate());
-                cbEstado.getSelectionModel().select(rs.getString("estado"));
-                cbMetodoPago.getSelectionModel().select(rs.getString("metodo_pago"));
-
-                productosSeleccionados.clear();
-                String productos = rs.getString("producto");
-                if (productos != null && !productos.isEmpty()) {
-                    String[] lista = productos.split(",\\s*");
-                    for (String p : lista) {
-                        productosSeleccionados.add(p);
+        confirm.showAndWait().ifPresent(resp -> {
+            if (resp == ButtonType.OK) {
+                try (Connection conn = con.establecerConexion()) {
+                    try (PreparedStatement ps = conn.prepareStatement(
+                         "DELETE FROM tbl_orden_detalle WHERE id_orden=?")) {
+                        ps.setInt(1, sel.getIdOrden());
+                        ps.executeUpdate();
                     }
+                    try (PreparedStatement ps = conn.prepareStatement(
+                         "DELETE FROM tbl_orden_cliente WHERE id_orden=?")) {
+                        ps.setInt(1, sel.getIdOrden());
+                        ps.executeUpdate();
+                    }
+                    listaOrdenes.remove(sel);
+                    listaDetalle.clear();
+                    mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Orden eliminada correctamente.");
+                    limpiarCampos();
+                } catch (Exception e) {
+                    mostrarAlerta(Alert.AlertType.ERROR, "Error al eliminar", e.getMessage());
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
-    public void EjecutarSQL(String sql) {
-        try {
-            PreparedStatement ps = con.prepareStatement(sql);
-            int result = ps.executeUpdate();
-            if (result == 1) {
-                JOptionPane.showMessageDialog(null, "Acción realizada correctamente");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
+    @FXML
+    private void fnBuscar() {
+        String idTexto = txtCodigo.getText().trim();
+        if (idTexto.isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe un ID para buscar.");
+            return;
         }
+        int idBuscar;
+        try {
+            idBuscar = Integer.parseInt(idTexto);
+        } catch (NumberFormatException ex) {
+            mostrarAlerta(Alert.AlertType.WARNING, "ID inválido", "El ID debe ser un número entero.");
+            return;
+        }
+        for (ordenClienteModelo o : listaOrdenes) {
+            if (o.getIdOrden() == idBuscar) {
+                tablaProductos.getSelectionModel().select(o);
+                tablaProductos.scrollTo(o);
+                cargarEnFormulario(o);
+                cargarDetalle(o.getIdOrden());
+                return;
+            }
+        }
+        mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
+            "No existe una orden con el ID " + idBuscar + ".");
     }
 
     @FXML
     private void limpiarCampos() {
         txtCodigo.clear();
-        cmbCliente.getSelectionModel().clearSelection();
+        cmbCliente.setValue(null);
         dpFecha.setValue(null);
-        cmbProducto.getSelectionModel().clearSelection();
-        cmbCategoria.getSelectionModel().clearSelection();
-        spCantidad.getValueFactory().setValue(1);
-        cbEstado.getSelectionModel().clearSelection();
-        cbMetodoPago.getSelectionModel().clearSelection();
-        productosSeleccionados.clear();
+        dpFecha1.setValue(null);
+        cbMetodoPago.setValue(null);
+        cbEstado.setValue(null);
+        txtObservaciones.clear();
+        txtIdProducto.clear();
+        txtNombreProducto.clear();
+        txtCantidad.clear();
+        txtPrecio.clear();
+        listaDetalle.clear();
+        tablaProductos.getSelectionModel().clearSelection();
+        generarSiguienteId();
+    }
+
+    private void cargarOrdenes() {
+        listaOrdenes.clear();
+        String sql = "SELECT o.id_orden, o.id_cliente, o.cliente, o.fecha_registro, o.fecha_entrega, " +
+                     "o.metodo_pago, o.estado, o.observaciones " +
+                     "FROM tbl_orden_cliente o ORDER BY o.fecha_registro DESC";
+        try (Connection conn = con.establecerConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                Date dReg = rs.getDate("fecha_registro");
+                Date dEnt = rs.getDate("fecha_entrega");
+                listaOrdenes.add(new ordenClienteModelo(
+                    rs.getInt("id_orden"),
+                    rs.getInt("id_cliente"),
+                    rs.getString("cliente"),
+                    dReg != null ? dReg.toLocalDate() : null,
+                    dEnt != null ? dEnt.toLocalDate() : null,
+                    rs.getString("metodo_pago"),
+                    rs.getString("estado"),
+                    rs.getString("observaciones") != null ? rs.getString("observaciones") : ""
+                ));
+            }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar órdenes", e.getMessage());
+        }
+    }
+
+    private void cargarDetalle(int idOrden) {
+        listaDetalle.clear();
+        String sql = "SELECT id_detalle, id_orden, codigo, producto, categoria, cantidad, precio " +
+                     "FROM tbl_orden_detalle WHERE id_orden = ?";
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idOrden);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                listaDetalle.add(new ordenDetalleModelo(
+                    rs.getInt("id_detalle"),
+                    rs.getInt("id_orden"),
+                    rs.getString("codigo"),
+                    rs.getString("producto"),
+                    rs.getString("categoria") != null ? rs.getString("categoria") : "",
+                    rs.getInt("cantidad"),
+                    rs.getDouble("precio")
+                ));
+            }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar detalle", e.getMessage());
+        }
+    }
+
+    private String cargarResumenProductos(int idOrden) {
+        StringBuilder sb = new StringBuilder();
+        String sql = "SELECT producto FROM tbl_orden_detalle WHERE id_orden = ?";
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idOrden);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(rs.getString("producto"));
+            }
+        } catch (Exception ignored) {}
+        return sb.toString();
+    }
+
+    private int buscarIdCliente(Connection conn, String nombreCompleto) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+             "SELECT id_cliente FROM tbl_clientes WHERE nombre + ' ' + apellido = ?")) {
+            ps.setString(1, nombreCompleto);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("id_cliente");
+        }
+        return 0;
+    }
+
+    private void cargarEnFormulario(ordenClienteModelo o) {
+        txtCodigo.setText(String.valueOf(o.getIdOrden()));
+        cmbCliente.setValue(o.getCliente());
+        dpFecha.setValue(o.getFechaRegistro());
+        dpFecha1.setValue(o.getFechaEntrega());
+        cbMetodoPago.setValue(o.getMetodoPago());
+        cbEstado.setValue(o.getEstado());
+        txtObservaciones.setText(o.getObservaciones());
+    }
+
+    private void generarSiguienteId() {
+        String sql = "SELECT ISNULL(MAX(id_orden), 0) + 1 AS siguiente FROM tbl_orden_cliente";
+        try (Connection conn = con.establecerConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) txtCodigo.setText(String.valueOf(rs.getInt("siguiente")));
+        } catch (Exception e) {
+            txtCodigo.setText("1");
+        }
+    }
+
+    private boolean validarCampos() {
+        if (cmbCliente.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Campo requerido", "Selecciona un cliente.");
+            return false;
+        }
+        if (dpFecha.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Campo requerido", "Selecciona la fecha de registro.");
+            return false;
+        }
+        if (cbMetodoPago.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Campo requerido", "Selecciona el método de pago.");
+            return false;
+        }
+        if (cbEstado.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Campo requerido", "Selecciona el estado.");
+            return false;
+        }
+        if (listaDetalle.isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Productos requeridos",
+                "Agrega al menos un producto a la orden.");
+            return false;
+        }
+        return true;
+    }
+
+    private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }
-
