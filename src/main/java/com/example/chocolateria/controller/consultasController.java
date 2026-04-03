@@ -1,0 +1,251 @@
+package com.example.chocolateria.controller;
+
+import com.example.chocolateria.baseDeDatos.conexion;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+
+import java.sql.*;
+
+public class consultasController {
+
+    @FXML private TextField                         txtBuscarGeneral;
+    @FXML private Label                             lblConsultaActiva;
+    @FXML private Label                             lblTotal;
+    @FXML private TableView<ObservableList<String>> tablaResultados;
+
+    // Botones para resaltar el activo
+    @FXML private Button btnClientes, btnVentas, btnCompras, btnProduccion;
+    @FXML private Button btnInventario, btnPedidos, btnIngresos, btnMasVendidos;
+    @FXML private Button btnMantenimiento;
+
+    private final conexion con = new conexion();
+    private String sqlActual = "";
+    private String tituloActual = "";
+
+    // ── Consultas ─────────────────────────────────────────────────────────────
+
+    @FXML private void consultarClientes() {
+        sqlActual   = "SELECT id_cliente AS ID, nombre AS Nombre, apellido AS Apellido, " +
+                      "cedula AS Cedula, telefono AS Telefono, email AS Email, " +
+                      "direccion AS Direccion, estado AS Estado " +
+                      "FROM tbl_clientes ORDER BY nombre";
+        tituloActual = "Consulta de Clientes";
+        resaltarBoton(btnClientes);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarVentas() {
+        sqlActual   = "SELECT v.id_venta AS ID, ISNULL(o.cliente,'') AS Cliente, " +
+                      "v.fecha_venta AS Fecha, v.subtotal AS Subtotal, " +
+                      "v.descuento AS Descuento, v.itbis AS ITBIS, " +
+                      "v.monto_total AS Total, v.monto_pagado AS Pagado, " +
+                      "v.balance_pendiente AS Balance, v.estado_pago AS Estado, " +
+                      "v.tipo_pago AS [Tipo Pago], ISNULL(CAST(v.id_comprobante AS VARCHAR),'') AS NCF " +
+                      "FROM tbl_venta v " +
+                      "LEFT JOIN tbl_orden_cliente o ON v.id_orden = o.id_orden " +
+                      "ORDER BY v.fecha_venta DESC";
+        tituloActual = "Consulta de Ventas";
+        resaltarBoton(btnVentas);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarCompras() {
+        sqlActual   = "SELECT o.codigo AS ID, o.proveedor AS Proveedor, " +
+                      "o.rnc_proveedor AS RNC, o.fecha_requerida AS [Fecha Requerida], " +
+                      "o.prioridad AS Prioridad, o.categoria AS Categoria, " +
+                      "o.monto_total AS [Monto Total], o.estado_pago AS [Estado Pago] " +
+                      "FROM tbl_orden_proveedor o ORDER BY o.codigo DESC";
+        tituloActual = "Consulta de Compras";
+        resaltarBoton(btnCompras);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarProduccion() {
+        sqlActual   = "SELECT o.id_orden AS ID, o.tipo_orden AS Tipo, " +
+                      "ISNULL(c.nombre + ' ' + c.apellido,'') AS Cliente, " +
+                      "o.fecha_orden AS [Fecha Orden], o.fecha_inicio AS Inicio, " +
+                      "o.fecha_entrega AS Entrega, " +
+                      "ISNULL(e.nombre + ' ' + e.apellido,'') AS Responsable, " +
+                      "o.estado AS Estado, o.prioridad AS Prioridad, o.categoria AS Categoria " +
+                      "FROM tbl_orden_produccion o " +
+                      "LEFT JOIN tbl_clientes c ON o.id_cliente = c.id_cliente " +
+                      "LEFT JOIN tbl_empleado e ON o.id_responsable = e.id_empleado " +
+                      "ORDER BY o.fecha_orden DESC";
+        tituloActual = "Consulta de Produccion";
+        resaltarBoton(btnProduccion);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarInventario() {
+        sqlActual   = "SELECT p.codigo AS Codigo, p.nombre AS Producto, " +
+                      "p.categoria AS Categoria, p.tipo AS Tipo, " +
+                      "p.unidad_medida AS Unidad, p.stock AS Stock, " +
+                      "p.precio_unitario AS [Precio Unit.], p.precio_mayor AS [Precio Mayor] " +
+                      "FROM tbl_producto p ORDER BY p.categoria, p.nombre";
+        tituloActual = "Consulta de Inventario";
+        resaltarBoton(btnInventario);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarPedidos() {
+        sqlActual   = "SELECT o.id_orden AS ID, o.cliente AS Cliente, " +
+                      "o.fecha_registro AS [F. Registro], o.fecha_entrega AS [F. Entrega], " +
+                      "o.metodo_pago AS [Metodo Pago], o.estado AS Estado, " +
+                      "o.observaciones AS Observaciones " +
+                      "FROM tbl_orden_cliente o ORDER BY o.fecha_registro DESC";
+        tituloActual = "Consulta de Pedidos";
+        resaltarBoton(btnPedidos);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarIngresos() {
+        sqlActual   = "SELECT YEAR(v.fecha_venta) AS Anio, MONTH(v.fecha_venta) AS Mes, " +
+                      "COUNT(*) AS [Num Ventas], " +
+                      "SUM(v.subtotal) AS Subtotal, " +
+                      "SUM(v.descuento) AS Descuentos, " +
+                      "SUM(v.itbis) AS ITBIS, " +
+                      "SUM(v.monto_total) AS [Total Bruto], " +
+                      "SUM(v.monto_pagado) AS [Total Cobrado], " +
+                      "SUM(v.balance_pendiente) AS [Por Cobrar] " +
+                      "FROM tbl_venta v " +
+                      "GROUP BY YEAR(v.fecha_venta), MONTH(v.fecha_venta) " +
+                      "ORDER BY Anio DESC, Mes DESC";
+        tituloActual = "Reporte de Ingresos por Mes";
+        resaltarBoton(btnIngresos);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarMasVendidos() {
+        sqlActual   = "SELECT d.producto AS Producto, d.codigo AS Codigo, " +
+                      "SUM(d.cantidad) AS [Total Vendido], " +
+                      "COUNT(DISTINCT d.id_orden) AS [Num Ordenes], " +
+                      "p.precio_unitario AS [Precio Unit.], p.categoria AS Categoria " +
+                      "FROM tbl_orden_detalle d " +
+                      "LEFT JOIN tbl_producto p ON d.codigo = p.codigo " +
+                      "GROUP BY d.producto, d.codigo, p.precio_unitario, p.categoria " +
+                      "ORDER BY [Total Vendido] DESC";
+        tituloActual = "Reporte de Productos mas Vendidos";
+        resaltarBoton(btnMasVendidos);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarMantenimiento() {
+        sqlActual   = "SELECT m.id_mantenimiento AS ID, maq.nombre AS Maquinaria, " +
+                      "m.tipo_mantenimiento AS Tipo, m.fecha_mantenimiento AS Fecha, " +
+                      "m.tecnico AS Tecnico, m.costo AS Costo, " +
+                      "m.descripcion AS Descripcion, " +
+                      "ISNULL(CONVERT(VARCHAR, m.fecha_proximo_mantenimiento, 23),'N/A') AS [Prox. Mantenimiento] " +
+                      "FROM tbl_mantenimiento_maquinaria m " +
+                      "LEFT JOIN tbl_maquinaria maq ON m.id_maquinaria = maq.id_maquinaria " +
+                      "ORDER BY m.fecha_mantenimiento DESC";
+        tituloActual = "Historial de Mantenimiento";
+        resaltarBoton(btnMantenimiento);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    // ── Buscar en la consulta activa ──────────────────────────────────────────
+    @FXML private void ejecutarBusqueda() {
+        String filtro = txtBuscarGeneral.getText().trim();
+        if (sqlActual.isEmpty()) {
+            mostrarAlerta("Selecciona una consulta primero."); return;
+        }
+        if (filtro.isEmpty()) {
+            ejecutarConsulta(sqlActual, tituloActual); return;
+        }
+        // Filtrar en memoria sobre los datos ya cargados
+        ObservableList<ObservableList<String>> todos = FXCollections.observableArrayList();
+        try (Connection conn = con.establecerConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sqlActual)) {
+            ResultSetMetaData meta = rs.getMetaData();
+            int cols = meta.getColumnCount();
+            while (rs.next()) {
+                ObservableList<String> fila = FXCollections.observableArrayList();
+                boolean coincide = false;
+                for (int i = 1; i <= cols; i++) {
+                    String val = rs.getString(i) != null ? rs.getString(i) : "";
+                    fila.add(val);
+                    if (val.toLowerCase().contains(filtro.toLowerCase())) coincide = true;
+                }
+                if (coincide) todos.add(fila);
+            }
+        } catch (Exception e) { mostrarAlerta("Error al filtrar: " + e.getMessage()); return; }
+
+        tablaResultados.setItems(todos);
+        lblTotal.setText("Resultados filtrados: " + todos.size());
+    }
+
+    @FXML private void limpiarBusqueda() {
+        txtBuscarGeneral.clear();
+        if (!sqlActual.isEmpty()) ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    // ── Motor de consulta generico ────────────────────────────────────────────
+    private void ejecutarConsulta(String sql, String titulo) {
+        tablaResultados.getColumns().clear();
+        tablaResultados.getItems().clear();
+        lblConsultaActiva.setText(titulo);
+        lblTotal.setText("");
+
+        try (Connection conn = con.establecerConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            ResultSetMetaData meta = rs.getMetaData();
+            int cols = meta.getColumnCount();
+
+            // Crear columnas dinamicamente
+            for (int i = 1; i <= cols; i++) {
+                final int idx = i - 1;
+                TableColumn<ObservableList<String>, String> col = new TableColumn<>(meta.getColumnLabel(i));
+                col.setCellValueFactory(data -> new SimpleStringProperty(
+                    data.getValue().size() > idx ? data.getValue().get(idx) : ""));
+                col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;");
+                tablaResultados.getColumns().add(col);
+            }
+
+            // Llenar filas
+            ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
+            while (rs.next()) {
+                ObservableList<String> fila = FXCollections.observableArrayList();
+                for (int i = 1; i <= cols; i++) {
+                    fila.add(rs.getString(i) != null ? rs.getString(i) : "");
+                }
+                data.add(fila);
+            }
+            tablaResultados.setItems(data);
+            lblTotal.setText("Total de registros: " + data.size());
+
+        } catch (Exception e) {
+            mostrarAlerta("Error al ejecutar la consulta: " + e.getMessage());
+        }
+    }
+
+    // ── Resaltar boton activo ─────────────────────────────────────────────────
+    private void resaltarBoton(Button activo) {
+        String estiloNormal  = "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;";
+        String estiloVerde   = "-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;";
+        String estiloOscuro  = "-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;";
+        String estiloActivo  = "-fx-background-color:#f0e6ff; -fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-background-radius:10; -fx-border-color:#6d3c87; -fx-border-width:2;";
+
+        btnClientes.setStyle(estiloNormal);
+        btnVentas.setStyle(estiloNormal);
+        btnCompras.setStyle(estiloNormal);
+        btnProduccion.setStyle(estiloNormal);
+        btnInventario.setStyle(estiloNormal);
+        btnPedidos.setStyle(estiloNormal);
+        btnIngresos.setStyle(estiloVerde);
+        btnMasVendidos.setStyle(estiloVerde);
+        btnMantenimiento.setStyle(estiloOscuro);
+
+        activo.setStyle(estiloActivo);
+    }
+
+    private void mostrarAlerta(String msg) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setTitle("Aviso"); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
+    }
+}
