@@ -60,9 +60,8 @@ public class loginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) txtUsuario.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(root, 1020, 720));
             stage.setTitle("Chocolatería - Sistema de Gestión");
-            stage.setMaximized(true);
             stage.show();
 
         } catch (Exception e) {
