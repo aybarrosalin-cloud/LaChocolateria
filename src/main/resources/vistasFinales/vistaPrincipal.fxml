@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="533.0" prefWidth="949.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="533.0" prefWidth="949.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.loginController">
     <center>
         <HBox alignment="CENTER" fillHeight="true" maxHeight="460.0" maxWidth="880.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 8);">
             <BorderPane.margin>
@@ -40,7 +40,7 @@
                     </VBox>
                 </VBox>
 
-                <Button maxWidth="Infinity" prefHeight="45.0" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="INGRESAR">
+                <Button maxWidth="Infinity" prefHeight="45.0" onAction="#iniciarSesion" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="INGRESAR">
                     <font><Font size="14.0" /></font>
                 </Button>
             </VBox>
