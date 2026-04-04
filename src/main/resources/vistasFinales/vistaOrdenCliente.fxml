@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -29,7 +29,7 @@
 
             <Button maxWidth="Infinity" prefHeight="36.0"
                     style="-fx-background-color:#8b5aa6; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;"
-                    text="🏠  Inicio">
+                    onAction="#irAInicio" text="🏠  Inicio">
                 <font><Font size="13" /></font>
             </Button>
 
@@ -41,13 +41,13 @@
                     <TitledPane animated="true" expanded="true" text="Ventas"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Orden de cliente"
+                            <Button maxWidth="Infinity" onAction="#irAOrdenCliente" text="• Orden de cliente"
                                     style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent; -fx-font-weight:bold;" />
-                            <Button maxWidth="Infinity" text="• Registro de pagos de ventas" wrapText="true"
+                            <Button maxWidth="Infinity" onAction="#irAPagoVenta" text="• Registro de pagos de ventas" wrapText="true"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Gestión de envíos"
+                            <Button maxWidth="Infinity" onAction="#irAGestionEnvios" text="• Gestión de envíos"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Gestión de reclamos"
+                            <Button maxWidth="Infinity" onAction="#irAGestionReclamos" text="• Gestión de reclamos"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -55,9 +55,9 @@
                     <TitledPane animated="true" expanded="false" text="Producción"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Solicitud de producción"
+                            <Button maxWidth="Infinity" onAction="#irASolicitudProduccion" text="• Solicitud de producción"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Orden de producción"
+                            <Button maxWidth="Infinity" onAction="#irAOrdenProduccion" text="• Orden de producción"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -65,9 +65,9 @@
                     <TitledPane animated="true" expanded="false" text="Inventario"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Salida de materiales para producción" wrapText="true"
+                            <Button maxWidth="Infinity" onAction="#irASalidaMateriales" text="• Salida de materiales para producción" wrapText="true"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Salida de productos por ventas" wrapText="true"
+                            <Button maxWidth="Infinity" onAction="#irASalidaProductos" text="• Salida de productos por ventas" wrapText="true"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -75,9 +75,9 @@
                     <TitledPane animated="true" expanded="false" text="Compras"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Orden a proveedor"
+                            <Button maxWidth="Infinity" onAction="#irAOrdenProveedor" text="• Orden a proveedor"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Registro de pagos por compras" wrapText="true"
+                            <Button maxWidth="Infinity" onAction="#irAPagoCompra" text="• Registro de pagos por compras" wrapText="true"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -85,15 +85,15 @@
                     <TitledPane animated="true" expanded="false" text="Registros"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Registro de productos"
+                            <Button maxWidth="Infinity" onAction="#irARegistroProducto" text="• Registro de productos"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Registro de empleado"
+                            <Button maxWidth="Infinity" onAction="#irARegistroEmpleado" text="• Registro de empleado"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Registro de cliente"
+                            <Button maxWidth="Infinity" onAction="#irARegistroCliente" text="• Registro de cliente"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Registro de suplidor"
+                            <Button maxWidth="Infinity" onAction="#irARegistroSuplidor" text="• Registro de suplidor"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Registro de máquinas"
+                            <Button maxWidth="Infinity" onAction="#irARegistroMaquinaria" text="• Registro de máquinas"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -101,13 +101,13 @@
                     <TitledPane animated="true" expanded="false" text="Reportes"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Reportes de ventas"
+                            <Button maxWidth="Infinity" onAction="#irAReportesVentas" text="• Reportes de ventas"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Reportes de compras"
+                            <Button maxWidth="Infinity" onAction="#irAReportesCompras" text="• Reportes de compras"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Reportes de inventario"
+                            <Button maxWidth="Infinity" onAction="#irAReportesInventario" text="• Reportes de inventario"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
-                            <Button maxWidth="Infinity" text="• Reportes de producción"
+                            <Button maxWidth="Infinity" onAction="#irAReportesProduccion" text="• Reportes de producción"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -115,7 +115,7 @@
                     <TitledPane animated="true" expanded="false" text="Mantenimiento"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Mantenimiento de maquinarias" wrapText="true"
+                            <Button maxWidth="Infinity" onAction="#irAMantenimientoMaquinaria" text="• Mantenimiento de maquinarias" wrapText="true"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -123,7 +123,7 @@
                     <TitledPane animated="true" expanded="false" text="🔎  Consultas"
                                 style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:12px;">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" text="• Consultas generales"
+                            <Button maxWidth="Infinity" onAction="#irAConsultas" text="• Consultas generales"
                                     style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:11px; -fx-alignment:CENTER_LEFT; -fx-padding:5 8 5 18; -fx-border-color:transparent;" />
                         </VBox>
                     </TitledPane>
@@ -135,7 +135,7 @@
 
             <Button maxWidth="Infinity" prefHeight="42"
                     style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;"
-                    text="🚪  Salir">
+                    onAction="#salir" text="🚪  Salir">
                 <font><Font size="14" /></font>
             </Button>
         </VBox>
