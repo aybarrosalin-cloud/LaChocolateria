@@ -2,13 +2,13 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="720.0" prefWidth="1020.0" style="-fx-background-color: #f3eaf8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.inicioController">
 
-    <!-- ═══════════════════════ SIDEBAR IZQUIERDO ═══════════════════════ -->
     <left>
         <VBox alignment="TOP_CENTER" prefHeight="720.0" prefWidth="190.0" spacing="6" style="-fx-background-color:#48295a;">
             <padding>
@@ -23,7 +23,7 @@
                 </ImageView>
             </StackPane>
 
-            <Label alignment="CENTER" prefWidth="160.0" style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Sistema" wrapText="true">
+            <Label alignment="CENTER" prefWidth="160.0" style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Rosalin Aybar" wrapText="true">
                 <font><Font name="Courier New" size="10" /></font>
             </Label>
 
@@ -110,12 +110,10 @@
         </VBox>
     </left>
 
-    <!-- ═══════════════════════ CONTENIDO CENTRAL ═══════════════════════ -->
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
             <VBox spacing="0" style="-fx-background-color: #f3eaf8;">
 
-                <!-- Banner -->
                 <StackPane maxWidth="Infinity" style="-fx-border-color:#9b59b6; -fx-border-width:0 0 2 0;">
                     <ImageView fitHeight="119.0" fitWidth="830.0" pickOnBounds="true" preserveRatio="false" smooth="true">
                         <image>
@@ -126,26 +124,51 @@
 
                 <VBox spacing="20" style="-fx-padding: 20 24 24 24;">
 
-                    <!-- Tarjeta de Bienvenida -->
-                    <HBox alignment="CENTER_LEFT" prefHeight="90.0" prefWidth="782.0" spacing="16" style="-fx-background-color: white;                                  -fx-background-radius: 16;                                  -fx-border-color: #C5A8E8;                                  -fx-border-radius: 16;                                  -fx-border-width: 1.5;                                  -fx-padding: 20 24 20 24;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.13),10,0,0,3);">
-                        <VBox spacing="4" HBox.hgrow="ALWAYS">
-                            <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:22px; -fx-font-weight:bold;" text="Bienvenido al Sistema" />
-                            <Label style="-fx-text-fill:#8b5aa6; -fx-font-size:13px;" text="CHOCOLATERÍA — Panel de Control" />
-                            <Label style="-fx-text-fill:#888888; -fx-font-size:11px;" text="Selecciona un módulo del menú lateral o usa los accesos rápidos." />
+                    <HBox alignment="CENTER_LEFT" prefWidth="782.0" spacing="16" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #C5A8E8; -fx-border-radius: 16; -fx-border-width: 1.5; -fx-padding: 20 24 20 24; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.13),10,0,0,3);">
+                        <VBox prefHeight="79.0" prefWidth="497.0" spacing="6" HBox.hgrow="ALWAYS">
+                            <Label prefHeight="50.0" prefWidth="430.0" style="-fx-text-fill:#3B1A5C; -fx-font-size:22px; -fx-font-weight:bold;" text="Bienvenido al sistema" textAlignment="CENTER">
+                                <font><Font name="Candara Light" size="14.0" /></font>
+                            </Label>
+                        <Label prefHeight="28.0" prefWidth="309.0" style="-fx-text-fill:#8b5aa6; -fx-font-size:19px;" text="CHOCOLATERÍA — Panel de control" />
+
+                        <Label style="-fx-text-fill:#888888; -fx-font-size:11px;" text="Selecciona un módulo del menú lateral o usa los accesos rápidos." />
+
+                        <HBox alignment="CENTER_LEFT" spacing="5" style="-fx-padding: 5 10 5 10; -fx-background-color:#f3eaf8; -fx-background-radius:8;">
+                            <StackPane>
+
+                                <Label prefHeight="41.0" prefWidth="24.0" style="-fx-font-size: 12px; -fx-text-fill: #48295a;" text="📅" textFill="#601d66">
+                              <font>
+                                 <Font size="14.0" />
+                              </font></Label>
+                            </StackPane>
+                            <Label fx:id="lblFecha" style="-fx-text-fill:#6d3c87; -fx-font-size:12px; -fx-font-weight:bold;" text="" />
+                        </HBox>
+
+
                         </VBox>
-                        <ImageView fitHeight="89.0" fitWidth="201.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../com/example/chocolateria/logo.png" />
-                            </image>
-                        </ImageView>
+                        <StackPane>
+                            <ImageView fitHeight="122.0" fitWidth="222.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../com/example/chocolateria/logo.png" />
+                                </image>
+                                <effect>
+                                    <Lighting diffuseConstant="2.0">
+                                        <bumpInput>
+                                            <Reflection>
+                                                <input><MotionBlur /></input>
+                                            </Reflection>
+                                        </bumpInput>
+                                        <light><Light.Distant /></light>
+                                    </Lighting>
+                                </effect>
+                            </ImageView>
+                        </StackPane>
                     </HBox>
 
-                    <!-- Título Acceso Rápido -->
-                    <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="Acceso Rápido">
+                    <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="Acceso rápido">
                         <font><Font name="Arial" size="14.0" /></font>
                     </Label>
 
-                    <!-- Grid de Tarjetas -->
                     <GridPane hgap="16" vgap="16">
                         <columnConstraints>
                             <ColumnConstraints hgrow="ALWAYS" percentWidth="33.33" />
@@ -157,75 +180,67 @@
                             <RowConstraints minHeight="120" vgrow="ALWAYS" />
                         </rowConstraints>
 
-                        <!-- Tarjeta Ventas -->
-                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardVentas" style="-fx-background-color: white;                                        -fx-background-radius: 16;                                        -fx-border-color: #8b5aa6;                                        -fx-border-radius: 16;                                        -fx-border-width: 2;                                        -fx-padding: 18 12 18 12;                                        -fx-effect: dropshadow(gaussian,rgba(139,90,166,0.18),8,0,0,3);                                        -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardVentas" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #8b5aa6; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(139,90,166,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <Label style="-fx-font-size:32px;" text="🛒" />
+                                    <StackPane><Label prefHeight="51.0" prefWidth="40.0" style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="🛒" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Ventas" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Órdenes y pagos" />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <!-- Tarjeta Producción -->
-                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardProduccion" style="-fx-background-color: white;                                        -fx-background-radius: 16;                                        -fx-border-color: #6d3c87;                                        -fx-border-radius: 16;                                        -fx-border-width: 2;                                        -fx-padding: 18 12 18 12;                                        -fx-effect: dropshadow(gaussian,rgba(109,60,135,0.18),8,0,0,3);                                        -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardProduccion" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #6d3c87; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(109,60,135,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <Label style="-fx-font-size:32px;" text="🏭" />
+                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="🏭" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Producción" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Solicitudes y órdenes" />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <!-- Tarjeta Inventario -->
-                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardInventario" style="-fx-background-color: white;                                        -fx-background-radius: 16;                                        -fx-border-color: #5a2d82;                                        -fx-border-radius: 16;                                        -fx-border-width: 2;                                        -fx-padding: 18 12 18 12;                                        -fx-effect: dropshadow(gaussian,rgba(90,45,130,0.18),8,0,0,3);                                        -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardInventario" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #5a2d82; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(90,45,130,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="0">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <Label style="-fx-font-size:32px;" text="📦" />
+                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="📦" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Inventario" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Recepciones y salidas" />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <!-- Tarjeta Compras -->
-                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardCompras" style="-fx-background-color: white;                                        -fx-background-radius: 16;                                        -fx-border-color: #48295a;                                        -fx-border-radius: 16;                                        -fx-border-width: 2;                                        -fx-padding: 18 12 18 12;                                        -fx-effect: dropshadow(gaussian,rgba(72,41,90,0.18),8,0,0,3);                                        -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardCompras" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #48295a; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(72,41,90,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <Label style="-fx-font-size:32px;" text="🛍" />
+                                    <StackPane><Label style="-fx-font-size:32px; -fx-text-fill:#48295a;" text="🛍" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Compras" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Proveedores y pagos" />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <!-- Tarjeta Registros -->
-                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardRegistros" style="-fx-background-color: white;                                        -fx-background-radius: 16;                                        -fx-border-color: #9b59b6;                                        -fx-border-radius: 16;                                        -fx-border-width: 2;                                        -fx-padding: 18 12 18 12;                                        -fx-effect: dropshadow(gaussian,rgba(155,89,182,0.18),8,0,0,3);                                        -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardRegistros" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #9b59b6; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(155,89,182,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <Label style="-fx-font-size:32px;" text="📋" />
+                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="📋" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Registros" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Clientes, empleados..." />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <!-- Tarjeta Reportes -->
-                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardReportes" style="-fx-background-color: white;                                        -fx-background-radius: 16;                                        -fx-border-color: #3d1055;                                        -fx-border-radius: 16;                                        -fx-border-width: 2;                                        -fx-padding: 18 12 18 12;                                        -fx-effect: dropshadow(gaussian,rgba(61,16,85,0.18),8,0,0,3);                                        -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <Button maxHeight="Infinity" maxWidth="Infinity" onAction="#cardReportes" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #3d1055; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(61,16,85,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <Label style="-fx-font-size:32px;" text="📊" />
+                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="📊" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Reportes" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Análisis y consultas" />
                                 </VBox>
                             </graphic>
                         </Button>
-
                     </GridPane>
 
-                    <!-- Pie decorativo -->
                     <HBox alignment="CENTER">
                         <Label style="-fx-text-fill:#b89fcf; -fx-font-size:10px;" text="Chocolatería  •  Sistema de Gestión  " />
                     </HBox>
