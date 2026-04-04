@@ -39,7 +39,7 @@ public class loginController {
         conexion con = new conexion();
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(
-                     "SELECT * FROM tbl_usuario WHERE usuario = ? AND password = ?")) {
+                     "SELECT * FROM tbl_usuarios WHERE usuario = ? AND password = ?")) {
 
             ps.setString(1, usuario);
             ps.setString(2, password);
@@ -60,8 +60,9 @@ public class loginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) txtUsuario.getScene().getWindow();
-            stage.setScene(new Scene(root, 1020, 720));
+            stage.setScene(new Scene(root));
             stage.setTitle("Chocolatería - Sistema de Gestión");
+            stage.setMaximized(true);
             stage.show();
 
         } catch (Exception e) {
