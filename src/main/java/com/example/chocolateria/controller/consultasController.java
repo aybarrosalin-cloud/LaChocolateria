@@ -1,4 +1,4 @@
-﻿package com.example.chocolateria.controller;
+package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
 import javafx.beans.property.SimpleStringProperty;
