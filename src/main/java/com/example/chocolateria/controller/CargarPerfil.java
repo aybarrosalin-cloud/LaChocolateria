@@ -5,10 +5,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class CargarPerfil {
 
-    private static final String FOTO_DEFAULT = "/com/example/chocolateria/perfilr.png";
+    private static final String CARPETA_CLASSPATH = "/com/example/chocolateria/";
+    private static final String FOTO_DEFAULT       = CARPETA_CLASSPATH + "perfilr.png";
 
     public static void aplicar(Label lblUsuario, ImageView imgPerfil) {
         SesionManager sesion = SesionManager.getInstancia();
@@ -16,13 +18,23 @@ public class CargarPerfil {
 
         String ruta = sesion.getFotoPerfil();
         if (ruta != null && !ruta.isBlank()) {
-            try (FileInputStream fis = new FileInputStream(ruta)) {
-                imgPerfil.setImage(new Image(fis));
-            } catch (Exception e) {
-                imgPerfil.setImage(cargarDefault());
-            }
+            imgPerfil.setImage(cargarImagen(ruta));
         } else {
             imgPerfil.setImage(cargarDefault());
+        }
+    }
+
+    private static Image cargarImagen(String ruta) {
+        // Si no tiene separadores de directorio, es un nombre de archivo del classpath
+        if (!ruta.contains("/") && !ruta.contains("\\")) {
+            InputStream is = CargarPerfil.class.getResourceAsStream(CARPETA_CLASSPATH + ruta);
+            if (is != null) return new Image(is);
+        }
+        // Ruta absoluta del sistema de archivos
+        try (FileInputStream fis = new FileInputStream(ruta)) {
+            return new Image(fis);
+        } catch (Exception e) {
+            return cargarDefault();
         }
     }
 
