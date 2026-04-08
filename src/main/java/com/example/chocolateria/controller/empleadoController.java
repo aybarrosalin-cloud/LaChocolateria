@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 
 import java.sql.*;
 
@@ -34,8 +35,12 @@ public class empleadoController {
     private final ObservableList<empleadoModelo> listaEmpleados = FXCollections.observableArrayList();
     private final conexion con = new conexion();
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbTipoEmpleado.getItems().addAll("Supervisor", "Empleado", "Maestro Chocolatero");
         cbRol.getItems().addAll("Administrador", "Usuario", "Supervisor");

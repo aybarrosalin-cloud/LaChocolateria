@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -67,8 +68,12 @@ public class ventaController {
     private int    idEmpleadoSeleccionado = 0;
     private double subtotalBase = 0.0;
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbTipoPago.setItems(FXCollections.observableArrayList("Contado", "Crédito"));
         cbMetodoPago.setItems(FXCollections.observableArrayList("Efectivo", "Transferencia", "Tarjeta", "Cheque"));
         cbMetodoPagoAbono.setItems(FXCollections.observableArrayList("Efectivo", "Transferencia", "Tarjeta", "Cheque"));

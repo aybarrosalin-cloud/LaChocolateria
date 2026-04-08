@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -54,8 +55,12 @@ public class reclamoController {
     private final Map<String, Integer> mapaOrdenes  = new HashMap<>();
     private ToggleGroup grupoPrioridad;
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbTipoReclamo.setItems(FXCollections.observableArrayList(
             "Producto en mal estado",
             "Producto incorrecto",

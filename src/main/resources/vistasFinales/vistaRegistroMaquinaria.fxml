@@ -22,7 +22,7 @@
                 </ImageView>
             </StackPane>
 
-            <Label alignment="CENTER" prefHeight="20.0" prefWidth="91.0" style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="Rosalin Aybar" wrapText="true">
+            <Label fx:id="lblUsuario" alignment="CENTER" prefHeight="20.0" prefWidth="91.0" style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="" wrapText="true">
                 <font><Font name="Courier New" size="10" /></font>
             </Label>
 

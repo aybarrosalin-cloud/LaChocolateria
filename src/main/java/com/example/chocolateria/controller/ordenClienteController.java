@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -53,8 +54,12 @@ public class ordenClienteController {
     private final conexion con = new conexion();
     private int idClienteSeleccionado = 0;
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbMetodoPago.setItems(FXCollections.observableArrayList(
             "Efectivo", "Transferencia", "Tarjeta", "Cheque", "Crédito"));

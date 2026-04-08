@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -80,8 +81,12 @@ public class envioController {
         PROVINCIAS.put("Valverde", new String[]{"Mao","Esperanza","Laguna Salada"});
     }
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbTemperatura.setItems(FXCollections.observableArrayList(
             "Temperatura ambiente (15-25°C)",
             "Refrigerado (2-8°C)",
