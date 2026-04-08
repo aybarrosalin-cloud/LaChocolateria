@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 import java.sql.*;
@@ -53,8 +54,12 @@ public class ordenProduccionController {
     private int idClienteSeleccionado  = 0;
     private int idResponsableSeleccionado = 0;
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbEstado.setItems(FXCollections.observableArrayList(
                 "Pendiente", "En proceso", "Completada", "Cancelada"));

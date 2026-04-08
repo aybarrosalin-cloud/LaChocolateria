@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 
 import java.sql.*;
 
@@ -20,10 +21,17 @@ public class consultasController {
     @FXML private Button btnClientes, btnVentas, btnCompras, btnProduccion;
     @FXML private Button btnInventario, btnPedidos, btnIngresos, btnMasVendidos;
     @FXML private Button btnMantenimiento;
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
 
     private final conexion con = new conexion();
     private String sqlActual = "";
     private String tituloActual = "";
+
+    @FXML
+    public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
+    }
 
     // ── Consultas ─────────────────────────────────────────────────────────────
 

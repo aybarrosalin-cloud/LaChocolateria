@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -39,8 +40,12 @@ public class maquinariaController {
     private final conexion con = new conexion();
     private final Map<String, Integer> mapaResponsables = new HashMap<>();
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbTipo.setItems(FXCollections.observableArrayList(
             "Temperadora de chocolate",

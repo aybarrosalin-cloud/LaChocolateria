@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import java.sql.*;
 
 public class productoController {
@@ -37,8 +38,12 @@ public class productoController {
     private final ObservableList<productoModelo> lista = FXCollections.observableArrayList();
     private final conexion con = new conexion();
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbUnidadMedida.setItems(FXCollections.observableArrayList(
             "Unidad", "Caja", "Paquete", "Kilogramo", "Gramo",
             "Litro", "Mililitro", "Bolsa", "Barra", "Docena"));

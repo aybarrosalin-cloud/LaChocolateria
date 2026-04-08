@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 
 import java.sql.*;
 
@@ -33,8 +34,12 @@ public class suplidorController {
     private final ObservableList<suplidorModelo> lista = FXCollections.observableArrayList();
     private final conexion con = new conexion();
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbCiudad.setItems(FXCollections.observableArrayList(
             "Santo Domingo", "Santiago", "La Vega", "San Pedro de Macorís",
