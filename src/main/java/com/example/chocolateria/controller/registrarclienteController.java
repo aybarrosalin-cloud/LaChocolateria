@@ -36,8 +36,12 @@ public class registrarclienteController {
     private final ObservableList<clienteModelo> listaClientes = FXCollections.observableArrayList();
     private final conexion con = new conexion();
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         colId.setCellValueFactory(d        -> d.getValue().idClienteProperty());
         colNombre.setCellValueFactory(d    -> d.getValue().nombreProperty());

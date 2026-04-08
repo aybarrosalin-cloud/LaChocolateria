@@ -39,13 +39,18 @@ public class loginController {
         conexion con = new conexion();
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(
-                     "SELECT * FROM tbl_usuarios WHERE usuario = ? AND password = ?")) {
+                     "SELECT usuario, foto_perfil FROM tbl_usuarios WHERE usuario = ? AND password = ?")) {
 
             ps.setString(1, usuario);
             ps.setString(2, password);
 
             ResultSet rs = ps.executeQuery();
-            return rs.next();
+            if (rs.next()) {
+                String fotoPerfil = rs.getString("foto_perfil");
+                SesionManager.getInstancia().iniciarSesion(rs.getString("usuario"), fotoPerfil);
+                return true;
+            }
+            return false;
 
         } catch (Exception e) {
             e.printStackTrace();

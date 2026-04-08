@@ -3,6 +3,7 @@ package com.example.chocolateria.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,9 +12,12 @@ import java.util.Locale;
 public class inicioController {
 
     @FXML private Label lblFecha;
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
 
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
         lblFecha.setText(LocalDate.now().format(formatter));
     }

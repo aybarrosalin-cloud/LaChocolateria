@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -47,8 +48,12 @@ public class mantenimientoMaquinariaController {
     private final ObservableList<mantenimientoMaquinariaModelo> lista = FXCollections.observableArrayList();
     private final conexion con = new conexion();
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbEstadoMaquina.setItems(FXCollections.observableArrayList("Operativa", "En reparación", "Fuera de servicio"));
         cbTipoMantenimiento.setItems(FXCollections.observableArrayList("Preventivo", "Correctivo"));

@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -56,8 +57,12 @@ public class ordenProveedorController {
     private final Map<String, String> mapaRncNombre = new HashMap<>();
     private String productoSeleccionado = "";
 
+    @FXML private Label lblUsuario;
+    @FXML private ImageView imgFotoPerfil;
+
     @FXML
     public void initialize() {
+        CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbPrioridad.setItems(FXCollections.observableArrayList("Alta", "Media", "Baja"));
         cbEstadoPago.setItems(FXCollections.observableArrayList("Pendiente", "Parcial", "Pagado", "Cancelado"));
         cargarProveedores();
