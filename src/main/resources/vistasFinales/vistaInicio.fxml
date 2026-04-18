@@ -99,6 +99,12 @@
                         </VBox>
                     </TitledPane>
 
+                    <TitledPane fx:id="paneAdministracion" animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="⚙  Administración">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAGestionUsuarios" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Gestión de usuarios" />
+                        </VBox>
+                    </TitledPane>
+
                 </VBox>
             </ScrollPane>
 
