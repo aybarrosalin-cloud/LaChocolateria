@@ -132,7 +132,7 @@ public class ordenClienteController {
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(
-                 "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_clientes ORDER BY nombre")) {
+                 "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente ORDER BY nombre")) {
             while (rs.next()) {
                 String nombre = rs.getString("nombre_completo");
                 cmbCliente.getItems().add(nombre);
@@ -484,7 +484,7 @@ public class ordenClienteController {
 
     private int buscarIdCliente(Connection conn, String nombreCompleto) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-             "SELECT id_cliente FROM tbl_clientes WHERE nombre + ' ' + apellido = ?")) {
+             "SELECT id_cliente FROM tbl_cliente WHERE nombre + ' ' + apellido = ?")) {
             ps.setString(1, nombreCompleto);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) return rs.getInt("id_cliente");
