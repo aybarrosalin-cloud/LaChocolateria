@@ -6,6 +6,7 @@ public class SesionManager {
 
     private String usuario;
     private String fotoPerfil;
+    private String rol;
 
     private SesionManager() {}
 
@@ -16,9 +17,10 @@ public class SesionManager {
         return instancia;
     }
 
-    public void iniciarSesion(String usuario, String fotoPerfil) {
-        this.usuario = usuario;
+    public void iniciarSesion(String usuario, String fotoPerfil, String rol) {
+        this.usuario    = usuario;
         this.fotoPerfil = fotoPerfil;
+        this.rol        = rol != null ? rol : "Usuario";
     }
 
     public String getUsuario() {
@@ -29,8 +31,13 @@ public class SesionManager {
         return fotoPerfil;
     }
 
+    public String getRol() {
+        return rol != null ? rol : "";
+    }
+
     public void cerrarSesion() {
-        this.usuario = null;
+        this.usuario    = null;
         this.fotoPerfil = null;
+        this.rol        = null;
     }
 }

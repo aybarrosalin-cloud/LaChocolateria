@@ -3,6 +3,7 @@ package com.example.chocolateria.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 
 import java.time.LocalDate;
@@ -11,15 +12,21 @@ import java.util.Locale;
 
 public class inicioController {
 
-    @FXML private Label lblFecha;
-    @FXML private Label lblUsuario;
-    @FXML private ImageView imgFotoPerfil;
+    @FXML private Label      lblFecha;
+    @FXML private Label      lblUsuario;
+    @FXML private ImageView  imgFotoPerfil;
+    @FXML private TitledPane paneAdministracion;
 
     @FXML
     public void initialize() {
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
         lblFecha.setText(LocalDate.now().format(formatter));
+
+        if (!"Administrador".equalsIgnoreCase(SesionManager.getInstancia().getRol())) {
+            paneAdministracion.setVisible(false);
+            paneAdministracion.setManaged(false);
+        }
     }
 
     @FXML private void irAInicio(ActionEvent e) {}
@@ -52,8 +59,9 @@ public class inicioController {
     @FXML private void irAMantenimientoMaquinaria(ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
 
     @FXML private void irAConsultas(ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAGestionUsuarios(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionUsuarios.fxml", e); }
 
-    @FXML private void salir(ActionEvent e)                  { Navegacion.irA("/vistasFinales/vistaPrincipal.fxml", e, 949, 533); }
+    @FXML private void salir(ActionEvent e)                  { Navegacion.salir(e); }
 
     @FXML private void cardVentas(ActionEvent e)             { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void cardProduccion(ActionEvent e)         { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
