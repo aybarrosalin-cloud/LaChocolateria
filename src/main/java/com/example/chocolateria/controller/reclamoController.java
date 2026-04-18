@@ -158,7 +158,7 @@ public class reclamoController {
     }
 
     private void cargarClientes() {
-        String sql = "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_clientes ORDER BY nombre";
+        String sql = "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente ORDER BY nombre";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {

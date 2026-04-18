@@ -145,7 +145,7 @@ public class ordenProduccionController {
             int id = Integer.parseInt(idTexto);
             try (Connection conn = con.establecerConexion();
                  PreparedStatement ps = conn.prepareStatement(
-                         "SELECT nombre, apellido FROM tbl_clientes WHERE id_cliente = ?")) {
+                         "SELECT nombre, apellido FROM tbl_cliente WHERE id_cliente = ?")) {
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
@@ -353,7 +353,7 @@ public class ordenProduccionController {
                 "ISNULL(c.nombre + ' ' + c.apellido, '') AS cliente " +
                 "FROM tbl_orden_produccion o " +
                 "LEFT JOIN tbl_empleado e ON o.id_responsable = e.id_empleado " +
-                "LEFT JOIN tbl_clientes c ON o.id_cliente = c.id_cliente " +
+                "LEFT JOIN tbl_cliente c ON o.id_cliente = c.id_cliente " +
                 "WHERE o.id_orden = ?";
 
         try (Connection conn = con.establecerConexion();
@@ -405,7 +405,7 @@ public class ordenProduccionController {
                 "ISNULL(c.nombre + ' ' + c.apellido, '') AS cliente " +
                 "FROM tbl_orden_produccion o " +
                 "LEFT JOIN tbl_empleado e ON o.id_responsable = e.id_empleado " +
-                "LEFT JOIN tbl_clientes c ON o.id_cliente = c.id_cliente " +
+                "LEFT JOIN tbl_cliente c ON o.id_cliente = c.id_cliente " +
                 "ORDER BY o.fecha_orden DESC";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
