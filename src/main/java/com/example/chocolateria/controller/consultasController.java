@@ -39,7 +39,7 @@ public class consultasController {
         sqlActual   = "SELECT id_cliente AS ID, nombre AS Nombre, apellido AS Apellido, " +
                       "cedula AS Cedula, telefono AS Telefono, email AS Email, " +
                       "direccion AS Direccion, estado AS Estado " +
-                      "FROM tbl_clientes ORDER BY nombre";
+                      "FROM tbl_cliente ORDER BY nombre";
         tituloActual = "Consulta de Clientes";
         resaltarBoton(btnClientes);
         ejecutarConsulta(sqlActual, tituloActual);
@@ -79,7 +79,7 @@ public class consultasController {
                       "ISNULL(e.nombre + ' ' + e.apellido,'') AS Responsable, " +
                       "o.estado AS Estado, o.prioridad AS Prioridad, o.categoria AS Categoria " +
                       "FROM tbl_orden_produccion o " +
-                      "LEFT JOIN tbl_clientes c ON o.id_cliente = c.id_cliente " +
+                      "LEFT JOIN tbl_cliente c ON o.id_cliente = c.id_cliente " +
                       "LEFT JOIN tbl_empleado e ON o.id_responsable = e.id_empleado " +
                       "ORDER BY o.fecha_orden DESC";
         tituloActual = "Consulta de Produccion";
