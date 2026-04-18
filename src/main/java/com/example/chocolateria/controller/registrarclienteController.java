@@ -106,7 +106,7 @@ public class registrarclienteController {
         String telefono  = txtTelefono.getText().trim();
         String direccion = txtDireccion.getText().trim();
 
-        String sql = "INSERT INTO tbl_clientes (nombre, apellido, cedula, email, telefono, direccion, estado) " +
+        String sql = "INSERT INTO tbl_cliente (nombre, apellido, cedula, email, telefono, direccion, estado) " +
                 "VALUES (?, ?, ?, ?, ?, ?, 'Activo')";
 
         try (Connection c = con.establecerConexion();
@@ -148,7 +148,7 @@ public class registrarclienteController {
         sel.setTelefono(txtTelefono.getText().trim());
         sel.setDireccion(txtDireccion.getText().trim());
 
-        String sql = "UPDATE tbl_clientes SET nombre=?, apellido=?, cedula=?, email=?, telefono=?, direccion=? WHERE id_cliente=?";
+        String sql = "UPDATE tbl_cliente SET nombre=?, apellido=?, cedula=?, email=?, telefono=?, direccion=? WHERE id_cliente=?";
 
         try (Connection c = con.establecerConexion();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -187,7 +187,7 @@ public class registrarclienteController {
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try (Connection c = con.establecerConexion();
-                     PreparedStatement ps = c.prepareStatement("DELETE FROM tbl_clientes WHERE id_cliente=?")) {
+                     PreparedStatement ps = c.prepareStatement("DELETE FROM tbl_cliente WHERE id_cliente=?")) {
 
                     ps.setInt(1, sel.getIdCliente());
                     ps.executeUpdate();
@@ -213,7 +213,7 @@ public class registrarclienteController {
         String nuevoEstado = "Activo".equalsIgnoreCase(sel.getEstado()) ? "Inactivo" : "Activo";
 
         try (Connection c = con.establecerConexion();
-             PreparedStatement ps = c.prepareStatement("UPDATE tbl_clientes SET estado=? WHERE id_cliente=?")) {
+             PreparedStatement ps = c.prepareStatement("UPDATE tbl_cliente SET estado=? WHERE id_cliente=?")) {
 
             ps.setString(1, nuevoEstado);
             ps.setInt(2, sel.getIdCliente());
@@ -253,7 +253,7 @@ public class registrarclienteController {
             }
         }
 
-        String sql = "SELECT id_cliente, nombre, apellido, cedula, email, telefono, direccion, estado FROM tbl_clientes WHERE id_cliente = ?";
+        String sql = "SELECT id_cliente, nombre, apellido, cedula, email, telefono, direccion, estado FROM tbl_cliente WHERE id_cliente = ?";
         try (Connection c = con.establecerConexion();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -295,7 +295,7 @@ public class registrarclienteController {
 
     private void cargarClientes() {
         listaClientes.clear();
-        String sql = "SELECT id_cliente, nombre, apellido, cedula, email, telefono, direccion, estado FROM tbl_clientes";
+        String sql = "SELECT id_cliente, nombre, apellido, cedula, email, telefono, direccion, estado FROM tbl_cliente";
         try (Connection c = con.establecerConexion();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
@@ -328,7 +328,7 @@ public class registrarclienteController {
     }
 
     private void generarSiguienteId() {
-        String sql = "SELECT ISNULL(MAX(id_cliente), 0) + 1 AS siguiente FROM tbl_clientes";
+        String sql = "SELECT ISNULL(MAX(id_cliente), 0) + 1 AS siguiente FROM tbl_cliente";
         try (Connection c = con.establecerConexion();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
