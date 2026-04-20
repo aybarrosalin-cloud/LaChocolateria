@@ -8,7 +8,7 @@ public class conexion {
 
     String usuario = "rosalin";
     String contrase = "TuContraseña123";
-    String db = "lachoco";
+    String db = "lachoco_prog";
     String server = "26.136.71.206";
     String puerto = "1433";
     String cadena = "jdbc:sqlserver://" + server + "." + puerto + "/" + db;

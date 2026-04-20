@@ -4,56 +4,56 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="533.0" prefWidth="949.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.loginController">
+<BorderPane prefHeight="520.0" prefWidth="900.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.loginController">
+
     <center>
-        <HBox alignment="CENTER" fillHeight="true" maxHeight="460.0" maxWidth="880.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 8);">
+        <HBox alignment="CENTER" fillHeight="true" maxHeight="460.0" maxWidth="860.0" style="-fx-background-color: white;                      -fx-background-radius: 20;                      -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 20, 0, 0, 8);">
             <BorderPane.margin>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </BorderPane.margin>
 
-            <VBox alignment="CENTER" maxWidth="440.0" minWidth="440.0" prefWidth="440.0" spacing="15.0">
-                <padding>
-                    <Insets left="40.0" right="40.0" />
-                </padding>
+            <!-- Panel izquierdo: formulario -->
+            <VBox alignment="CENTER_LEFT" maxWidth="420.0" minWidth="420.0" spacing="16.0" style="-fx-background-color: white;                          -fx-background-radius: 20 0 0 20;                          -fx-padding: 48 44 48 44;">
 
-                <VBox spacing="5">
-                    <Label prefHeight="38.0" prefWidth="249.0" style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="INICIO DE SESIÓN">
-                        <font><Font size="26.0" /></font>
-                    </Label>
-                    <Label style="-fx-text-fill: #666666;" text="Coloca tu usuario y contraseña." />
+                <VBox spacing="4.0">
+                    <Label style="-fx-text-fill: #48295a; -fx-font-size: 24; -fx-font-weight: bold;" text="Inicio de sesión" />
+                    <Label style="-fx-text-fill: #9c7db5; -fx-font-size: 13;" text="Coloca tu usuario y contraseña" />
                 </VBox>
 
-                <VBox spacing="10" style="-fx-background-color: #D1C4E9; -fx-padding: 25; -fx-background-radius: 30;">
-                    <VBox spacing="2">
+                <VBox spacing="14.0" style="-fx-background-color: #EDE5F5;                              -fx-background-radius: 16;                              -fx-padding: 24 22 24 22;">
 
+                    <VBox spacing="5.0">
+                        <Label style="-fx-text-fill: #48295a; -fx-font-weight: bold; -fx-font-size: 11;" text="USUARIO" />
+                        <TextField fx:id="txtUsuario" onAction="#iniciarSesion" prefHeight="40.0" promptText="tu.usuario" style="-fx-background-color: white;                                           -fx-text-fill: #2d1a38;                                           -fx-prompt-text-fill: #c9b8db;                                           -fx-border-color: #c9b8db;                                           -fx-border-radius: 10;                                           -fx-background-radius: 10;                                           -fx-font-size: 13;" />
+                    </VBox>
 
-                    </VBox>
-                    <VBox spacing="2">
-                        <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Usuario" />
-                        <TextField fx:id="txtUsuario" prefHeight="35.0" style="-fx-background-radius: 12;" />
-                    </VBox>
-                    <VBox spacing="2">
-                        <Label style="-fx-font-weight: bold; -fx-text-fill: #48295a;" text="Contraseña" />
-                        <PasswordField fx:id="txtPassword" prefHeight="35.0" style="-fx-background-radius: 12;" />
+                    <VBox spacing="5.0">
+                        <Label style="-fx-text-fill: #48295a; -fx-font-weight: bold; -fx-font-size: 11;" text="CONTRASEÑA" />
+                        <PasswordField fx:id="txtPassword" onAction="#iniciarSesion" prefHeight="40.0" promptText="••••••••" style="-fx-background-color: white;                                               -fx-text-fill: #2d1a38;                                               -fx-prompt-text-fill: #c9b8db;                                               -fx-border-color: #c9b8db;                                               -fx-border-radius: 10;                                               -fx-background-radius: 10;                                               -fx-font-size: 13;" />
                     </VBox>
                 </VBox>
 
-                <Button maxWidth="Infinity" prefHeight="45.0" onAction="#iniciarSesion" style="-fx-background-color: #48295a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15;" text="INGRESAR">
-                    <font><Font size="14.0" /></font>
-                </Button>
+                <Button defaultButton="true" maxWidth="Infinity" onAction="#iniciarSesion" prefHeight="44.0" style="-fx-background-color: #48295a;                                -fx-text-fill: white;                                -fx-font-weight: bold;                                -fx-font-size: 14;                                -fx-background-radius: 12;                                -fx-cursor: hand;" text="INGRESAR" />
             </VBox>
 
-            <StackPane maxWidth="440.0" minWidth="440.0" prefWidth="440.0" style="-fx-background-color: #D1C4E9; -fx-background-radius: 0 30 30 0;">
+
+            <StackPane maxWidth="440.0" minWidth="440.0" style="-fx-background-color: #7B4F96;                               -fx-background-radius: 0 20 20 0;">
                 <children>
-                    <ImageView fitHeight="498.0" fitWidth="871.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../com/example/chocolateria/logo.png" />
-                        </image>
-                    </ImageView>
+                    <VBox alignment="CENTER" spacing="14.0">
+                        <ImageView fitHeight="429.0" fitWidth="739.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../com/example/chocolateria/logo.png" />
+                            </image>
+                        </ImageView>
+                        <VBox alignment="CENTER" spacing="4.0">
+                            <Label style="-fx-text-fill: #f0e6fa; -fx-font-size: 14; -fx-font-weight: bold;" />
+                            <Label style="-fx-text-fill: #d1b8e8; -fx-font-size: 12;" />
+                        </VBox>
+                    </VBox>
                 </children>
             </StackPane>
+
         </HBox>
     </center>
 </BorderPane>
