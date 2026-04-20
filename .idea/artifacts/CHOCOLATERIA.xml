@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="CHOCOLATERIA">
+    <output-path>$PROJECT_DIR$/out/artifacts/CHOCOLATERIA</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="com.example.chocolateria.application.Launcher" />
+        <option name="description" value="Aplicación Chocolateria" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="nativeBundle" value="all" />
+        <option name="title" value="Sistema de Chocolateria" />
+        <option name="vendor" value="Yara Disla &amp; Rosalin Taveras" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="CHOCOLATERIA.jar">
+        <element id="module-output" name="CHOCOLATERIA" />
+      </element>
+    </root>
+  </artifact>
+</component>
