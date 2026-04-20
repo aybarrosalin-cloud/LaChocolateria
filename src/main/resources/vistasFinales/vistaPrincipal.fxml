@@ -37,11 +37,11 @@
                 <Button defaultButton="true" maxWidth="Infinity" onAction="#iniciarSesion" prefHeight="44.0" style="-fx-background-color: #48295a;                                -fx-text-fill: white;                                -fx-font-weight: bold;                                -fx-font-size: 14;                                -fx-background-radius: 12;                                -fx-cursor: hand;" text="INGRESAR" />
             </VBox>
 
-            <!-- Panel derecho: logo -->
+
             <StackPane maxWidth="440.0" minWidth="440.0" style="-fx-background-color: #7B4F96;                               -fx-background-radius: 0 20 20 0;">
                 <children>
                     <VBox alignment="CENTER" spacing="14.0">
-                        <ImageView fitHeight="445.0" fitWidth="860.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="429.0" fitWidth="739.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../com/example/chocolateria/logo.png" />
                             </image>
