@@ -1,108 +1,71 @@
 @echo off
-setlocal EnableDelayedExpansion
 
 echo =============================================
 echo   Chocolateria - Crear Aplicacion Windows
 echo =============================================
 echo.
 
-:: Detectar JAVA_HOME
-if "%JAVA_HOME%"=="" (
-    echo [ERROR] JAVA_HOME no esta configurado.
-    echo Por favor instala JDK 21 o superior y configura JAVA_HOME.
+:: Validar JAVA_HOME
+if not defined JAVA_HOME (
+    echo ERROR: JAVA_HOME no configurado
+    echo Por favor, instala Java JDK 17+ o configura JAVA_HOME
     pause
     exit /b 1
 )
 
-set JPACKAGE=%JAVA_HOME%\bin\jpackage.exe
+echo Usando Java en: %JAVA_HOME%
+
+:: Verificar que jpackage existe
+set "JPACKAGE=%JAVA_HOME%\bin\jpackage.exe"
 if not exist "%JPACKAGE%" (
-    echo [ERROR] jpackage no encontrado en %JPACKAGE%
-    echo Asegurate de usar JDK 21 o superior.
+    echo ERROR: No se encuentra jpackage.exe en %JPACKAGE%
+    echo Asegurate de usar JDK 17+ (no JRE)
     pause
     exit /b 1
 )
 
-:: Detectar mvn
-where mvn >nul 2>&1
+echo [1/3] Compilando...
+call mvnw.cmd clean package -DskipTests
 if errorlevel 1 (
-    echo [ERROR] Maven (mvn) no encontrado en PATH.
-    echo Agrega Maven al PATH e intenta de nuevo.
+    echo ERROR en compilacion
     pause
     exit /b 1
 )
 
-:: Compilar y empaquetar
-echo [1/3] Compilando el proyecto con Maven...
-call mvn clean package -DskipTests
-if errorlevel 1 (
-    echo [ERROR] La compilacion fallo. Revisa los errores arriba.
+:: Buscar el JAR generado
+for %%f in (target\*.jar) do set "JAR_FILE=%%f"
+if not defined JAR_FILE (
+    echo ERROR: No se encontro ningun JAR en target\
     pause
     exit /b 1
 )
-echo     OK - Compilacion exitosa.
+echo JAR encontrado: %JAR_FILE%
+
 echo.
+echo [2/3] Creando app...
 
-:: Construir ruta al modpath de JavaFX desde repo local Maven
-set M2=%USERPROFILE%\.m2\repository\org\openjfx
-set FX_VER=21.0.6
-set FX_CLASSIFIER=win
+:: Crear directorio si no existe
+if not exist "target\installer" mkdir "target\installer"
 
-set FX_MODPATH=^
-%M2%\javafx-controls\%FX_VER%\javafx-controls-%FX_VER%-%FX_CLASSIFIER%.jar;^
-%M2%\javafx-fxml\%FX_VER%\javafx-fxml-%FX_VER%-%FX_CLASSIFIER%.jar;^
-%M2%\javafx-web\%FX_VER%\javafx-web-%FX_VER%-%FX_CLASSIFIER%.jar;^
-%M2%\javafx-swing\%FX_VER%\javafx-swing-%FX_VER%-%FX_CLASSIFIER%.jar;^
-%M2%\javafx-media\%FX_VER%\javafx-media-%FX_VER%-%FX_CLASSIFIER%.jar;^
-%M2%\javafx-base\%FX_VER%\javafx-base-%FX_VER%-%FX_CLASSIFIER%.jar;^
-%M2%\javafx-graphics\%FX_VER%\javafx-graphics-%FX_VER%-%FX_CLASSIFIER%.jar
-
-:: Verificar que existen los JARs de JavaFX nativos
-if not exist "%M2%\javafx-controls\%FX_VER%\javafx-controls-%FX_VER%-%FX_CLASSIFIER%.jar" (
-    echo [AVISO] No se encontro javafx-controls-%FX_VER%-win.jar en el repositorio Maven.
-    echo Ejecuta primero: mvn dependency:resolve
-    echo O descarga manualmente los JARs de JavaFX SDK para Windows.
-)
-
-:: Limpiar instalador anterior
-if exist "target\installer" rmdir /s /q "target\installer"
-
-echo [2/3] Generando imagen de aplicacion con jpackage...
-"%JPACKAGE%" ^
-    --type app-image ^
+"%JPACKAGE%" --type app-image ^
     --name Chocolateria ^
-    --app-version 1.0 ^
-    --vendor "La Chocolateria" ^
-    --input target\lib ^
-    --main-jar ..\CHOCOLATERIA-1.0-SNAPSHOT.jar ^
+    --input target ^
+    --main-jar "%JAR_FILE%" ^
     --main-class com.example.chocolateria.application.Launcher ^
-    --module-path "%FX_MODPATH%" ^
-    --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing,javafx.media ^
-    --java-options "--add-opens=javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED" ^
-    --java-options "--add-opens=javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED" ^
     --dest target\installer ^
-    --win-console
+    --win-console ^
+    --verbose
 
 if errorlevel 1 (
-    echo.
-    echo [ERROR] jpackage fallo. Revisa los mensajes de error arriba.
+    echo ERROR en jpackage
+    echo Revisa que la clase main sea correcta
     pause
     exit /b 1
 )
 
-echo     OK - Imagen creada en target\installer\Chocolateria\
 echo.
-echo [3/3] Copiando JAR principal a la carpeta app...
-copy /y "target\CHOCOLATERIA-1.0-SNAPSHOT.jar" "target\installer\Chocolateria\app\" >nul
+echo =============================================
+echo LISTO! Aplicacion creada en: target\installer\Chocolateria
+echo =============================================
 
-echo.
-echo =============================================
-echo   LISTO!
-echo   Carpeta de la aplicacion:
-echo   %CD%\target\installer\Chocolateria\
-echo.
-echo   Para distribuirla: comprime esa carpeta en ZIP
-echo   y enviala. El usuario ejecuta:
-echo   Chocolateria\Chocolateria.exe
-echo =============================================
-echo.
 pause
