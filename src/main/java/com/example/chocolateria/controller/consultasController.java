@@ -293,6 +293,8 @@ public class consultasController {
                 col.setCellValueFactory(data -> new SimpleStringProperty(
                     data.getValue().size() > idx ? data.getValue().get(idx) : ""));
                 col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;");
+                col.setMinWidth(90);
+                col.setPrefWidth(140);
                 tablaResultados.getColumns().add(col);
             }
 
