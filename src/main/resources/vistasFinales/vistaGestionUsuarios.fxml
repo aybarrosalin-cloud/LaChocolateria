@@ -137,7 +137,7 @@
                         <Separator />
 
                         <HBox alignment="CENTER_LEFT" spacing="14">
-                            <VBox minHeight="52" prefWidth="130" spacing="3">
+                            <VBox minHeight="52" prefWidth="100" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Usuario" />
                                 <TextField fx:id="txtIdUsuario" editable="true" prefHeight="28" promptText="Buscar por ID…" style="-fx-background-color:#f0eaf8; -fx-text-fill:#555; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
                             </VBox>
@@ -148,6 +148,10 @@
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Rol" />
                                 <ComboBox fx:id="cbRol" maxWidth="Infinity" prefHeight="28" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
+                            </VBox>
+                            <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
+                                <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Departamento" />
+                                <ComboBox fx:id="cbDepartamento" maxWidth="Infinity" prefHeight="28" promptText="Seleccionar…" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
                             </VBox>
                         </HBox>
 
@@ -191,6 +195,7 @@
                                 <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
                                 <TableColumn fx:id="colUsuario" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Usuario" />
                                 <TableColumn fx:id="colRol" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Rol" />
+                                <TableColumn fx:id="colDepartamento" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Departamento" />
                                 <TableColumn fx:id="colEstado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" />
                             </columns>
                             <columnResizePolicy>

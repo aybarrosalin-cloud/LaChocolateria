@@ -11,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class crearUsuarioController {
 
@@ -19,6 +21,7 @@ public class crearUsuarioController {
     @FXML private TextField        txtPassword;
     @FXML private TextField        txtConfirmarPassword;
     @FXML private ComboBox<String> cbRol;
+    @FXML private ComboBox<String> cbDepartamento;
     @FXML private TextField        txtFotoPerfil;
     @FXML private TextField        txtBuscarTabla;
 
@@ -26,13 +29,31 @@ public class crearUsuarioController {
     @FXML private TableColumn<usuarioModelo, Number> colId;
     @FXML private TableColumn<usuarioModelo, String> colUsuario;
     @FXML private TableColumn<usuarioModelo, String> colRol;
+    @FXML private TableColumn<usuarioModelo, String> colDepartamento;
     @FXML private TableColumn<usuarioModelo, String> colEstado;
 
     @FXML private Label     lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
-    private final ObservableList<usuarioModelo> listaUsuarios = FXCollections.observableArrayList();
-    private final conexion con = new conexion();
+    private final ObservableList<usuarioModelo> listaUsuarios    = FXCollections.observableArrayList();
+    private final Map<String, Integer>          departamentosMap = new LinkedHashMap<>();
+    private final conexion                      con              = new conexion();
+
+    private static final ObservableList<String> ROLES = FXCollections.observableArrayList(
+        "Administrador",
+        "Gerente General",
+        "Auditor",
+        "Encargado de Finanzas",
+        "Encargado de RRHH",
+        "Vendedor",
+        "Encargado de Producción",
+        "Operario de Empaque",
+        "Inspector de Calidad",
+        "Encargado de Almacén",
+        "Encargado de Compras",
+        "Encargado de Logística",
+        "Técnico de Mantenimiento"
+    );
 
     @FXML
     public void initialize() {
@@ -45,12 +66,14 @@ public class crearUsuarioController {
             return;
         }
 
-        cbRol.getItems().addAll("Administrador", "Usuario");
+        cbRol.setItems(ROLES);
+        cargarDepartamentos();
 
-        colId.setCellValueFactory(d      -> d.getValue().idUsuarioProperty());
-        colUsuario.setCellValueFactory(d -> d.getValue().usuarioProperty());
-        colRol.setCellValueFactory(d     -> d.getValue().rolProperty());
-        colEstado.setCellValueFactory(d  -> d.getValue().estadoProperty());
+        colId.setCellValueFactory(d           -> d.getValue().idUsuarioProperty());
+        colUsuario.setCellValueFactory(d      -> d.getValue().usuarioProperty());
+        colRol.setCellValueFactory(d          -> d.getValue().rolProperty());
+        colDepartamento.setCellValueFactory(d -> d.getValue().departamentoProperty());
+        colEstado.setCellValueFactory(d       -> d.getValue().estadoProperty());
 
         tablaUsuarios.setRowFactory(tv -> new TableRow<>() {
             @Override
@@ -68,7 +91,10 @@ public class crearUsuarioController {
             txtBuscarTabla.textProperty().addListener((obs, o, n) ->
                 listaFiltrada.setPredicate(u -> {
                     if (n == null || n.isBlank()) return true;
-                    return u.getUsuario().toLowerCase().contains(n.toLowerCase());
+                    String filtro = n.toLowerCase();
+                    return u.getUsuario().toLowerCase().contains(filtro)
+                        || u.getRol().toLowerCase().contains(filtro)
+                        || u.getDepartamento().toLowerCase().contains(filtro);
                 })
             );
         }
@@ -81,6 +107,26 @@ public class crearUsuarioController {
         generarSiguienteId();
     }
 
+    // ── Cargar departamentos desde BD ─────────────────────────────────────────
+    private void cargarDepartamentos() {
+        departamentosMap.clear();
+        cbDepartamento.getItems().clear();
+        String sql = "SELECT id_departamento, nombre FROM tbl_departamento WHERE estado='Activo' ORDER BY nombre";
+        try (Connection c = con.establecerConexion();
+             Statement st  = c.createStatement();
+             ResultSet rs  = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                departamentosMap.put(nombre, rs.getInt("id_departamento"));
+                cbDepartamento.getItems().add(nombre);
+            }
+        } catch (SQLException e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudieron cargar los departamentos: " + e.getMessage());
+        }
+    }
+
+    // ── Guardar nuevo usuario ─────────────────────────────────────────────────
     @FXML
     public void guardarUsuario() {
         if (!validarCampos()) return;
@@ -91,7 +137,9 @@ public class crearUsuarioController {
             return;
         }
 
-        String sql = "INSERT INTO tbl_usuario (usuario, password, foto_perfil, rol, estado) VALUES (?, ?, ?, ?, 'Activo')";
+        Integer idDept = departamentosMap.get(cbDepartamento.getValue());
+
+        String sql = "INSERT INTO tbl_usuario (usuario, password, foto_perfil, rol, estado, id_departamento) VALUES (?, ?, ?, ?, 'Activo', ?)";
         try (Connection c = con.establecerConexion();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -99,12 +147,16 @@ public class crearUsuarioController {
             ps.setString(2, txtPassword.getText());
             ps.setString(3, txtFotoPerfil.getText().trim());
             ps.setString(4, cbRol.getValue());
+            if (idDept != null) ps.setInt(5, idDept); else ps.setNull(5, Types.INTEGER);
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            int nuevoId  = rs.next() ? rs.getInt(1) : 0;
+            ResultSet rs  = ps.getGeneratedKeys();
+            int nuevoId   = rs.next() ? rs.getInt(1) : 0;
+            String dept   = cbDepartamento.getValue() != null ? cbDepartamento.getValue() : "";
+            int    idDeptVal = idDept != null ? idDept : 0;
 
-            listaUsuarios.add(new usuarioModelo(nuevoId, txtUsuario.getText().trim(), cbRol.getValue(), "Activo"));
+            listaUsuarios.add(new usuarioModelo(nuevoId, txtUsuario.getText().trim(),
+                    cbRol.getValue(), "Activo", idDeptVal, dept));
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario creado correctamente.");
             limpiar();
 
@@ -113,6 +165,7 @@ public class crearUsuarioController {
         }
     }
 
+    // ── Editar usuario seleccionado ───────────────────────────────────────────
     @FXML
     private void fnEditar() {
         usuarioModelo sel = tablaUsuarios.getSelectionModel().getSelectedItem();
@@ -129,9 +182,11 @@ public class crearUsuarioController {
             return;
         }
 
+        Integer idDept = departamentosMap.get(cbDepartamento.getValue());
+
         String sql = cambiarPassword
-            ? "UPDATE tbl_usuario SET usuario=?, password=?, foto_perfil=?, rol=? WHERE id_usuario=?"
-            : "UPDATE tbl_usuario SET usuario=?, foto_perfil=?, rol=? WHERE id_usuario=?";
+            ? "UPDATE tbl_usuario SET usuario=?, password=?, foto_perfil=?, rol=?, id_departamento=? WHERE id_usuario=?"
+            : "UPDATE tbl_usuario SET usuario=?, foto_perfil=?, rol=?, id_departamento=? WHERE id_usuario=?";
 
         try (Connection c = con.establecerConexion();
              PreparedStatement ps = c.prepareStatement(sql)) {
@@ -141,16 +196,20 @@ public class crearUsuarioController {
                 ps.setString(2, txtPassword.getText());
                 ps.setString(3, txtFotoPerfil.getText().trim());
                 ps.setString(4, cbRol.getValue());
-                ps.setInt(5, sel.getIdUsuario());
+                if (idDept != null) ps.setInt(5, idDept); else ps.setNull(5, Types.INTEGER);
+                ps.setInt(6, sel.getIdUsuario());
             } else {
                 ps.setString(1, txtUsuario.getText().trim());
                 ps.setString(2, txtFotoPerfil.getText().trim());
                 ps.setString(3, cbRol.getValue());
-                ps.setInt(4, sel.getIdUsuario());
+                if (idDept != null) ps.setInt(4, idDept); else ps.setNull(4, Types.INTEGER);
+                ps.setInt(5, sel.getIdUsuario());
             }
             ps.executeUpdate();
 
             sel.setRol(cbRol.getValue());
+            sel.setIdDepartamento(idDept != null ? idDept : 0);
+            sel.setDepartamento(cbDepartamento.getValue() != null ? cbDepartamento.getValue() : "");
             tablaUsuarios.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario actualizado correctamente.");
             limpiar();
@@ -160,6 +219,7 @@ public class crearUsuarioController {
         }
     }
 
+    // ── Eliminar usuario ──────────────────────────────────────────────────────
     @FXML
     private void fnEliminar() {
         usuarioModelo sel = tablaUsuarios.getSelectionModel().getSelectedItem();
@@ -191,6 +251,7 @@ public class crearUsuarioController {
         });
     }
 
+    // ── Habilitar / Deshabilitar ──────────────────────────────────────────────
     @FXML
     private void fnDeshabilitar() {
         usuarioModelo sel = tablaUsuarios.getSelectionModel().getSelectedItem();
@@ -217,6 +278,7 @@ public class crearUsuarioController {
         }
     }
 
+    // ── Buscar por ID ─────────────────────────────────────────────────────────
     @FXML
     private void fnBuscar() {
         String idTexto = txtIdUsuario.getText().trim();
@@ -243,7 +305,11 @@ public class crearUsuarioController {
             }
         }
 
-        String sql = "SELECT id_usuario, usuario, rol, estado FROM tbl_usuario WHERE id_usuario=?";
+        String sql = "SELECT u.id_usuario, u.usuario, u.rol, u.estado, " +
+                     "ISNULL(u.id_departamento, 0) AS id_departamento, ISNULL(d.nombre,'') AS departamento " +
+                     "FROM tbl_usuario u " +
+                     "LEFT JOIN tbl_departamento d ON u.id_departamento = d.id_departamento " +
+                     "WHERE u.id_usuario=?";
         try (Connection c = con.establecerConexion();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -252,7 +318,8 @@ public class crearUsuarioController {
             if (rs.next()) {
                 cargarEnFormulario(new usuarioModelo(
                         rs.getInt("id_usuario"), rs.getString("usuario"),
-                        rs.getString("rol"), rs.getString("estado")));
+                        rs.getString("rol"), rs.getString("estado"),
+                        rs.getInt("id_departamento"), rs.getString("departamento")));
                 mostrarAlerta(Alert.AlertType.INFORMATION, "Encontrado",
                         "Usuario encontrado y cargado en el formulario.");
             } else {
@@ -264,6 +331,7 @@ public class crearUsuarioController {
         }
     }
 
+    // ── Limpiar formulario ────────────────────────────────────────────────────
     @FXML
     public void limpiar() {
         txtUsuario.clear();
@@ -271,13 +339,18 @@ public class crearUsuarioController {
         txtConfirmarPassword.clear();
         txtFotoPerfil.clear();
         cbRol.setValue(null);
+        cbDepartamento.setValue(null);
         tablaUsuarios.getSelectionModel().clearSelection();
         generarSiguienteId();
     }
 
+    // ── Cargar lista de usuarios ──────────────────────────────────────────────
     private void cargarUsuarios() {
         listaUsuarios.clear();
-        String sql = "SELECT id_usuario, usuario, rol, estado FROM tbl_usuario";
+        String sql = "SELECT u.id_usuario, u.usuario, u.rol, u.estado, " +
+                     "ISNULL(u.id_departamento, 0) AS id_departamento, ISNULL(d.nombre,'') AS departamento " +
+                     "FROM tbl_usuario u " +
+                     "LEFT JOIN tbl_departamento d ON u.id_departamento = d.id_departamento";
         try (Connection c = con.establecerConexion();
              Statement st  = c.createStatement();
              ResultSet rs  = st.executeQuery(sql)) {
@@ -285,22 +358,26 @@ public class crearUsuarioController {
             while (rs.next()) {
                 listaUsuarios.add(new usuarioModelo(
                         rs.getInt("id_usuario"), rs.getString("usuario"),
-                        rs.getString("rol"), rs.getString("estado")));
+                        rs.getString("rol"), rs.getString("estado"),
+                        rs.getInt("id_departamento"), rs.getString("departamento")));
             }
         } catch (SQLException e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar usuarios", e.getMessage());
         }
     }
 
+    // ── Poblar formulario al seleccionar fila ─────────────────────────────────
     private void cargarEnFormulario(usuarioModelo u) {
         txtIdUsuario.setText(String.valueOf(u.getIdUsuario()));
         txtUsuario.setText(u.getUsuario());
         txtPassword.clear();
         txtConfirmarPassword.clear();
         cbRol.setValue(u.getRol());
+        cbDepartamento.setValue(u.getDepartamento().isBlank() ? null : u.getDepartamento());
         txtFotoPerfil.clear();
     }
 
+    // ── Generar siguiente ID disponible ───────────────────────────────────────
     private void generarSiguienteId() {
         String sql = "SELECT ISNULL(MAX(id_usuario), 0) + 1 AS siguiente FROM tbl_usuario";
         try (Connection c = con.establecerConexion();
@@ -314,6 +391,7 @@ public class crearUsuarioController {
         }
     }
 
+    // ── Validaciones ──────────────────────────────────────────────────────────
     private boolean validarCampos() {
         if (txtUsuario.getText().trim().isEmpty() ||
             txtPassword.getText().isBlank()        ||
@@ -335,12 +413,13 @@ public class crearUsuarioController {
     }
 
     private void desactivarFormulario() {
-        if (txtUsuario         != null) txtUsuario.setDisable(true);
-        if (txtPassword        != null) txtPassword.setDisable(true);
+        if (txtUsuario           != null) txtUsuario.setDisable(true);
+        if (txtPassword          != null) txtPassword.setDisable(true);
         if (txtConfirmarPassword != null) txtConfirmarPassword.setDisable(true);
-        if (cbRol              != null) cbRol.setDisable(true);
-        if (txtFotoPerfil      != null) txtFotoPerfil.setDisable(true);
-        if (tablaUsuarios      != null) tablaUsuarios.setDisable(true);
+        if (cbRol                != null) cbRol.setDisable(true);
+        if (cbDepartamento       != null) cbDepartamento.setDisable(true);
+        if (txtFotoPerfil        != null) txtFotoPerfil.setDisable(true);
+        if (tablaUsuarios        != null) tablaUsuarios.setDisable(true);
     }
 
     private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
