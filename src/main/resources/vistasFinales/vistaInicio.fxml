@@ -5,6 +5,7 @@
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="720.0" prefWidth="1020.0" style="-fx-background-color: #f3eaf8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.inicioController">
@@ -169,48 +170,39 @@
                         <font><Font name="Arial" size="14.0" /></font>
                     </Label>
 
-                    <GridPane hgap="16" vgap="16">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.33" />
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.33" />
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="33.33" />
-                        </columnConstraints>
-                        <rowConstraints>
-                            <RowConstraints minHeight="120" vgrow="ALWAYS" />
-                            <RowConstraints minHeight="120" vgrow="ALWAYS" />
-                        </rowConstraints>
+                    <FlowPane fx:id="flowCards" hgap="16" vgap="16" prefWrapLength="760">
 
-                        <Button fx:id="cardVentas" maxHeight="Infinity" maxWidth="Infinity" onAction="#cardVentas" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #8b5aa6; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(139,90,166,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Button fx:id="cardVentas" prefWidth="225" prefHeight="130" onAction="#cardVentas" style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#8b5aa6; -fx-border-radius:16; -fx-border-width:2; -fx-padding:18 12 18 12; -fx-effect:dropshadow(gaussian,rgba(139,90,166,0.18),8,0,0,3); -fx-cursor:hand;">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <StackPane><Label prefHeight="51.0" prefWidth="40.0" style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="🛒" /></StackPane>
+                                    <StackPane><Label prefHeight="40" prefWidth="40" style="-fx-font-size:32px; -fx-text-fill:#48295a;" text="🛒" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Ventas" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Órdenes y pagos" />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <Button fx:id="cardProduccion" maxHeight="Infinity" maxWidth="Infinity" onAction="#cardProduccion" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #6d3c87; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(109,60,135,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Button fx:id="cardProduccion" prefWidth="225" prefHeight="130" onAction="#cardProduccion" style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#6d3c87; -fx-border-radius:16; -fx-border-width:2; -fx-padding:18 12 18 12; -fx-effect:dropshadow(gaussian,rgba(109,60,135,0.18),8,0,0,3); -fx-cursor:hand;">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="🏭" /></StackPane>
+                                    <StackPane><Label style="-fx-font-size:32px; -fx-text-fill:#48295a;" text="🏭" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Producción" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Solicitudes y órdenes" />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <Button fx:id="cardInventario" maxHeight="Infinity" maxWidth="Infinity" onAction="#cardInventario" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #5a2d82; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(90,45,130,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                        <Button fx:id="cardInventario" prefWidth="225" prefHeight="130" onAction="#cardInventario" style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#5a2d82; -fx-border-radius:16; -fx-border-width:2; -fx-padding:18 12 18 12; -fx-effect:dropshadow(gaussian,rgba(90,45,130,0.18),8,0,0,3); -fx-cursor:hand;">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="📦" /></StackPane>
+                                    <StackPane><Label style="-fx-font-size:32px; -fx-text-fill:#48295a;" text="📦" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Inventario" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Recepciones y salidas" />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <Button fx:id="cardCompras" maxHeight="Infinity" maxWidth="Infinity" onAction="#cardCompras" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #48295a; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(72,41,90,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Button fx:id="cardCompras" prefWidth="225" prefHeight="130" onAction="#cardCompras" style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#48295a; -fx-border-radius:16; -fx-border-width:2; -fx-padding:18 12 18 12; -fx-effect:dropshadow(gaussian,rgba(72,41,90,0.18),8,0,0,3); -fx-cursor:hand;">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
                                     <StackPane><Label style="-fx-font-size:32px; -fx-text-fill:#48295a;" text="🛍" /></StackPane>
@@ -220,26 +212,27 @@
                             </graphic>
                         </Button>
 
-                        <Button fx:id="cardRegistros" maxHeight="Infinity" maxWidth="Infinity" onAction="#cardRegistros" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #9b59b6; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(155,89,182,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Button fx:id="cardRegistros" prefWidth="225" prefHeight="130" onAction="#cardRegistros" style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#9b59b6; -fx-border-radius:16; -fx-border-width:2; -fx-padding:18 12 18 12; -fx-effect:dropshadow(gaussian,rgba(155,89,182,0.18),8,0,0,3); -fx-cursor:hand;">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="📋" /></StackPane>
+                                    <StackPane><Label style="-fx-font-size:32px; -fx-text-fill:#48295a;" text="📋" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Registros" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Clientes, empleados..." />
                                 </VBox>
                             </graphic>
                         </Button>
 
-                        <Button fx:id="cardReportes" maxHeight="Infinity" maxWidth="Infinity" onAction="#cardReportes" style="-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #3d1055; -fx-border-radius: 16; -fx-border-width: 2; -fx-padding: 18 12 18 12; -fx-effect: dropshadow(gaussian,rgba(61,16,85,0.18),8,0,0,3); -fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <Button fx:id="cardReportes" prefWidth="225" prefHeight="130" onAction="#cardReportes" style="-fx-background-color:white; -fx-background-radius:16; -fx-border-color:#3d1055; -fx-border-radius:16; -fx-border-width:2; -fx-padding:18 12 18 12; -fx-effect:dropshadow(gaussian,rgba(61,16,85,0.18),8,0,0,3); -fx-cursor:hand;">
                             <graphic>
                                 <VBox alignment="CENTER" spacing="6">
-                                    <StackPane><Label style="-fx-font-size: 32px; -fx-text-fill: #48295a;" text="📊" /></StackPane>
+                                    <StackPane><Label style="-fx-font-size:32px; -fx-text-fill:#48295a;" text="📊" /></StackPane>
                                     <Label style="-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:13px;" text="Reportes" />
                                     <Label style="-fx-text-fill:#888888; -fx-font-size:10px;" text="Análisis y consultas" />
                                 </VBox>
                             </graphic>
                         </Button>
-                    </GridPane>
+
+                    </FlowPane>
 
                     <HBox alignment="CENTER">
                         <Label style="-fx-text-fill:#b89fcf; -fx-font-size:10px;" text="Chocolatería  •  Sistema de Gestión  " />
