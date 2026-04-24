@@ -67,15 +67,17 @@ public class pagoCompraController {
         cbMetodoPago.setItems(FXCollections.observableArrayList(
                 "Efectivo", "Transferencia", "Cheque", "Tarjeta de crédito", "Tarjeta de débito"));
 
-        // Columnas deudas
-        colId.setCellValueFactory(d        -> d.getValue().idDeudaProperty());
-        colOrden.setCellValueFactory(d     -> d.getValue().numeroOrdenProperty());
-        colRnc.setCellValueFactory(d       -> d.getValue().rncSuplidorProperty());
-        colFecha.setCellValueFactory(d     -> d.getValue().fechaDeudaProperty());
-        colTotal.setCellValueFactory(d     -> d.getValue().montoTotalProperty());
-        colPagado.setCellValueFactory(d    -> d.getValue().montoPagadoProperty());
-        colPendiente.setCellValueFactory(d -> d.getValue().montoPendienteProperty());
-        colEstado.setCellValueFactory(d    -> d.getValue().estadoProperty());
+        // Columnas deudas (solo si la tabla existe en esta vista)
+        if (tablaDeudas != null) {
+            colId.setCellValueFactory(d        -> d.getValue().idDeudaProperty());
+            colOrden.setCellValueFactory(d     -> d.getValue().numeroOrdenProperty());
+            colRnc.setCellValueFactory(d       -> d.getValue().rncSuplidorProperty());
+            colFecha.setCellValueFactory(d     -> d.getValue().fechaDeudaProperty());
+            colTotal.setCellValueFactory(d     -> d.getValue().montoTotalProperty());
+            colPagado.setCellValueFactory(d    -> d.getValue().montoPagadoProperty());
+            colPendiente.setCellValueFactory(d -> d.getValue().montoPendienteProperty());
+            colEstado.setCellValueFactory(d    -> d.getValue().estadoProperty());
+        }
 
         // Columnas abonos
         colAbonoId.setCellValueFactory(d    -> d.getValue().idAbonoProperty());
@@ -85,45 +87,45 @@ public class pagoCompraController {
         colAbonoRef.setCellValueFactory(d   -> d.getValue().numeroReferenciaProperty());
         tablaAbonos.setItems(listaAbonos);
 
-        // Color por estado en tabla deudas
-        tablaDeudas.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(deudaCompraModelo d, boolean empty) {
-                super.updateItem(d, empty);
-                if (d == null || empty) { setStyle(""); return; }
-                switch (d.getEstado()) {
-                    case "Saldado"   -> setStyle("-fx-background-color:#e8f5e9;");
-                    case "Pendiente" -> setStyle("-fx-background-color:#fde8e8;");
-                    case "Parcial"   -> setStyle("-fx-background-color:#fff8e1;");
-                    default          -> setStyle("");
-                }
-            }
-        });
-
-        // Filtro en tiempo real
-        FilteredList<deudaCompraModelo> listaFiltrada = new FilteredList<>(listaDeudas, p -> true);
-        if (txtBuscarTabla != null) {
-            txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-                    listaFiltrada.setPredicate(d -> {
-                        if (newVal == null || newVal.isBlank()) return true;
-                        String f = newVal.toLowerCase();
-                        return d.getRncSuplidor().toLowerCase().contains(f)
-                                || d.getEstado().toLowerCase().contains(f)
-                                || d.getNumeroOrden().toLowerCase().contains(f);
-                    })
-            );
-        }
-        tablaDeudas.setItems(listaFiltrada);
-
-        // Click en deuda → cargar formulario y abonos
-        tablaDeudas.getSelectionModel().selectedItemProperty().addListener(
-                (obs, old, sel) -> {
-                    if (sel != null) {
-                        cargarEnFormulario(sel);
-                        cargarAbonos(sel.getIdDeuda());
+        // Color por estado y filtro en tabla deudas (solo si existe)
+        if (tablaDeudas != null) {
+            tablaDeudas.setRowFactory(tv -> new TableRow<>() {
+                @Override
+                protected void updateItem(deudaCompraModelo d, boolean empty) {
+                    super.updateItem(d, empty);
+                    if (d == null || empty) { setStyle(""); return; }
+                    switch (d.getEstado()) {
+                        case "Saldado"   -> setStyle("-fx-background-color:#e8f5e9;");
+                        case "Pendiente" -> setStyle("-fx-background-color:#fde8e8;");
+                        case "Parcial"   -> setStyle("-fx-background-color:#fff8e1;");
+                        default          -> setStyle("");
                     }
                 }
-        );
+            });
+
+            FilteredList<deudaCompraModelo> listaFiltrada = new FilteredList<>(listaDeudas, p -> true);
+            if (txtBuscarTabla != null) {
+                txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
+                        listaFiltrada.setPredicate(d -> {
+                            if (newVal == null || newVal.isBlank()) return true;
+                            String f = newVal.toLowerCase();
+                            return d.getRncSuplidor().toLowerCase().contains(f)
+                                    || d.getEstado().toLowerCase().contains(f)
+                                    || d.getNumeroOrden().toLowerCase().contains(f);
+                        })
+                );
+            }
+            tablaDeudas.setItems(listaFiltrada);
+
+            tablaDeudas.getSelectionModel().selectedItemProperty().addListener(
+                    (obs, old, sel) -> {
+                        if (sel != null) {
+                            cargarEnFormulario(sel);
+                            cargarAbonos(sel.getIdDeuda());
+                        }
+                    }
+            );
+        }
 
         cargarDeudas();
         generarSiguienteId();
@@ -302,8 +304,10 @@ public class pagoCompraController {
         }
         for (deudaCompraModelo d : listaDeudas) {
             if (d.getIdDeuda() == idBuscar) {
-                tablaDeudas.getSelectionModel().select(d);
-                tablaDeudas.scrollTo(d);
+                if (tablaDeudas != null) {
+                    tablaDeudas.getSelectionModel().select(d);
+                    tablaDeudas.scrollTo(d);
+                }
                 cargarEnFormulario(d);
                 cargarAbonos(d.getIdDeuda());
                 return;
@@ -314,9 +318,13 @@ public class pagoCompraController {
 
     @FXML
     private void fnEliminar() {
-        deudaCompraModelo sel = tablaDeudas.getSelectionModel().getSelectedItem();
+        deudaCompraModelo sel = (tablaDeudas != null)
+                ? tablaDeudas.getSelectionModel().getSelectedItem()
+                : listaDeudas.stream()
+                    .filter(d -> String.valueOf(d.getIdDeuda()).equals(txtIdDeuda.getText().trim()))
+                    .findFirst().orElse(null);
         if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una deuda para eliminar.");
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una deuda por ID para poder eliminarla.");
             return;
         }
         if (!"Pendiente".equals(sel.getEstado())) {

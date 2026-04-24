@@ -83,18 +83,20 @@ public class ventaController {
         // Calcular ITBIS y total cuando cambia el descuento
         txtDescuento.textProperty().addListener((obs, o, n) -> calcularMontos());
 
-        // Columnas historial ventas
-        colId.setCellValueFactory(d       -> d.getValue().idVentaProperty());
-        colCliente.setCellValueFactory(d  -> d.getValue().clienteProperty());
-        colFecha.setCellValueFactory(d    -> d.getValue().fechaVentaProperty());
-        colSubtotal.setCellValueFactory(d -> d.getValue().subtotalProperty());
-        colItbis.setCellValueFactory(d    -> d.getValue().itbisProperty());
-        colDescuento.setCellValueFactory(d-> d.getValue().descuentoProperty());
-        colTotal.setCellValueFactory(d    -> d.getValue().montoTotalProperty());
-        colPagado.setCellValueFactory(d   -> d.getValue().montoPagadoProperty());
-        colBalance.setCellValueFactory(d  -> d.getValue().balancePendienteProperty());
-        colEstado.setCellValueFactory(d   -> d.getValue().estadoPagoProperty());
-        colNcf.setCellValueFactory(d      -> d.getValue().ncfProperty());
+        // Columnas historial ventas (solo si la tabla existe en esta vista)
+        if (tablaVentas != null) {
+            colId.setCellValueFactory(d       -> d.getValue().idVentaProperty());
+            colCliente.setCellValueFactory(d  -> d.getValue().clienteProperty());
+            colFecha.setCellValueFactory(d    -> d.getValue().fechaVentaProperty());
+            colSubtotal.setCellValueFactory(d -> d.getValue().subtotalProperty());
+            colItbis.setCellValueFactory(d    -> d.getValue().itbisProperty());
+            colDescuento.setCellValueFactory(d-> d.getValue().descuentoProperty());
+            colTotal.setCellValueFactory(d    -> d.getValue().montoTotalProperty());
+            colPagado.setCellValueFactory(d   -> d.getValue().montoPagadoProperty());
+            colBalance.setCellValueFactory(d  -> d.getValue().balancePendienteProperty());
+            colEstado.setCellValueFactory(d   -> d.getValue().estadoPagoProperty());
+            colNcf.setCellValueFactory(d      -> d.getValue().ncfProperty());
+        }
 
         // Columnas pagos
         colPagoId.setCellValueFactory(d    -> d.getValue().idPagoProperty());
@@ -104,43 +106,45 @@ public class ventaController {
         colPagoRef.setCellValueFactory(d   -> d.getValue().numeroReferenciaProperty());
         tablaPagos.setItems(listaPagos);
 
-        // Color por estado
-        tablaVentas.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(ventaModelo v, boolean empty) {
-                super.updateItem(v, empty);
-                if (v == null || empty) { setStyle(""); return; }
-                switch (v.getEstadoPago()) {
-                    case "Pagado"   -> setStyle("-fx-background-color:#e8f5e9;");
-                    case "Pendiente"-> setStyle("-fx-background-color:#fde8e8;");
-                    case "Parcial"  -> setStyle("-fx-background-color:#fff8e1;");
-                    default         -> setStyle("");
-                }
-            }
-        });
-
-        FilteredList<ventaModelo> listaFiltrada = new FilteredList<>(listaVentas, p -> true);
-        if (txtBuscarTabla != null) {
-            txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-                    listaFiltrada.setPredicate(v -> {
-                        if (newVal == null || newVal.isBlank()) return true;
-                        String f = newVal.toLowerCase();
-                        return v.getCliente().toLowerCase().contains(f)
-                                || v.getEstadoPago().toLowerCase().contains(f)
-                                || v.getNcf().toLowerCase().contains(f);
-                    })
-            );
-        }
-        tablaVentas.setItems(listaFiltrada);
-
-        tablaVentas.getSelectionModel().selectedItemProperty().addListener(
-                (obs, old, sel) -> {
-                    if (sel != null) {
-                        cargarEnFormulario(sel);
-                        cargarPagos(sel.getIdVenta());
+        // Color por estado y filtro (solo si la tabla existe)
+        if (tablaVentas != null) {
+            tablaVentas.setRowFactory(tv -> new TableRow<>() {
+                @Override
+                protected void updateItem(ventaModelo v, boolean empty) {
+                    super.updateItem(v, empty);
+                    if (v == null || empty) { setStyle(""); return; }
+                    switch (v.getEstadoPago()) {
+                        case "Pagado"   -> setStyle("-fx-background-color:#e8f5e9;");
+                        case "Pendiente"-> setStyle("-fx-background-color:#fde8e8;");
+                        case "Parcial"  -> setStyle("-fx-background-color:#fff8e1;");
+                        default         -> setStyle("");
                     }
                 }
-        );
+            });
+
+            FilteredList<ventaModelo> listaFiltrada = new FilteredList<>(listaVentas, p -> true);
+            if (txtBuscarTabla != null) {
+                txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
+                        listaFiltrada.setPredicate(v -> {
+                            if (newVal == null || newVal.isBlank()) return true;
+                            String f = newVal.toLowerCase();
+                            return v.getCliente().toLowerCase().contains(f)
+                                    || v.getEstadoPago().toLowerCase().contains(f)
+                                    || v.getNcf().toLowerCase().contains(f);
+                        })
+                );
+            }
+            tablaVentas.setItems(listaFiltrada);
+
+            tablaVentas.getSelectionModel().selectedItemProperty().addListener(
+                    (obs, old, sel) -> {
+                        if (sel != null) {
+                            cargarEnFormulario(sel);
+                            cargarPagos(sel.getIdVenta());
+                        }
+                    }
+            );
+        }
 
         cargarVentas();
         generarSiguienteId();
@@ -390,8 +394,10 @@ public class ventaController {
         }
         for (ventaModelo v : listaVentas) {
             if (v.getIdVenta() == idBuscar) {
-                tablaVentas.getSelectionModel().select(v);
-                tablaVentas.scrollTo(v);
+                if (tablaVentas != null) {
+                    tablaVentas.getSelectionModel().select(v);
+                    tablaVentas.scrollTo(v);
+                }
                 cargarEnFormulario(v);
                 cargarPagos(v.getIdVenta());
                 return;
@@ -402,9 +408,13 @@ public class ventaController {
 
     @FXML
     private void fnEliminar() {
-        ventaModelo sel = tablaVentas.getSelectionModel().getSelectedItem();
+        ventaModelo sel = (tablaVentas != null)
+                ? tablaVentas.getSelectionModel().getSelectedItem()
+                : listaVentas.stream()
+                    .filter(v -> String.valueOf(v.getIdVenta()).equals(txtIdVenta.getText().trim()))
+                    .findFirst().orElse(null);
         if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una venta para eliminar.");
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una venta por ID para poder eliminarla.");
             return;
         }
         if (!"Pendiente".equals(sel.getEstadoPago())) {

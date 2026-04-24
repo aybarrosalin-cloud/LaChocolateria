@@ -65,15 +65,17 @@ public class solicitudProduccionController {
         cbPrioridad.setItems(FXCollections.observableArrayList("Alta", "Media", "Baja"));
         cbEstado.setItems(FXCollections.observableArrayList("Pendiente", "En proceso", "Completada", "Cancelada"));
 
-        // Columnas historial
-        colId.setCellValueFactory(d              -> d.getValue().idProperty());
-        colFechaSolicitud.setCellValueFactory(d  -> d.getValue().fechaSolicitudProperty());
-        colFechaProduccion.setCellValueFactory(d -> d.getValue().fechaProduccionProperty());
-        colResponsable.setCellValueFactory(d     -> d.getValue().responsableProperty());
-        colPrioridad.setCellValueFactory(d       -> d.getValue().prioridadProperty());
-        colEstado.setCellValueFactory(d          -> d.getValue().estadoProperty());
-        colProductos.setCellValueFactory(d       -> new SimpleStringProperty(
-                cargarResumenProductos(d.getValue().getId())));
+        // Columnas historial (solo si la tabla existe en esta vista)
+        if (tablaSolicitudes != null) {
+            colId.setCellValueFactory(d              -> d.getValue().idProperty());
+            colFechaSolicitud.setCellValueFactory(d  -> d.getValue().fechaSolicitudProperty());
+            colFechaProduccion.setCellValueFactory(d -> d.getValue().fechaProduccionProperty());
+            colResponsable.setCellValueFactory(d     -> d.getValue().responsableProperty());
+            colPrioridad.setCellValueFactory(d       -> d.getValue().prioridadProperty());
+            colEstado.setCellValueFactory(d          -> d.getValue().estadoProperty());
+            colProductos.setCellValueFactory(d       -> new SimpleStringProperty(
+                    cargarResumenProductos(d.getValue().getId())));
+        }
 
         // Columnas detalle
         colDetCodigo.setCellValueFactory(d    -> d.getValue().codigoProductoProperty());
@@ -81,45 +83,45 @@ public class solicitudProduccionController {
         colDetCantidad.setCellValueFactory(d  -> d.getValue().cantidadProperty());
         tablaDetalle.setItems(listaDetalle);
 
-        // Color por estado en historial
-        tablaSolicitudes.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(solicitudProduccionModelo s, boolean empty) {
-                super.updateItem(s, empty);
-                if (s == null || empty) { setStyle(""); return; }
-                switch (s.getEstado()) {
-                    case "Completada" -> setStyle("-fx-background-color:#e8f5e9;");
-                    case "Cancelada"  -> setStyle("-fx-background-color:#fde8e8;");
-                    case "En proceso" -> setStyle("-fx-background-color:#fff8e1;");
-                    default           -> setStyle("");
-                }
-            }
-        });
-
-        // Filtro en tiempo real
-        FilteredList<solicitudProduccionModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        if (txtBuscarTabla != null) {
-            txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-                    listaFiltrada.setPredicate(s -> {
-                        if (newVal == null || newVal.isBlank()) return true;
-                        String f = newVal.toLowerCase();
-                        return s.getResponsable().toLowerCase().contains(f)
-                                || s.getEstado().toLowerCase().contains(f)
-                                || s.getPrioridad().toLowerCase().contains(f);
-                    })
-            );
-        }
-        tablaSolicitudes.setItems(listaFiltrada);
-
-        // Click en historial → cargar en formulario y detalle
-        tablaSolicitudes.getSelectionModel().selectedItemProperty().addListener(
-                (obs, old, sel) -> {
-                    if (sel != null) {
-                        cargarEnFormulario(sel);
-                        cargarDetalle(sel.getId());
+        // Color por estado y filtro en historial (solo si existe)
+        if (tablaSolicitudes != null) {
+            tablaSolicitudes.setRowFactory(tv -> new TableRow<>() {
+                @Override
+                protected void updateItem(solicitudProduccionModelo s, boolean empty) {
+                    super.updateItem(s, empty);
+                    if (s == null || empty) { setStyle(""); return; }
+                    switch (s.getEstado()) {
+                        case "Completada" -> setStyle("-fx-background-color:#e8f5e9;");
+                        case "Cancelada"  -> setStyle("-fx-background-color:#fde8e8;");
+                        case "En proceso" -> setStyle("-fx-background-color:#fff8e1;");
+                        default           -> setStyle("");
                     }
                 }
-        );
+            });
+
+            FilteredList<solicitudProduccionModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
+            if (txtBuscarTabla != null) {
+                txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
+                        listaFiltrada.setPredicate(s -> {
+                            if (newVal == null || newVal.isBlank()) return true;
+                            String f = newVal.toLowerCase();
+                            return s.getResponsable().toLowerCase().contains(f)
+                                    || s.getEstado().toLowerCase().contains(f)
+                                    || s.getPrioridad().toLowerCase().contains(f);
+                        })
+                );
+            }
+            tablaSolicitudes.setItems(listaFiltrada);
+
+            tablaSolicitudes.getSelectionModel().selectedItemProperty().addListener(
+                    (obs, old, sel) -> {
+                        if (sel != null) {
+                            cargarEnFormulario(sel);
+                            cargarDetalle(sel.getId());
+                        }
+                    }
+            );
+        }
 
         cargarSolicitudes();
         generarSiguienteId();
@@ -348,9 +350,13 @@ public class solicitudProduccionController {
     // ── Eliminar solicitud + detalle ──────────────────────────────────────────
     @FXML
     private void fnEliminar() {
-        solicitudProduccionModelo sel = tablaSolicitudes.getSelectionModel().getSelectedItem();
+        solicitudProduccionModelo sel = (tablaSolicitudes != null)
+                ? tablaSolicitudes.getSelectionModel().getSelectedItem()
+                : lista.stream()
+                    .filter(s -> String.valueOf(s.getId()).equals(txtIdSolicitud.getText().trim()))
+                    .findFirst().orElse(null);
         if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una solicitud de la tabla para eliminar.");
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una solicitud por ID para poder eliminarla.");
             return;
         }
 
@@ -401,8 +407,10 @@ public class solicitudProduccionController {
 
         for (solicitudProduccionModelo s : lista) {
             if (s.getId() == idBuscar) {
-                tablaSolicitudes.getSelectionModel().select(s);
-                tablaSolicitudes.scrollTo(s);
+                if (tablaSolicitudes != null) {
+                    tablaSolicitudes.getSelectionModel().select(s);
+                    tablaSolicitudes.scrollTo(s);
+                }
                 cargarEnFormulario(s);
                 cargarDetalle(s.getId());
                 return;
@@ -414,9 +422,13 @@ public class solicitudProduccionController {
     // ── Convertir a Orden de Producción ───────────────────────────────────────
     @FXML
     private void convertirAOrden() {
-        solicitudProduccionModelo sel = tablaSolicitudes.getSelectionModel().getSelectedItem();
+        solicitudProduccionModelo sel = (tablaSolicitudes != null)
+                ? tablaSolicitudes.getSelectionModel().getSelectedItem()
+                : lista.stream()
+                    .filter(s -> String.valueOf(s.getId()).equals(txtIdSolicitud.getText().trim()))
+                    .findFirst().orElse(null);
         if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una solicitud para convertir.");
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una solicitud por ID para convertirla.");
             return;
         }
         if ("Completada".equals(sel.getEstado()) || "Cancelada".equals(sel.getEstado())) {
