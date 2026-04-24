@@ -10,7 +10,9 @@ import java.io.InputStream;
 public class CargarPerfil {
 
     private static final String CARPETA_CLASSPATH = "/com/example/chocolateria/";
-    private static final String FOTO_DEFAULT       = CARPETA_CLASSPATH + "perfilr.png";
+    // perfil.png = avatar genérico (sin usuario específico)
+    // perfilr.png = foto de Rosalin Aybar (solo se carga si la DB lo indica)
+    private static final String FOTO_DEFAULT       = CARPETA_CLASSPATH + "perfil.png";
 
     public static void aplicar(Label lblUsuario, ImageView imgPerfil) {
         SesionManager sesion = SesionManager.getInstancia();
