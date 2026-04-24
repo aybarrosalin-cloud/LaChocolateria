@@ -197,33 +197,8 @@
                             <Button mnemonicParsing="false" onAction="#fnDeshabilitar" prefHeight="30" prefWidth="115" style="-fx-background-color:#7a5c00; -fx-text-fill:white;                                            -fx-font-weight:bold; -fx-background-radius:12;" text="Deshabilitar">
                                 <font><Font size="11.0" /></font>
                             </Button>
+                            <Button prefHeight="36" prefWidth="140" onAction="#irAConsultaClientes" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-cursor:hand; -fx-font-size:11px;" text="📋 Ver Consulta" />
                         </HBox>
-                    </VBox>
-
-
-                    <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12;                                  -fx-border-color:#C5A8E8; -fx-border-radius:12;                                  -fx-padding:12 16 12 16;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
-
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Listado de Clientes" />
-                            <Region HBox.hgrow="ALWAYS" />
-                            <TextField fx:id="txtBuscarTabla" prefWidth="185" promptText="🔍 Buscar cliente…" style="-fx-background-radius:15; -fx-border-radius:15;                                               -fx-border-color:#C5A8E8;" />
-                        </HBox>
-
-                        <TableView fx:id="tablaClientes" prefHeight="220" style="-fx-background-radius:10; -fx-border-radius:10;                                           -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
-                                <TableColumn fx:id="colNombre" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Nombre" />
-                                <TableColumn fx:id="colApellido" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Apellido" />
-                                <TableColumn fx:id="colCedula" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Cédula" />
-                                <TableColumn fx:id="colEmail" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Correo" />
-                                <TableColumn fx:id="colTelefono" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Teléfono" />
-                                <TableColumn fx:id="colDireccion" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Dirección" />
-                                <TableColumn fx:id="colEstado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" />
-                            </columns>
-                            <columnResizePolicy>
-                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                            </columnResizePolicy>
-                        </TableView>
                     </VBox>
 
                 </VBox>

@@ -173,13 +173,13 @@ public class inicioController {
     @FXML private void irARegistroSuplidor(ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
 
-    @FXML private void irAReportesVentas(ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
 
     @FXML private void irAMantenimientoMaquinaria(ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAGestionUsuarios(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionUsuarios.fxml", e); }
 
     @FXML private void salir(ActionEvent e)                  { Navegacion.salir(e); }
@@ -189,5 +189,5 @@ public class inicioController {
     @FXML private void cardInventario(ActionEvent e) { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
     @FXML private void cardCompras(ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void cardRegistros(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
-    @FXML private void cardReportes(ActionEvent e)   { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void cardReportes(ActionEvent e)   { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
 }

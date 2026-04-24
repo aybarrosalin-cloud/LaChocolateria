@@ -9,11 +9,11 @@ public class consultaApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println(getClass().getResource("/vistasFinales/vistaConsultas.fxml"));
-        System.out.println(getClass().getResource("/vistasFinales/vistaConsultas.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaConsultasGenerales.fxml"));
+        System.out.println(getClass().getResource("/vistasFinales/vistaConsultasGenerales.fxml"));
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/vistasFinales/vistaConsultas.fxml")
+                getClass().getResource("/vistasFinales/vistaConsultasGenerales.fxml")
         );
 
         Scene scene = new Scene(loader.load());

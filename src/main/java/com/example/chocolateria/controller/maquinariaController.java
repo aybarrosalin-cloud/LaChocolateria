@@ -3,8 +3,6 @@ package com.example.chocolateria.controller;
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.maquinariaModelo;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -24,21 +22,10 @@ public class maquinariaController {
     @FXML private DatePicker       dpFechaAdquisicion;
     @FXML private ComboBox<String> cbEstado;
     @FXML private ComboBox<String> cbResponsable;
-    @FXML private TextField        txtBuscarTabla;
 
-    @FXML private TableView<maquinariaModelo>                    tablaMaquinarias;
-    @FXML private TableColumn<maquinariaModelo, Number>          colId;
-    @FXML private TableColumn<maquinariaModelo, String>          colNombre;
-    @FXML private TableColumn<maquinariaModelo, String>          colTipo;
-    @FXML private TableColumn<maquinariaModelo, String>          colMarca;
-    @FXML private TableColumn<maquinariaModelo, String>          colSerie;
-    @FXML private TableColumn<maquinariaModelo, LocalDate>       colFecha;
-    @FXML private TableColumn<maquinariaModelo, String>          colEstado;
-    @FXML private TableColumn<maquinariaModelo, String>          colResponsable;
-
-    private final ObservableList<maquinariaModelo> lista = FXCollections.observableArrayList();
     private final conexion con = new conexion();
     private final Map<String, Integer> mapaResponsables = new HashMap<>();
+    private maquinariaModelo maquinariaCargada = null;
 
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
@@ -70,50 +57,7 @@ public class maquinariaController {
         ));
 
         cargarResponsables();
-
-        colId.setCellValueFactory(d          -> d.getValue().idMaquinariaProperty());
-        colNombre.setCellValueFactory(d      -> d.getValue().nombreProperty());
-        colTipo.setCellValueFactory(d        -> d.getValue().tipoProperty());
-        colMarca.setCellValueFactory(d       -> d.getValue().marcaModeloProperty());
-        colSerie.setCellValueFactory(d       -> d.getValue().numeroSerieProperty());
-        colFecha.setCellValueFactory(d       -> d.getValue().fechaAdquisicionProperty());
-        colEstado.setCellValueFactory(d      -> d.getValue().estadoProperty());
-        colResponsable.setCellValueFactory(d -> d.getValue().responsableProperty());
-
-        // Color por estado
-        tablaMaquinarias.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(maquinariaModelo m, boolean empty) {
-                super.updateItem(m, empty);
-                if (m == null || empty) { setStyle(""); return; }
-                switch (m.getEstado()) {
-                    case "Activo"             -> setStyle("-fx-background-color:#e8f5e9;");
-                    case "En mantenimiento"   -> setStyle("-fx-background-color:#fff8e1;");
-                    case "Fuera de servicio"  -> setStyle("-fx-background-color:#fde8e8;");
-                    case "Retirado"           -> setStyle("-fx-background-color:#eeeeee;");
-                    default                   -> setStyle("");
-                }
-            }
-        });
-
-        FilteredList<maquinariaModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-            listaFiltrada.setPredicate(m -> {
-                if (newVal == null || newVal.isBlank()) return true;
-                String f = newVal.toLowerCase();
-                return m.getNombre().toLowerCase().contains(f)
-                    || m.getTipo().toLowerCase().contains(f)
-                    || m.getEstado().toLowerCase().contains(f)
-                    || m.getResponsable().toLowerCase().contains(f);
-            })
-        );
-        tablaMaquinarias.setItems(listaFiltrada);
-
-        tablaMaquinarias.getSelectionModel().selectedItemProperty().addListener(
-            (obs, old, sel) -> { if (sel != null) cargarEnFormulario(sel); }
-        );
-
-        cargarMaquinarias();
+        generarSiguienteId();
     }
 
     private void cargarResponsables() {
@@ -155,15 +99,6 @@ public class maquinariaController {
             ps.setString(8, cbResponsable.getValue() != null ? cbResponsable.getValue() : "");
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            int nuevoId = rs.next() ? rs.getInt(1) : 0;
-
-            lista.add(0, new maquinariaModelo(nuevoId,
-                txtNombre.getText().trim(), cbTipo.getValue(),
-                txtMarcaModelo.getText().trim(), txtNumeroSerie.getText().trim(),
-                dpFechaAdquisicion.getValue(), cbEstado.getValue(),
-                idResponsable, cbResponsable.getValue() != null ? cbResponsable.getValue() : ""));
-
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Maquinaria registrada correctamente.");
             limpiar();
 
@@ -174,9 +109,8 @@ public class maquinariaController {
 
     @FXML
     private void fnEditar() {
-        maquinariaModelo sel = tablaMaquinarias.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una maquinaria para editar.");
+        if (maquinariaCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un registro por ID primero.");
             return;
         }
         if (!validarCampos()) return;
@@ -198,19 +132,9 @@ public class maquinariaController {
             ps.setString(6, cbEstado.getValue());
             ps.setObject(7, idResponsable > 0 ? idResponsable : null);
             ps.setString(8, cbResponsable.getValue() != null ? cbResponsable.getValue() : "");
-            ps.setInt(9, sel.getIdMaquinaria());
+            ps.setInt(9, maquinariaCargada.getIdMaquinaria());
             ps.executeUpdate();
 
-            sel.setNombre(txtNombre.getText().trim());
-            sel.setTipo(cbTipo.getValue());
-            sel.setMarcaModelo(txtMarcaModelo.getText().trim());
-            sel.setNumeroSerie(txtNumeroSerie.getText().trim());
-            sel.setFechaAdquisicion(dpFechaAdquisicion.getValue());
-            sel.setEstado(cbEstado.getValue());
-            sel.setIdResponsable(idResponsable);
-            sel.setResponsable(cbResponsable.getValue() != null ? cbResponsable.getValue() : "");
-
-            tablaMaquinarias.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Maquinaria actualizada correctamente.");
             limpiar();
 
@@ -221,25 +145,23 @@ public class maquinariaController {
 
     @FXML
     private void fnEliminar() {
-        maquinariaModelo sel = tablaMaquinarias.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una maquinaria para eliminar.");
+        if (maquinariaCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un registro por ID primero.");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar eliminación");
         confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar la maquinaria " + sel.getNombre() + "?");
+        confirm.setContentText("¿Eliminar la maquinaria " + maquinariaCargada.getNombre() + "?");
 
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion();
                      PreparedStatement ps = conn.prepareStatement(
                          "DELETE FROM tbl_maquinaria WHERE id_maquinaria=?")) {
-                    ps.setInt(1, sel.getIdMaquinaria());
+                    ps.setInt(1, maquinariaCargada.getIdMaquinaria());
                     ps.executeUpdate();
-                    lista.remove(sel);
                     mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Maquinaria eliminada correctamente.");
                     limpiar();
                 } catch (Exception e) {
@@ -264,16 +186,34 @@ public class maquinariaController {
             return;
         }
 
-        for (maquinariaModelo m : lista) {
-            if (m.getIdMaquinaria() == idBuscar) {
-                tablaMaquinarias.getSelectionModel().select(m);
-                tablaMaquinarias.scrollTo(m);
-                cargarEnFormulario(m);
-                return;
+        String sql = "SELECT id_maquinaria, nombre, tipo, marca_modelo, numero_serie, " +
+                     "fecha_adquisicion, estado, id_responsable, responsable " +
+                     "FROM tbl_maquinaria WHERE id_maquinaria = ?";
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idBuscar);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Date d = rs.getDate("fecha_adquisicion");
+                cargarEnFormulario(new maquinariaModelo(
+                    rs.getInt("id_maquinaria"),
+                    rs.getString("nombre"),
+                    rs.getString("tipo"),
+                    rs.getString("marca_modelo")  != null ? rs.getString("marca_modelo")  : "",
+                    rs.getString("numero_serie")  != null ? rs.getString("numero_serie")  : "",
+                    d != null ? d.toLocalDate() : null,
+                    rs.getString("estado"),
+                    rs.getInt("id_responsable"),
+                    rs.getString("responsable")   != null ? rs.getString("responsable")   : ""
+                ));
+                mostrarAlerta(Alert.AlertType.INFORMATION, "Encontrado", "Maquinaria encontrada y cargada en el formulario.");
+            } else {
+                mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
+                    "No existe una maquinaria con el ID " + idBuscar + ".");
             }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error de búsqueda", e.getMessage());
         }
-        mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
-            "No existe una maquinaria con el ID " + idBuscar + ".");
     }
 
     @FXML
@@ -286,37 +226,12 @@ public class maquinariaController {
         dpFechaAdquisicion.setValue(null);
         cbEstado.setValue(null);
         cbResponsable.setValue(null);
-        tablaMaquinarias.getSelectionModel().clearSelection();
-    }
-
-    private void cargarMaquinarias() {
-        lista.clear();
-        String sql = "SELECT id_maquinaria, nombre, tipo, marca_modelo, numero_serie, " +
-                     "fecha_adquisicion, estado, id_responsable, responsable " +
-                     "FROM tbl_maquinaria ORDER BY nombre";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Date d = rs.getDate("fecha_adquisicion");
-                lista.add(new maquinariaModelo(
-                    rs.getInt("id_maquinaria"),
-                    rs.getString("nombre"),
-                    rs.getString("tipo"),
-                    rs.getString("marca_modelo")  != null ? rs.getString("marca_modelo")  : "",
-                    rs.getString("numero_serie")  != null ? rs.getString("numero_serie")  : "",
-                    d != null ? d.toLocalDate() : null,
-                    rs.getString("estado"),
-                    rs.getInt("id_responsable"),
-                    rs.getString("responsable")   != null ? rs.getString("responsable")   : ""
-                ));
-            }
-        } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar maquinarias", e.getMessage());
-        }
+        maquinariaCargada = null;
+        generarSiguienteId();
     }
 
     private void cargarEnFormulario(maquinariaModelo m) {
+        this.maquinariaCargada = m;
         txtId.setText(String.valueOf(m.getIdMaquinaria()));
         txtNombre.setText(m.getNombre());
         cbTipo.setValue(m.getTipo());
@@ -325,6 +240,19 @@ public class maquinariaController {
         dpFechaAdquisicion.setValue(m.getFechaAdquisicion());
         cbEstado.setValue(m.getEstado());
         cbResponsable.setValue(m.getResponsable());
+    }
+
+    private void generarSiguienteId() {
+        String sql = "SELECT ISNULL(MAX(id_maquinaria), 0) + 1 AS siguiente FROM tbl_maquinaria";
+        try (Connection c = con.establecerConexion();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            if (rs.next()) txtId.setText(String.valueOf(rs.getInt("siguiente")));
+
+        } catch (SQLException e) {
+            txtId.setText("1");
+        }
     }
 
     private boolean validarCampos() {
@@ -368,11 +296,12 @@ public class maquinariaController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAConsultaMaquinarias(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaConsultaMaquinarias.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }

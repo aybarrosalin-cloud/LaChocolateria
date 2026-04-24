@@ -2,17 +2,14 @@ package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.mantenimientoMaquinariaModelo;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public class mantenimientoMaquinariaController {
 
@@ -25,28 +22,10 @@ public class mantenimientoMaquinariaController {
     @FXML private ComboBox<String> cbEstadoMaquina;
     @FXML private ComboBox<String> cbTipoMantenimiento;
     @FXML private TextArea         taObservaciones;
-    @FXML private TextField        txtBuscarTabla;
     @FXML private Label            lblAlerta;
 
-    @FXML private TableView<mantenimientoMaquinariaModelo>              tablaMantenimientos;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, Number>    colId;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, LocalDate> colFecha;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, LocalDate> colProximo;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, String>    colMaquina;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, String>    colTecnico;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, Number>    colCosto;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, String>    colEstadoMaquina;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, String>    colTipoMantenimiento;
-    @FXML private TableColumn<mantenimientoMaquinariaModelo, String>    colObservaciones;
-
-    @FXML private TableView<ObservableList<String>>           tablaResumen;
-    @FXML private TableColumn<ObservableList<String>, String> colResumenMaquina;
-    @FXML private TableColumn<ObservableList<String>, String> colResumenTotal;
-    @FXML private TableColumn<ObservableList<String>, String> colResumenUltimo;
-    @FXML private TableColumn<ObservableList<String>, String> colResumenProximo;
-
-    private final ObservableList<mantenimientoMaquinariaModelo> lista = FXCollections.observableArrayList();
     private final conexion con = new conexion();
+    private mantenimientoMaquinariaModelo mantenimientoCargado = null;
 
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
@@ -69,7 +48,6 @@ public class mantenimientoMaquinariaController {
             try (Connection conn = con.establecerConexion();
                  PreparedStatement ps = conn.prepareStatement(
                          "SELECT tecnico FROM tbl_asignacion_tecnico WHERE maquina = ?")) {
-
                 ps.setString(1, newVal);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
@@ -77,64 +55,11 @@ public class mantenimientoMaquinariaController {
                 } else {
                     cbTecnico.setValue(null);
                 }
-
             } catch (Exception e) {
                 mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo cargar el técnico asignado.");
             }
         });
 
-        colId.setCellValueFactory(d                -> d.getValue().idProperty());
-        colFecha.setCellValueFactory(d             -> d.getValue().fechaMantenimientoProperty());
-        colProximo.setCellValueFactory(d           -> d.getValue().fechaProximoMantenimientoProperty());
-        colMaquina.setCellValueFactory(d           -> d.getValue().maquinaProperty());
-        colTecnico.setCellValueFactory(d           -> d.getValue().tecnicoProperty());
-        colCosto.setCellValueFactory(d             -> d.getValue().costoProperty());
-        colEstadoMaquina.setCellValueFactory(d     -> d.getValue().estadoMaquinaProperty());
-        colTipoMantenimiento.setCellValueFactory(d -> d.getValue().tipoMantenimientoProperty());
-        colObservaciones.setCellValueFactory(d     -> d.getValue().observacionesProperty());
-
-        tablaMantenimientos.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(mantenimientoMaquinariaModelo m, boolean empty) {
-                super.updateItem(m, empty);
-                if (m == null || empty) {
-                    setStyle("");
-                    return;
-                }
-                LocalDate fecha = m.getFechaMantenimiento();
-                if (fecha != null && ChronoUnit.DAYS.between(fecha, LocalDate.now()) > 30) {
-                    setStyle("-fx-background-color:#fde8e8;");
-                } else {
-                    setStyle("");
-                }
-            }
-        });
-
-        FilteredList<mantenimientoMaquinariaModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        if (txtBuscarTabla != null) {
-            txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-                    listaFiltrada.setPredicate(m -> {
-                        if (newVal == null || newVal.isBlank()) return true;
-                        String f = newVal.toLowerCase();
-                        return m.getMaquina().toLowerCase().contains(f)
-                                || m.getTecnico().toLowerCase().contains(f)
-                                || m.getTipoMantenimiento().toLowerCase().contains(f);
-                    })
-            );
-        }
-        tablaMantenimientos.setItems(listaFiltrada);
-
-        tablaMantenimientos.getSelectionModel().selectedItemProperty().addListener(
-                (obs, old, sel) -> { if (sel != null) cargarEnFormulario(sel); }
-        );
-
-        colResumenMaquina.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().get(0)));
-        colResumenTotal.setCellValueFactory(d   -> new SimpleStringProperty(d.getValue().get(1)));
-        colResumenUltimo.setCellValueFactory(d  -> new SimpleStringProperty(d.getValue().get(2)));
-        colResumenProximo.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().get(3)));
-
-        cargarMantenimientos();
-        cargarResumen();
         verificarAlertas();
     }
 
@@ -162,66 +87,23 @@ public class mantenimientoMaquinariaController {
         }
     }
 
-    private void cargarMantenimientos() {
-        lista.clear();
-        String sql = "SELECT id, fecha_mantenimiento, fecha_proximo_mantenimiento, maquina, tecnico, costo, " +
-                "estado_maquina, tipo_mantenimiento, observaciones " +
-                "FROM tbl_mantenimiento_maquinaria ORDER BY fecha_mantenimiento DESC";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Date dProximo = rs.getDate("fecha_proximo_mantenimiento");
-                lista.add(new mantenimientoMaquinariaModelo(
-                        rs.getInt("id"),
-                        rs.getDate("fecha_mantenimiento").toLocalDate(),
-                        dProximo != null ? dProximo.toLocalDate() : null,
-                        rs.getString("maquina"),
-                        rs.getString("tecnico"),
-                        rs.getDouble("costo"),
-                        rs.getString("estado_maquina"),
-                        rs.getString("tipo_mantenimiento"),
-                        rs.getString("observaciones")
-                ));
-            }
-        } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar", e.getMessage());
-        }
-    }
-
-    private void cargarResumen() {
-        ObservableList<ObservableList<String>> resumen = FXCollections.observableArrayList();
-        String sql = "SELECT maquina, SUM(costo) AS total, MAX(fecha_mantenimiento) AS ultimo, " +
-                "MAX(fecha_proximo_mantenimiento) AS proximo " +
-                "FROM tbl_mantenimiento_maquinaria GROUP BY maquina ORDER BY maquina";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                ObservableList<String> fila = FXCollections.observableArrayList();
-                fila.add(rs.getString("maquina"));
-                fila.add(String.format("RD$ %,.2f", rs.getDouble("total")));
-                fila.add(rs.getDate("ultimo")  != null ? rs.getDate("ultimo").toLocalDate().toString()  : "—");
-                fila.add(rs.getDate("proximo") != null ? rs.getDate("proximo").toLocalDate().toString() : "—");
-                resumen.add(fila);
-            }
-        } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar resumen", e.getMessage());
-        }
-        tablaResumen.setItems(resumen);
-    }
-
     private void verificarAlertas() {
-        long maquinasSinMant = lista.stream()
-                .filter(m -> m.getFechaMantenimiento() != null
-                        && ChronoUnit.DAYS.between(m.getFechaMantenimiento(), LocalDate.now()) > 30)
-                .map(mantenimientoMaquinariaModelo::getMaquina)
-                .distinct()
-                .count();
-
-        lblAlerta.setText(maquinasSinMant > 0
-                ? " " + maquinasSinMant + " máquina(s) sin mantenimiento en más de 30 días"
-                : "");
+        String sql = "SELECT COUNT(DISTINCT maquina) AS cnt FROM tbl_mantenimiento_maquinaria " +
+                "WHERE DATEDIFF(day, fecha_mantenimiento, GETDATE()) > 30";
+        try (Connection conn = con.establecerConexion();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                long cnt = rs.getLong("cnt");
+                if (lblAlerta != null) {
+                    lblAlerta.setText(cnt > 0
+                        ? " " + cnt + " máquina(s) sin mantenimiento en más de 30 días"
+                        : "");
+                }
+            }
+        } catch (Exception ignored) {
+            if (lblAlerta != null) lblAlerta.setText("");
+        }
     }
 
     @FXML
@@ -247,16 +129,6 @@ public class mantenimientoMaquinariaController {
             ps.setString(8, taObservaciones.getText().trim());
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            int nuevoId = rs.next() ? rs.getInt(1) : 0;
-
-            lista.add(0, new mantenimientoMaquinariaModelo(nuevoId,
-                    dpFechaMantenimiento.getValue(), proximo,
-                    cbMaquina.getValue(), cbTecnico.getValue(), costo,
-                    cbEstadoMaquina.getValue(), cbTipoMantenimiento.getValue(),
-                    taObservaciones.getText().trim()));
-
-            cargarResumen();
             verificarAlertas();
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Mantenimiento guardado correctamente.");
             limpiarCampos();
@@ -270,9 +142,8 @@ public class mantenimientoMaquinariaController {
 
     @FXML
     private void fnEditar() {
-        mantenimientoMaquinariaModelo sel = tablaMantenimientos.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona un registro de la tabla para editar.");
+        if (mantenimientoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un registro por ID antes de editar.");
             return;
         }
         if (!validarCampos()) return;
@@ -294,20 +165,9 @@ public class mantenimientoMaquinariaController {
             ps.setString(6, cbEstadoMaquina.getValue());
             ps.setString(7, cbTipoMantenimiento.getValue());
             ps.setString(8, taObservaciones.getText().trim());
-            ps.setInt(9, sel.getId());
+            ps.setInt(9, mantenimientoCargado.getId());
             ps.executeUpdate();
 
-            sel.setFechaMantenimiento(dpFechaMantenimiento.getValue());
-            sel.setFechaProximoMantenimiento(proximo);
-            sel.setMaquina(cbMaquina.getValue());
-            sel.setTecnico(cbTecnico.getValue());
-            sel.setCosto(costo);
-            sel.setEstadoMaquina(cbEstadoMaquina.getValue());
-            sel.setTipoMantenimiento(cbTipoMantenimiento.getValue());
-            sel.setObservaciones(taObservaciones.getText().trim());
-
-            tablaMantenimientos.refresh();
-            cargarResumen();
             verificarAlertas();
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Mantenimiento actualizado correctamente.");
             limpiarCampos();
@@ -321,31 +181,28 @@ public class mantenimientoMaquinariaController {
 
     @FXML
     private void fnEliminar() {
-        mantenimientoMaquinariaModelo sel = tablaMantenimientos.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona un registro de la tabla para eliminar.");
+        if (mantenimientoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un registro por ID antes de eliminar.");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar eliminación");
         confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar el mantenimiento de " + sel.getMaquina() + " del " + sel.getFechaMantenimiento() + "?");
+        confirm.setContentText("¿Eliminar el mantenimiento de " + mantenimientoCargado.getMaquina()
+                + " del " + mantenimientoCargado.getFechaMantenimiento() + "?");
 
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion();
                      PreparedStatement ps = conn.prepareStatement(
                              "DELETE FROM tbl_mantenimiento_maquinaria WHERE id=?")) {
-
-                    ps.setInt(1, sel.getId());
+                    ps.setInt(1, mantenimientoCargado.getId());
                     ps.executeUpdate();
-                    lista.remove(sel);
-                    cargarResumen();
+                    mantenimientoCargado = null;
                     verificarAlertas();
                     mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Registro eliminado correctamente.");
                     limpiarCampos();
-
                 } catch (Exception e) {
                     mostrarAlerta(Alert.AlertType.ERROR, "Error al eliminar", e.getMessage());
                 }
@@ -369,15 +226,6 @@ public class mantenimientoMaquinariaController {
             return;
         }
 
-        for (mantenimientoMaquinariaModelo m : lista) {
-            if (m.getId() == idBuscar) {
-                tablaMantenimientos.getSelectionModel().select(m);
-                tablaMantenimientos.scrollTo(m);
-                cargarEnFormulario(m);
-                return;
-            }
-        }
-
         String sql = "SELECT id, fecha_mantenimiento, fecha_proximo_mantenimiento, maquina, tecnico, costo, " +
                 "estado_maquina, tipo_mantenimiento, observaciones " +
                 "FROM tbl_mantenimiento_maquinaria WHERE id=?";
@@ -388,7 +236,7 @@ public class mantenimientoMaquinariaController {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 Date dProximo = rs.getDate("fecha_proximo_mantenimiento");
-                cargarEnFormulario(new mantenimientoMaquinariaModelo(
+                mantenimientoCargado = new mantenimientoMaquinariaModelo(
                         rs.getInt("id"),
                         rs.getDate("fecha_mantenimiento").toLocalDate(),
                         dProximo != null ? dProximo.toLocalDate() : null,
@@ -397,8 +245,8 @@ public class mantenimientoMaquinariaController {
                         rs.getDouble("costo"),
                         rs.getString("estado_maquina"),
                         rs.getString("tipo_mantenimiento"),
-                        rs.getString("observaciones")
-                ));
+                        rs.getString("observaciones"));
+                cargarEnFormulario(mantenimientoCargado);
                 mostrarAlerta(Alert.AlertType.INFORMATION, "Encontrado", "Registro cargado en el formulario.");
             } else {
                 mostrarAlerta(Alert.AlertType.WARNING, "No encontrado", "No existe un registro con el ID " + idBuscar + ".");
@@ -420,7 +268,7 @@ public class mantenimientoMaquinariaController {
         cbEstadoMaquina.setValue(null);
         cbTipoMantenimiento.setValue(null);
         taObservaciones.clear();
-        tablaMantenimientos.getSelectionModel().clearSelection();
+        mantenimientoCargado = null;
     }
 
     private void cargarEnFormulario(mantenimientoMaquinariaModelo m) {
@@ -442,7 +290,6 @@ public class mantenimientoMaquinariaController {
                 txtCosto.getText().trim().isEmpty()      ||
                 cbEstadoMaquina.getValue() == null       ||
                 cbTipoMantenimiento.getValue() == null) {
-
             mostrarAlerta(Alert.AlertType.WARNING, "Campos vacíos", "Por favor completa todos los campos obligatorios.");
             return false;
         }
@@ -458,6 +305,7 @@ public class mantenimientoMaquinariaController {
     }
 
     // -- Navegacion --
+    @FXML private void irAConsultaMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaConsultaMantenimientoMaquinaria.fxml", e); }
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -474,11 +322,11 @@ public class mantenimientoMaquinariaController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }

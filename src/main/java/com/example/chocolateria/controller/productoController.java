@@ -3,8 +3,6 @@ package com.example.chocolateria.controller;
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.productoModelo;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -18,24 +16,13 @@ public class productoController {
     @FXML private TextField        txtPrecioMayor;
     @FXML private TextArea         txtDescripcion;
     @FXML private ComboBox<String> cbUnidadMedida;
-    @FXML private TextField        txtBuscarTabla;
 
     @FXML private CheckBox chkBombones, chkTabletas, chkTrufas, chkBanos;
     @FXML private CheckBox chkRellenos, chkCoberturas, chkGranolas, chkMateriaPrima, chkEmpaque;
     @FXML private CheckBox chkTerminado, chkSemielaborado, chkInsumo;
     @FXML private CheckBox chkMateriaP, chkEmpaqueT, chkSubproducto;
 
-    @FXML private TableView<productoModelo>           tablaProductos;
-    @FXML private TableColumn<productoModelo, String> colCodigo;
-    @FXML private TableColumn<productoModelo, String> colNombre;
-    @FXML private TableColumn<productoModelo, Number> colPrecioU;
-    @FXML private TableColumn<productoModelo, Number> colPrecioM;
-    @FXML private TableColumn<productoModelo, String> colUnidad;
-    @FXML private TableColumn<productoModelo, String> colCategoria;
-    @FXML private TableColumn<productoModelo, String> colTipo;
-    @FXML private TableColumn<productoModelo, Number> colStock;
-
-    private final ObservableList<productoModelo> lista = FXCollections.observableArrayList();
+    private productoModelo productoCargado = null;
     private final conexion con = new conexion();
 
     @FXML private Label lblUsuario;
@@ -48,37 +35,14 @@ public class productoController {
             "Unidad", "Caja", "Paquete", "Kilogramo", "Gramo",
             "Litro", "Mililitro", "Bolsa", "Barra", "Docena"));
 
-        colCodigo.setCellValueFactory(d    -> d.getValue().codigoProperty());
-        colNombre.setCellValueFactory(d    -> d.getValue().nombreProperty());
-        colPrecioU.setCellValueFactory(d   -> d.getValue().precioUnitarioProperty());
-        colPrecioM.setCellValueFactory(d   -> d.getValue().precioMayorProperty());
-        colUnidad.setCellValueFactory(d    -> d.getValue().unidadMedidaProperty());
-        colCategoria.setCellValueFactory(d -> d.getValue().categoriaProperty());
-        colTipo.setCellValueFactory(d      -> d.getValue().tipoProperty());
-        colStock.setCellValueFactory(d     -> d.getValue().stockProperty());
-
         for (CheckBox cb : new CheckBox[]{chkBombones,chkTabletas,chkTrufas,chkBanos,
                 chkRellenos,chkCoberturas,chkGranolas,chkMateriaPrima,chkEmpaque}) {
             cb.selectedProperty().addListener((obs, old, nv) -> {
-                if (tablaProductos.getSelectionModel().getSelectedItem() == null)
+                if (productoCargado == null)
                     actualizarCodigo();
             });
         }
 
-        FilteredList<productoModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        txtBuscarTabla.textProperty().addListener((obs, o, nv) ->
-            listaFiltrada.setPredicate(p -> {
-                if (nv == null || nv.isBlank()) return true;
-                String f = nv.toLowerCase();
-                return p.getCodigo().toLowerCase().contains(f)
-                    || p.getNombre().toLowerCase().contains(f)
-                    || p.getCategoria().toLowerCase().contains(f);
-            }));
-        tablaProductos.setItems(listaFiltrada);
-        tablaProductos.getSelectionModel().selectedItemProperty().addListener(
-            (obs, old, sel) -> { if (sel != null) cargarEnFormulario(sel); });
-
-        cargarProductos();
         txtCodigo.setText("Selecciona categoría");
     }
 
@@ -140,12 +104,6 @@ public class productoController {
             ps.setString(7, categoria);
             ps.setString(8, tipo);
             ps.executeUpdate();
-            lista.add(0, new productoModelo(txtCodigo.getText().trim(), txtNombre.getText().trim(),
-                Double.parseDouble(txtPrecioUnitario.getText().trim()),
-                Double.parseDouble(txtPrecioMayor.getText().trim()),
-                txtDescripcion.getText().trim(),
-                cbUnidadMedida.getValue() != null ? cbUnidadMedida.getValue() : "",
-                categoria, tipo, 0));
             mostrarAlerta(Alert.AlertType.INFORMATION,"Éxito","Producto guardado: " + txtCodigo.getText().trim());
             limpiar();
         } catch (NumberFormatException e) {
@@ -157,8 +115,7 @@ public class productoController {
 
     @FXML
     private void fnEditar() {
-        productoModelo sel = tablaProductos.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atención","Selecciona un producto para editar."); return; }
+        if (productoCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atención","Busca un producto por código primero para editar."); return; }
         if (!validarCampos()) return;
         String categoria = getSeleccionados(chkBombones,chkTabletas,chkTrufas,chkBanos,
                                             chkRellenos,chkCoberturas,chkGranolas,chkMateriaPrima,chkEmpaque);
@@ -178,16 +135,8 @@ public class productoController {
             ps.setString(5, cbUnidadMedida.getValue() != null ? cbUnidadMedida.getValue() : "");
             ps.setString(6, categoria);
             ps.setString(7, tipo);
-            ps.setString(8, sel.getCodigo());
+            ps.setString(8, productoCargado.getCodigo());
             ps.executeUpdate();
-            sel.setNombre(txtNombre.getText().trim());
-            sel.setPrecioUnitario(Double.parseDouble(txtPrecioUnitario.getText().trim()));
-            sel.setPrecioMayor(Double.parseDouble(txtPrecioMayor.getText().trim()));
-            sel.setDescripcion(txtDescripcion.getText().trim());
-            sel.setUnidadMedida(cbUnidadMedida.getValue() != null ? cbUnidadMedida.getValue() : "");
-            sel.setCategoria(categoria);
-            sel.setTipo(tipo);
-            tablaProductos.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION,"Éxito","Producto actualizado correctamente.");
             limpiar();
         } catch (NumberFormatException e) {
@@ -199,18 +148,16 @@ public class productoController {
 
     @FXML
     private void fnEliminar() {
-        productoModelo sel = tablaProductos.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atención","Selecciona un producto para eliminar."); return; }
+        if (productoCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atención","Busca un producto por código primero para eliminar."); return; }
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar " + sel.getNombre() + " (" + sel.getCodigo() + ")?");
+        confirm.setContentText("¿Eliminar " + productoCargado.getNombre() + " (" + productoCargado.getCodigo() + ")?");
         confirm.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion();
                      PreparedStatement ps = conn.prepareStatement("DELETE FROM tbl_producto WHERE codigo=?")) {
-                    ps.setString(1, sel.getCodigo());
+                    ps.setString(1, productoCargado.getCodigo());
                     ps.executeUpdate();
-                    lista.remove(sel);
                     mostrarAlerta(Alert.AlertType.INFORMATION,"Éxito","Producto eliminado.");
                     limpiar();
                 } catch (Exception e) {
@@ -225,15 +172,26 @@ public class productoController {
         String cod = txtCodigo.getText().trim();
         if (cod.isEmpty() || cod.equals("Selecciona categoría")) {
             mostrarAlerta(Alert.AlertType.WARNING,"Atención","Escribe un código para buscar."); return; }
-        for (productoModelo p : lista) {
-            if (p.getCodigo().equalsIgnoreCase(cod)) {
-                tablaProductos.getSelectionModel().select(p);
-                tablaProductos.scrollTo(p);
-                cargarEnFormulario(p);
-                return;
+
+        String sql = "SELECT codigo,nombre,precio_unitario,precio_mayor,descripcion,unidad_medida,categoria,tipo,stock FROM tbl_producto WHERE codigo=?";
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, cod);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                cargarEnFormulario(new productoModelo(
+                    rs.getString("codigo"), rs.getString("nombre"),
+                    rs.getDouble("precio_unitario"), rs.getDouble("precio_mayor"),
+                    rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
+                    rs.getString("unidad_medida") != null ? rs.getString("unidad_medida") : "",
+                    rs.getString("categoria"), rs.getString("tipo"), rs.getInt("stock")));
+                mostrarAlerta(Alert.AlertType.INFORMATION,"Encontrado","Producto encontrado y cargado en el formulario.");
+            } else {
+                mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe producto con código " + cod + ".");
             }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR,"Error de búsqueda", e.getMessage());
         }
-        mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe producto con código " + cod + ".");
     }
 
     @FXML
@@ -246,28 +204,11 @@ public class productoController {
             chkRellenos,chkCoberturas,chkGranolas,chkMateriaPrima,chkEmpaque,
             chkTerminado,chkSemielaborado,chkInsumo,chkMateriaP,chkEmpaqueT,chkSubproducto})
             cb.setSelected(false);
-        tablaProductos.getSelectionModel().clearSelection();
-    }
-
-    private void cargarProductos() {
-        lista.clear();
-        String sql = "SELECT codigo,nombre,precio_unitario,precio_mayor,descripcion," +
-                     "unidad_medida,categoria,tipo,stock FROM tbl_producto ORDER BY codigo";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) lista.add(new productoModelo(
-                rs.getString("codigo"), rs.getString("nombre"),
-                rs.getDouble("precio_unitario"), rs.getDouble("precio_mayor"),
-                rs.getString("descripcion")   != null ? rs.getString("descripcion")   : "",
-                rs.getString("unidad_medida") != null ? rs.getString("unidad_medida") : "",
-                rs.getString("categoria"), rs.getString("tipo"), rs.getInt("stock")));
-        } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR,"Error al cargar productos", e.getMessage());
-        }
+        productoCargado = null;
     }
 
     private void cargarEnFormulario(productoModelo p) {
+        this.productoCargado = p;
         txtCodigo.setText(p.getCodigo());
         txtNombre.setText(p.getNombre());
         txtPrecioUnitario.setText(String.valueOf(p.getPrecioUnitario()));
@@ -338,11 +279,12 @@ public class productoController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAConsultaProductos(javafx.event.ActionEvent e)   { Navegacion.irA("/vistasFinales/vistaConsultaProductos.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }
