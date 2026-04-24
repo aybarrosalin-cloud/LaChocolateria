@@ -123,10 +123,13 @@ public class Navegacion {
         return PermisoRol.tieneAcceso(rol, pantallaRequerida);
     }
 
-    /** Devuelve true si el FXML es una vista de consulta histórica protegida. */
+    /**
+     * Devuelve true si el FXML es una vista de consulta histórica individual (protegida con clave).
+     * Excluye vistaConsultasGenerales.fxml (hub general) para no pedir clave en cada "Volver".
+     * Solo aplica a las vistas específicas: vistaConsultaClientes, vistaConsultaEmpleados, etc.
+     */
     private static boolean esVistaConsulta(String fxmlPath) {
-        // Todas las vistas de consulta siguen el patrón /vistaConsulta (con o sin 's')
         String nombre = fxmlPath.toLowerCase();
-        return nombre.contains("/vistaconsulta");
+        return nombre.contains("/vistaconsulta") && !nombre.contains("consultasgenerales");
     }
 }
