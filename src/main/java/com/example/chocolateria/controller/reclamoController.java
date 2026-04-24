@@ -5,7 +5,6 @@ import com.example.chocolateria.modelo.reclamoModelo;
 import com.example.chocolateria.modelo.ordenClienteModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -22,33 +21,13 @@ public class reclamoController {
     @FXML private ComboBox<String> cbEstado;
     @FXML private ComboBox<String> cbOrden;
     @FXML private TextArea         txtDescripcion;
-    @FXML private TextField        txtBuscarTabla;
 
     // RadioButtons prioridad
     @FXML private RadioButton rbAlta;
     @FXML private RadioButton rbMedia;
     @FXML private RadioButton rbBaja;
 
-    // Tabla ordenes del cliente
-    @FXML private TableView<ordenClienteModelo>               tablaOrdenes;
-    @FXML private TableColumn<ordenClienteModelo, Number>     colOrdenId;
-    @FXML private TableColumn<ordenClienteModelo, String>     colOrdenCliente;
-    @FXML private TableColumn<ordenClienteModelo, LocalDate>  colOrdenFecha;
-    @FXML private TableColumn<ordenClienteModelo, LocalDate>  colOrdenEntrega;
-    @FXML private TableColumn<ordenClienteModelo, String>     colOrdenEstado;
-    @FXML private TableColumn<ordenClienteModelo, String>     colOrdenMetodo;
-
-    // Tabla reclamos
-    @FXML private TableView<reclamoModelo>                tablaReclamos;
-    @FXML private TableColumn<reclamoModelo, Number>      colId;
-    @FXML private TableColumn<reclamoModelo, String>      colCliente;
-    @FXML private TableColumn<reclamoModelo, String>      colTipo;
-    @FXML private TableColumn<reclamoModelo, String>      colEstado;
-    @FXML private TableColumn<reclamoModelo, String>      colPrioridad;
-    @FXML private TableColumn<reclamoModelo, Number>      colOrden;
-    @FXML private TableColumn<reclamoModelo, LocalDate>   colFecha;
-
-    private final ObservableList<reclamoModelo>      listaReclamos = FXCollections.observableArrayList();
+    private reclamoModelo reclamoCargado = null;
     private final ObservableList<ordenClienteModelo> listaOrdenes  = FXCollections.observableArrayList();
     private final conexion con = new conexion();
     private final Map<String, Integer> mapaClientes = new HashMap<>();
@@ -78,7 +57,6 @@ public class reclamoController {
             "Abierto", "En proceso", "Resuelto", "Cerrado", "Rechazado"
         ));
 
-        // Grupo de RadioButtons
         grupoPrioridad = new ToggleGroup();
         rbAlta.setToggleGroup(grupoPrioridad);
         rbMedia.setToggleGroup(grupoPrioridad);
@@ -87,7 +65,6 @@ public class reclamoController {
 
         cargarClientes();
 
-        // Al cambiar cliente: cargar sus ordenes en combobox y tabla
         cbCliente.setOnAction(e -> {
             String item = cbCliente.getValue();
             if (item != null) {
@@ -96,64 +73,6 @@ public class reclamoController {
             }
         });
 
-        // Columnas tabla ordenes
-        colOrdenId.setCellValueFactory(d      -> d.getValue().idOrdenProperty());
-        colOrdenCliente.setCellValueFactory(d -> d.getValue().clienteProperty());
-        colOrdenFecha.setCellValueFactory(d   -> d.getValue().fechaRegistroProperty());
-        colOrdenEntrega.setCellValueFactory(d -> d.getValue().fechaEntregaProperty());
-        colOrdenEstado.setCellValueFactory(d  -> d.getValue().estadoProperty());
-        colOrdenMetodo.setCellValueFactory(d  -> d.getValue().metodoPagoProperty());
-        tablaOrdenes.setItems(listaOrdenes);
-
-        // Click en orden -> seleccionar en combobox
-        tablaOrdenes.getSelectionModel().selectedItemProperty().addListener(
-            (obs, old, sel) -> {
-                if (sel != null) {
-                    String item = sel.getIdOrden() + " - " + sel.getFechaRegistro();
-                    cbOrden.setValue(item);
-                }
-            });
-
-        // Columnas tabla reclamos
-        colId.setCellValueFactory(d        -> d.getValue().idReclamoProperty());
-        colCliente.setCellValueFactory(d   -> d.getValue().clienteProperty());
-        colTipo.setCellValueFactory(d      -> d.getValue().tipoReclamoProperty());
-        colEstado.setCellValueFactory(d    -> d.getValue().estadoProperty());
-        colPrioridad.setCellValueFactory(d -> d.getValue().prioridadProperty());
-        colOrden.setCellValueFactory(d     -> d.getValue().idOrdenProperty());
-        colFecha.setCellValueFactory(d     -> d.getValue().fechaReclamoProperty());
-
-        // Color por prioridad
-        tablaReclamos.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(reclamoModelo r, boolean empty) {
-                super.updateItem(r, empty);
-                if (r == null || empty) { setStyle(""); return; }
-                switch (r.getPrioridad()) {
-                    case "Alta"  -> setStyle("-fx-background-color:#fde8e8;");
-                    case "Media" -> setStyle("-fx-background-color:#fff8e1;");
-                    case "Baja"  -> setStyle("-fx-background-color:#e8f5e9;");
-                    default      -> setStyle("");
-                }
-            }
-        });
-
-        FilteredList<reclamoModelo> listaFiltrada = new FilteredList<>(listaReclamos, p -> true);
-        txtBuscarTabla.textProperty().addListener((obs, o, nv) ->
-            listaFiltrada.setPredicate(r -> {
-                if (nv == null || nv.isBlank()) return true;
-                String f = nv.toLowerCase();
-                return r.getCliente().toLowerCase().contains(f)
-                    || r.getTipoReclamo().toLowerCase().contains(f)
-                    || r.getEstado().toLowerCase().contains(f)
-                    || r.getPrioridad().toLowerCase().contains(f);
-            }));
-        tablaReclamos.setItems(listaFiltrada);
-
-        tablaReclamos.getSelectionModel().selectedItemProperty().addListener(
-            (obs, old, sel) -> { if (sel != null) cargarEnFormulario(sel); });
-
-        cargarReclamos();
         generarSiguienteId();
     }
 
@@ -229,11 +148,6 @@ public class reclamoController {
 
             ResultSet rs = ps.getGeneratedKeys();
             int nuevoId = rs.next() ? rs.getInt(1) : 0;
-
-            listaReclamos.add(0, new reclamoModelo(nuevoId, idCliente, nombreCliente,
-                idOrden, cbTipoReclamo.getValue(), cbEstado.getValue(),
-                prioridad, txtDescripcion.getText().trim(), LocalDate.now()));
-
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo #" + nuevoId + " registrado correctamente.");
             limpiar();
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al guardar",e.getMessage()); }
@@ -241,8 +155,7 @@ public class reclamoController {
 
     @FXML
     private void fnEditar() {
-        reclamoModelo sel = tablaReclamos.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Selecciona un reclamo para editar."); return; }
+        if (reclamoCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Busca un reclamo por ID primero para editar."); return; }
         if (!validarCampos()) return;
 
         String itemCliente   = cbCliente.getValue();
@@ -261,13 +174,8 @@ public class reclamoController {
             ps.setString(5, cbEstado.getValue());
             ps.setString(6, prioridad);
             ps.setString(7, txtDescripcion.getText().trim());
-            ps.setInt(8, sel.getIdReclamo());
+            ps.setInt(8, reclamoCargado.getIdReclamo());
             ps.executeUpdate();
-
-            sel.setCliente(nombreCliente); sel.setIdOrden(idOrden);
-            sel.setTipoReclamo(cbTipoReclamo.getValue()); sel.setEstado(cbEstado.getValue());
-            sel.setPrioridad(prioridad); sel.setDescripcion(txtDescripcion.getText().trim());
-            tablaReclamos.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo actualizado correctamente.");
             limpiar();
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al editar",e.getMessage()); }
@@ -275,17 +183,15 @@ public class reclamoController {
 
     @FXML
     private void fnEliminar() {
-        reclamoModelo sel = tablaReclamos.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Selecciona un reclamo para eliminar."); return; }
+        if (reclamoCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Busca un reclamo por ID primero para eliminar."); return; }
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setHeaderText(null);
-        confirm.setContentText("Eliminar el reclamo #" + sel.getIdReclamo() + "?");
+        confirm.setContentText("Eliminar el reclamo #" + reclamoCargado.getIdReclamo() + "?");
         confirm.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion();
                      PreparedStatement ps = conn.prepareStatement("DELETE FROM tbl_reclamo WHERE id_reclamo=?")) {
-                    ps.setInt(1, sel.getIdReclamo()); ps.executeUpdate();
-                    listaReclamos.remove(sel);
+                    ps.setInt(1, reclamoCargado.getIdReclamo()); ps.executeUpdate();
                     mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo eliminado correctamente.");
                     limpiar();
                 } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al eliminar",e.getMessage()); }
@@ -299,15 +205,27 @@ public class reclamoController {
         if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Escribe un ID para buscar."); return; }
         try {
             int idBuscar = Integer.parseInt(idTexto);
-            for (reclamoModelo r : listaReclamos) {
-                if (r.getIdReclamo() == idBuscar) {
-                    tablaReclamos.getSelectionModel().select(r);
-                    tablaReclamos.scrollTo(r);
-                    cargarEnFormulario(r); return;
+            String sql = "SELECT id_reclamo,id_cliente,cliente,ISNULL(id_orden,0) AS id_orden,tipo_reclamo,estado,prioridad,descripcion,fecha_reclamo FROM tbl_reclamo WHERE id_reclamo=?";
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, idBuscar);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    Date d = rs.getDate("fecha_reclamo");
+                    cargarEnFormulario(new reclamoModelo(
+                        rs.getInt("id_reclamo"), rs.getInt("id_cliente"),
+                        rs.getString("cliente"), rs.getInt("id_orden"),
+                        rs.getString("tipo_reclamo"), rs.getString("estado"),
+                        rs.getString("prioridad"),
+                        rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
+                        d != null ? d.toLocalDate() : null));
+                    mostrarAlerta(Alert.AlertType.INFORMATION,"Encontrado","Reclamo encontrado y cargado en el formulario.");
+                } else {
+                    mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe reclamo con el ID " + idBuscar + ".");
                 }
             }
-            mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe reclamo con el ID " + idBuscar + ".");
         } catch (NumberFormatException ex) { mostrarAlerta(Alert.AlertType.WARNING,"ID invalido","El ID debe ser un numero entero."); }
+        catch (Exception ex) { mostrarAlerta(Alert.AlertType.ERROR,"Error de busqueda",ex.getMessage()); }
     }
 
     @FXML
@@ -316,30 +234,12 @@ public class reclamoController {
         cbEstado.setValue(null); cbOrden.getItems().clear(); cbOrden.setValue(null);
         txtDescripcion.clear(); rbMedia.setSelected(true);
         listaOrdenes.clear(); mapaOrdenes.clear();
-        tablaReclamos.getSelectionModel().clearSelection();
+        reclamoCargado = null;
         generarSiguienteId();
     }
 
-    private void cargarReclamos() {
-        listaReclamos.clear();
-        String sql = "SELECT id_reclamo,id_cliente,cliente,ISNULL(id_orden,0) AS id_orden,tipo_reclamo,estado,prioridad,descripcion,fecha_reclamo FROM tbl_reclamo ORDER BY id_reclamo DESC";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Date d = rs.getDate("fecha_reclamo");
-                listaReclamos.add(new reclamoModelo(
-                    rs.getInt("id_reclamo"), rs.getInt("id_cliente"),
-                    rs.getString("cliente"), rs.getInt("id_orden"),
-                    rs.getString("tipo_reclamo"), rs.getString("estado"),
-                    rs.getString("prioridad"),
-                    rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
-                    d != null ? d.toLocalDate() : null));
-            }
-        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al cargar reclamos",e.getMessage()); }
-    }
-
     private void cargarEnFormulario(reclamoModelo r) {
+        this.reclamoCargado = r;
         txtId.setText(String.valueOf(r.getIdReclamo()));
         cbCliente.getItems().stream()
             .filter(i -> i.startsWith(r.getIdCliente() + " - "))
@@ -399,11 +299,13 @@ public class reclamoController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAConsultaReclamos(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaConsultaReclamos.fxml", e); }
+    @FXML private void irAGestionUsuarios(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionUsuarios.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }

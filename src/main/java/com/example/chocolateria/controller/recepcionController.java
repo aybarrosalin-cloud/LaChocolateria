@@ -5,7 +5,6 @@ import com.example.chocolateria.modelo.recepcionDetalleModelo;
 import com.example.chocolateria.modelo.recepcionModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -21,7 +20,6 @@ public class recepcionController {
     @FXML private TextField  txtRncProveedor;
     @FXML private TextField  txtMontoTotal;
     @FXML private TextArea   txtObservaciones;
-    @FXML private TextField  txtBuscarTabla;
 
     @FXML private TextField txtCodigoDetalle;
     @FXML private Label     lblNombreProducto;
@@ -35,18 +33,10 @@ public class recepcionController {
     @FXML private TableColumn<recepcionDetalleModelo, Number> colDetPrecio;
     @FXML private TableColumn<recepcionDetalleModelo, Number> colDetMonto;
 
-    @FXML private TableView<recepcionModelo>                      tablaRecepciones;
-    @FXML private TableColumn<recepcionModelo, Number>            colId;
-    @FXML private TableColumn<recepcionModelo, String>            colNumeroOrden;
-    @FXML private TableColumn<recepcionModelo, String>            colRnc;
-    @FXML private TableColumn<recepcionModelo, LocalDate>         colFecha;
-    @FXML private TableColumn<recepcionModelo, Number>            colMonto;
-    @FXML private TableColumn<recepcionModelo, String>            colObservaciones;
-
-    private final ObservableList<recepcionModelo>        lista        = FXCollections.observableArrayList();
     private final ObservableList<recepcionDetalleModelo> listaDetalle = FXCollections.observableArrayList();
     private final conexion con = new conexion();
     private String productoSeleccionado = "";
+    private recepcionModelo recepcionCargada = null;
 
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
@@ -55,13 +45,6 @@ public class recepcionController {
     public void initialize() {
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
-        colId.setCellValueFactory(d            -> d.getValue().idRecepcionProperty());
-        colNumeroOrden.setCellValueFactory(d   -> d.getValue().numeroOrdenProperty());
-        colRnc.setCellValueFactory(d           -> d.getValue().rncProveedorProperty());
-        colFecha.setCellValueFactory(d         -> d.getValue().fechaRecepcionProperty());
-        colMonto.setCellValueFactory(d         -> d.getValue().montoTotalProperty());
-        colObservaciones.setCellValueFactory(d -> d.getValue().observacionesProperty());
-
         colDetCodigo.setCellValueFactory(d    -> d.getValue().codigoProductoProperty());
         colDetProducto.setCellValueFactory(d  -> d.getValue().productoProperty());
         colDetCantidad.setCellValueFactory(d  -> d.getValue().cantidadRecibidaProperty());
@@ -69,29 +52,6 @@ public class recepcionController {
         colDetMonto.setCellValueFactory(d     -> d.getValue().montoProductoProperty());
         tablaDetalle.setItems(listaDetalle);
 
-        FilteredList<recepcionModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        if (txtBuscarTabla != null) {
-            txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-                    listaFiltrada.setPredicate(r -> {
-                        if (newVal == null || newVal.isBlank()) return true;
-                        String f = newVal.toLowerCase();
-                        return r.getRncProveedor().toLowerCase().contains(f)
-                                || r.getNumeroOrden().toLowerCase().contains(f);
-                    })
-            );
-        }
-        tablaRecepciones.setItems(listaFiltrada);
-
-        tablaRecepciones.getSelectionModel().selectedItemProperty().addListener(
-                (obs, old, sel) -> {
-                    if (sel != null) {
-                        cargarEnFormulario(sel);
-                        cargarDetalle(sel.getIdRecepcion());
-                    }
-                }
-        );
-
-        cargarRecepciones();
         generarSiguienteId();
     }
 
@@ -110,7 +70,6 @@ public class recepcionController {
             if (rs.next()) {
                 productoSeleccionado = rs.getString("nombre");
                 lblNombreProducto.setText(productoSeleccionado);
-                // Pre-llenar el precio con el precio unitario del producto
                 String precio = rs.getString("precio_unitario");
                 if (precio != null && !precio.isBlank()) {
                     txtPrecioDetalle.setText(precio);
@@ -241,7 +200,6 @@ public class recepcionController {
                  PreparedStatement psStock = conn.prepareStatement(sqlStock)) {
 
                 for (recepcionDetalleModelo det : listaDetalle) {
-                    // 1. Detalle recepcion
                     psDet.setInt(1, nuevoId);
                     psDet.setString(2, det.getCodigoProducto());
                     psDet.setString(3, det.getProducto());
@@ -250,13 +208,11 @@ public class recepcionController {
                     psDet.setDouble(6, det.getMontoProducto());
                     psDet.addBatch();
 
-                    // 2. Entrada almacen — usa el codigo directamente
                     psEnt.setString(1, det.getCodigoProducto());
                     psEnt.setInt(2, det.getCantidadRecibida());
                     psEnt.setTimestamp(3, Timestamp.valueOf(dpFechaRecepcion.getValue().atStartOfDay()));
                     psEnt.addBatch();
 
-                    // 3. Actualizar stock
                     psStock.setInt(1, det.getCantidadRecibida());
                     psStock.setString(2, det.getCodigoProducto());
                     psStock.addBatch();
@@ -266,12 +222,6 @@ public class recepcionController {
                 psEnt.executeBatch();
                 psStock.executeBatch();
             }
-
-            lista.add(0, new recepcionModelo(nuevoId,
-                    txtRncProveedor.getText().trim(),
-                    txtNumeroOrden.getText().trim(),
-                    0, dpFechaRecepcion.getValue(),
-                    montoTotal, txtObservaciones.getText().trim()));
 
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito",
                     "Recepción guardada. Stock actualizado para " + listaDetalle.size() + " producto(s).");
@@ -284,32 +234,31 @@ public class recepcionController {
 
     @FXML
     private void fnEliminar() {
-        recepcionModelo sel = tablaRecepciones.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una recepción para eliminar.");
+        if (recepcionCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una recepción por ID antes de eliminar.");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar eliminación");
         confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar la recepción #" + sel.getIdRecepcion() + "?\nNota: el stock no se revertirá automáticamente.");
+        confirm.setContentText("¿Eliminar la recepción #" + recepcionCargada.getIdRecepcion() + "?\nNota: el stock no se revertirá automáticamente.");
 
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion()) {
                     try (PreparedStatement ps = conn.prepareStatement(
                             "DELETE FROM tbl_recepcion_detalle WHERE id_recepcion=?")) {
-                        ps.setInt(1, sel.getIdRecepcion());
+                        ps.setInt(1, recepcionCargada.getIdRecepcion());
                         ps.executeUpdate();
                     }
                     try (PreparedStatement ps = conn.prepareStatement(
                             "DELETE FROM tbl_recepcion WHERE id_recepcion=?")) {
-                        ps.setInt(1, sel.getIdRecepcion());
+                        ps.setInt(1, recepcionCargada.getIdRecepcion());
                         ps.executeUpdate();
                     }
-                    lista.remove(sel);
                     listaDetalle.clear();
+                    recepcionCargada = null;
                     mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Recepción eliminada correctamente.");
                     limpiarCampos();
                 } catch (Exception e) {
@@ -334,16 +283,30 @@ public class recepcionController {
             return;
         }
 
-        for (recepcionModelo r : lista) {
-            if (r.getIdRecepcion() == idBuscar) {
-                tablaRecepciones.getSelectionModel().select(r);
-                tablaRecepciones.scrollTo(r);
-                cargarEnFormulario(r);
-                cargarDetalle(r.getIdRecepcion());
-                return;
+        String sql = "SELECT id_recepcion, rnc_proveedor, numero_orden, fecha_recepcion, monto_total, observaciones " +
+                "FROM tbl_recepcion WHERE id_recepcion=?";
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idBuscar);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Date d = rs.getDate("fecha_recepcion");
+                recepcionCargada = new recepcionModelo(
+                        rs.getInt("id_recepcion"),
+                        rs.getString("rnc_proveedor"),
+                        rs.getString("numero_orden"),
+                        0,
+                        d != null ? d.toLocalDate() : null,
+                        rs.getDouble("monto_total"),
+                        rs.getString("observaciones") != null ? rs.getString("observaciones") : "");
+                cargarEnFormulario(recepcionCargada);
+                cargarDetalle(idBuscar);
+            } else {
+                mostrarAlerta(Alert.AlertType.WARNING, "No encontrado", "No existe una recepción con el ID " + idBuscar + ".");
             }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error de búsqueda", e.getMessage());
         }
-        mostrarAlerta(Alert.AlertType.WARNING, "No encontrado", "No existe una recepción con el ID " + idBuscar + ".");
     }
 
     @FXML
@@ -360,32 +323,8 @@ public class recepcionController {
         txtPrecioDetalle.clear();
         productoSeleccionado = "";
         listaDetalle.clear();
-        tablaRecepciones.getSelectionModel().clearSelection();
+        recepcionCargada = null;
         generarSiguienteId();
-    }
-
-    private void cargarRecepciones() {
-        lista.clear();
-        String sql = "SELECT id_recepcion, rnc_proveedor, numero_orden, fecha_recepcion, monto_total, observaciones " +
-                "FROM tbl_recepcion ORDER BY fecha_recepcion DESC";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Date d = rs.getDate("fecha_recepcion");
-                lista.add(new recepcionModelo(
-                        rs.getInt("id_recepcion"),
-                        rs.getString("rnc_proveedor"),
-                        rs.getString("numero_orden"),
-                        0,
-                        d != null ? d.toLocalDate() : null,
-                        rs.getDouble("monto_total"),
-                        rs.getString("observaciones") != null ? rs.getString("observaciones") : ""
-                ));
-            }
-        } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar recepciones", e.getMessage());
-        }
     }
 
     private void cargarDetalle(int idRecepcion) {
@@ -462,6 +401,7 @@ public class recepcionController {
     }
 
     // -- Navegacion --
+    @FXML private void irAConsultaRecepcion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultaRecepcion.fxml", e); }
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -478,11 +418,11 @@ public class recepcionController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }
