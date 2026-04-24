@@ -3,8 +3,6 @@ package com.example.chocolateria.controller;
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.envioModelo;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -27,20 +25,8 @@ public class envioController {
     @FXML private ComboBox<String> cbProvincia;
     @FXML private ComboBox<String> cbCiudad;
     @FXML private TextField        txtDireccion;
-    @FXML private TextField        txtBuscarTabla;
 
-    @FXML private TableView<envioModelo>                    tablaEnvios;
-    @FXML private TableColumn<envioModelo, Number>          colId;
-    @FXML private TableColumn<envioModelo, String>          colCliente;
-    @FXML private TableColumn<envioModelo, LocalDate>       colFechaEnvio;
-    @FXML private TableColumn<envioModelo, LocalDate>       colFechaEntrega;
-    @FXML private TableColumn<envioModelo, String>          colTransportista;
-    @FXML private TableColumn<envioModelo, String>          colEstado;
-    @FXML private TableColumn<envioModelo, String>          colGuia;
-    @FXML private TableColumn<envioModelo, String>          colProvincia;
-    @FXML private TableColumn<envioModelo, String>          colCiudad;
-
-    private final ObservableList<envioModelo> lista = FXCollections.observableArrayList();
+    private envioModelo envioCargado = null;
     private final conexion con = new conexion();
     private final Map<String, Integer> mapaClientes = new HashMap<>();
 
@@ -98,53 +84,11 @@ public class envioController {
             "Pendiente", "En tránsito", "Entregado", "Devuelto", "Cancelado"
         ));
 
-        // Cargar provincias
         cbProvincia.setItems(FXCollections.observableArrayList(PROVINCIAS.keySet()));
         cbProvincia.setOnAction(e -> actualizarCiudades());
 
         cargarClientes();
         cargarTransportistas();
-
-        colId.setCellValueFactory(d           -> d.getValue().idEnvioProperty());
-        colCliente.setCellValueFactory(d      -> d.getValue().clienteProperty());
-        colFechaEnvio.setCellValueFactory(d   -> d.getValue().fechaEnvioProperty());
-        colFechaEntrega.setCellValueFactory(d -> d.getValue().fechaEntregaProperty());
-        colTransportista.setCellValueFactory(d-> d.getValue().transportistaProperty());
-        colEstado.setCellValueFactory(d       -> d.getValue().estadoProperty());
-        colGuia.setCellValueFactory(d         -> d.getValue().numeroGuiaProperty());
-        colProvincia.setCellValueFactory(d    -> d.getValue().provinciaProperty());
-        colCiudad.setCellValueFactory(d       -> d.getValue().ciudadProperty());
-
-        tablaEnvios.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(envioModelo e, boolean empty) {
-                super.updateItem(e, empty);
-                if (e == null || empty) { setStyle(""); return; }
-                switch (e.getEstado()) {
-                    case "Entregado"   -> setStyle("-fx-background-color:#e8f5e9;");
-                    case "Cancelado","Devuelto" -> setStyle("-fx-background-color:#fde8e8;");
-                    case "En tránsito" -> setStyle("-fx-background-color:#fff8e1;");
-                    default            -> setStyle("");
-                }
-            }
-        });
-
-        FilteredList<envioModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        txtBuscarTabla.textProperty().addListener((obs, o, nv) ->
-            listaFiltrada.setPredicate(e -> {
-                if (nv == null || nv.isBlank()) return true;
-                String f = nv.toLowerCase();
-                return e.getCliente().toLowerCase().contains(f)
-                    || e.getEstado().toLowerCase().contains(f)
-                    || e.getTransportista().toLowerCase().contains(f)
-                    || e.getProvincia().toLowerCase().contains(f);
-            }));
-        tablaEnvios.setItems(listaFiltrada);
-
-        tablaEnvios.getSelectionModel().selectedItemProperty().addListener(
-            (obs, old, sel) -> { if (sel != null) cargarEnFormulario(sel); });
-
-        cargarEnvios();
         generarSiguienteId();
     }
 
@@ -204,14 +148,6 @@ public class envioController {
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             int nuevoId = rs.next() ? rs.getInt(1) : 0;
-
-            lista.add(0, new envioModelo(nuevoId, idCliente, nombreCliente,
-                dpFechaEnvio.getValue(), dpFechaEntrega.getValue(),
-                cbTransportista.getValue(), cbTemperatura.getValue(),
-                cbEstado.getValue(), txtNumeroGuia.getText().trim(),
-                cbProvincia.getValue(), cbCiudad.getValue() != null ? cbCiudad.getValue() : "",
-                txtDireccion.getText().trim()));
-
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Envio #" + nuevoId + " registrado correctamente.");
             limpiar();
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al guardar",e.getMessage()); }
@@ -219,8 +155,7 @@ public class envioController {
 
     @FXML
     private void fnEditar() {
-        envioModelo sel = tablaEnvios.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Selecciona un envio para editar."); return; }
+        if (envioCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Busca un envio por ID primero para editar."); return; }
         if (!validarCampos()) return;
         String itemCliente   = cbCliente.getValue();
         int idCliente        = mapaClientes.getOrDefault(itemCliente, 0);
@@ -236,16 +171,8 @@ public class envioController {
             ps.setString(7, cbEstado.getValue()); ps.setString(8, txtNumeroGuia.getText().trim());
             ps.setString(9, cbProvincia.getValue());
             ps.setString(10, cbCiudad.getValue() != null ? cbCiudad.getValue() : "");
-            ps.setString(11, txtDireccion.getText().trim()); ps.setInt(12, sel.getIdEnvio());
+            ps.setString(11, txtDireccion.getText().trim()); ps.setInt(12, envioCargado.getIdEnvio());
             ps.executeUpdate();
-
-            sel.setCliente(nombreCliente); sel.setFechaEnvio(dpFechaEnvio.getValue());
-            sel.setFechaEntrega(dpFechaEntrega.getValue()); sel.setTransportista(cbTransportista.getValue());
-            sel.setTemperaturaTransporte(cbTemperatura.getValue()); sel.setEstado(cbEstado.getValue());
-            sel.setNumeroGuia(txtNumeroGuia.getText().trim()); sel.setProvincia(cbProvincia.getValue());
-            sel.setCiudad(cbCiudad.getValue() != null ? cbCiudad.getValue() : "");
-            sel.setDireccion(txtDireccion.getText().trim());
-            tablaEnvios.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Envio actualizado correctamente.");
             limpiar();
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al editar",e.getMessage()); }
@@ -253,17 +180,15 @@ public class envioController {
 
     @FXML
     private void fnEliminar() {
-        envioModelo sel = tablaEnvios.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Selecciona un envio para eliminar."); return; }
+        if (envioCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Busca un envio por ID primero para eliminar."); return; }
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setHeaderText(null);
-        confirm.setContentText("Eliminar el envio #" + sel.getIdEnvio() + "?");
+        confirm.setContentText("Eliminar el envio #" + envioCargado.getIdEnvio() + "?");
         confirm.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion();
                      PreparedStatement ps = conn.prepareStatement("DELETE FROM tbl_envio WHERE id_envio=?")) {
-                    ps.setInt(1, sel.getIdEnvio()); ps.executeUpdate();
-                    lista.remove(sel);
+                    ps.setInt(1, envioCargado.getIdEnvio()); ps.executeUpdate();
                     mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Envio eliminado correctamente.");
                     limpiar();
                 } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al eliminar",e.getMessage()); }
@@ -277,15 +202,33 @@ public class envioController {
         if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Escribe un ID para buscar."); return; }
         try {
             int idBuscar = Integer.parseInt(idTexto);
-            for (envioModelo e : lista) {
-                if (e.getIdEnvio() == idBuscar) {
-                    tablaEnvios.getSelectionModel().select(e);
-                    tablaEnvios.scrollTo(e);
-                    cargarEnFormulario(e); return;
+            String sql = "SELECT id_envio,id_cliente,cliente,fecha_envio,fecha_entrega,transportista,temperatura_transporte,estado,numero_guia,provincia,ciudad,direccion FROM tbl_envio WHERE id_envio=?";
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, idBuscar);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    Date dEnv = rs.getDate("fecha_envio");
+                    Date dEnt = rs.getDate("fecha_entrega");
+                    cargarEnFormulario(new envioModelo(
+                        rs.getInt("id_envio"), rs.getInt("id_cliente"),
+                        rs.getString("cliente"),
+                        dEnv != null ? dEnv.toLocalDate() : null,
+                        dEnt != null ? dEnt.toLocalDate() : null,
+                        rs.getString("transportista"),
+                        rs.getString("temperatura_transporte"),
+                        rs.getString("estado"),
+                        rs.getString("numero_guia") != null ? rs.getString("numero_guia") : "",
+                        rs.getString("provincia"),
+                        rs.getString("ciudad") != null ? rs.getString("ciudad") : "",
+                        rs.getString("direccion")));
+                    mostrarAlerta(Alert.AlertType.INFORMATION,"Encontrado","Envio encontrado y cargado en el formulario.");
+                } else {
+                    mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe envio con el ID " + idBuscar + ".");
                 }
             }
-            mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe envio con el ID " + idBuscar + ".");
         } catch (NumberFormatException ex) { mostrarAlerta(Alert.AlertType.WARNING,"ID invalido","El ID debe ser un numero entero."); }
+        catch (Exception ex) { mostrarAlerta(Alert.AlertType.ERROR,"Error de busqueda",ex.getMessage()); }
     }
 
     @FXML
@@ -296,36 +239,12 @@ public class envioController {
         txtNumeroGuia.clear(); cbProvincia.setValue(null);
         cbCiudad.getItems().clear(); cbCiudad.setValue(null);
         txtDireccion.clear();
-        tablaEnvios.getSelectionModel().clearSelection();
+        envioCargado = null;
         generarSiguienteId();
     }
 
-    private void cargarEnvios() {
-        lista.clear();
-        String sql = "SELECT id_envio,id_cliente,cliente,fecha_envio,fecha_entrega,transportista,temperatura_transporte,estado,numero_guia,provincia,ciudad,direccion FROM tbl_envio ORDER BY id_envio DESC";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Date dEnv = rs.getDate("fecha_envio");
-                Date dEnt = rs.getDate("fecha_entrega");
-                lista.add(new envioModelo(
-                    rs.getInt("id_envio"), rs.getInt("id_cliente"),
-                    rs.getString("cliente"),
-                    dEnv != null ? dEnv.toLocalDate() : null,
-                    dEnt != null ? dEnt.toLocalDate() : null,
-                    rs.getString("transportista"),
-                    rs.getString("temperatura_transporte"),
-                    rs.getString("estado"),
-                    rs.getString("numero_guia") != null ? rs.getString("numero_guia") : "",
-                    rs.getString("provincia"),
-                    rs.getString("ciudad") != null ? rs.getString("ciudad") : "",
-                    rs.getString("direccion")));
-            }
-        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al cargar envios",e.getMessage()); }
-    }
-
     private void cargarEnFormulario(envioModelo e) {
+        this.envioCargado = e;
         txtId.setText(String.valueOf(e.getIdEnvio()));
         cbCliente.getItems().stream()
             .filter(i -> i.startsWith(e.getIdCliente() + " - "))
@@ -382,11 +301,12 @@ public class envioController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAConsultaEnvios(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultaEnvios.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }

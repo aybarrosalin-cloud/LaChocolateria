@@ -3,8 +3,6 @@ package com.example.chocolateria.controller;
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.ordenProduccionModelo;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -35,24 +33,11 @@ public class ordenProduccionController {
     @FXML private CheckBox     chkRellenos;
     @FXML private TextArea     txtMateriales;
     @FXML private TextArea     txtObservaciones;
-    @FXML private TextField    txtBuscarTabla;
 
-    @FXML private TableView<ordenProduccionModelo>                    tablaOrdenes;
-    @FXML private TableColumn<ordenProduccionModelo, Number>          colId;
-    @FXML private TableColumn<ordenProduccionModelo, String>          colTipo;
-    @FXML private TableColumn<ordenProduccionModelo, String>          colCliente;
-    @FXML private TableColumn<ordenProduccionModelo, LocalDate>       colFechaOrden;
-    @FXML private TableColumn<ordenProduccionModelo, LocalDate>       colFechaInicio;
-    @FXML private TableColumn<ordenProduccionModelo, LocalDate>       colFechaEntrega;
-    @FXML private TableColumn<ordenProduccionModelo, String>          colResponsable;
-    @FXML private TableColumn<ordenProduccionModelo, String>          colEstado;
-    @FXML private TableColumn<ordenProduccionModelo, String>          colPrioridad;
-    @FXML private TableColumn<ordenProduccionModelo, String>          colCategoria;
-
-    private final ObservableList<ordenProduccionModelo> lista = FXCollections.observableArrayList();
     private final conexion con = new conexion();
     private int idClienteSeleccionado  = 0;
     private int idResponsableSeleccionado = 0;
+    private ordenProduccionModelo ordenCargada = null;
 
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
@@ -85,52 +70,6 @@ public class ordenProduccionController {
             }
         });
 
-        colId.setCellValueFactory(d           -> d.getValue().idOrdenProperty());
-        colTipo.setCellValueFactory(d         -> d.getValue().tipoOrdenProperty());
-        colCliente.setCellValueFactory(d      -> d.getValue().clienteProperty());
-        colFechaOrden.setCellValueFactory(d   -> d.getValue().fechaOrdenProperty());
-        colFechaInicio.setCellValueFactory(d  -> d.getValue().fechaInicioProperty());
-        colFechaEntrega.setCellValueFactory(d -> d.getValue().fechaEntregaProperty());
-        colResponsable.setCellValueFactory(d  -> d.getValue().responsableProperty());
-        colEstado.setCellValueFactory(d       -> d.getValue().estadoProperty());
-        colPrioridad.setCellValueFactory(d    -> d.getValue().prioridadProperty());
-        colCategoria.setCellValueFactory(d    -> d.getValue().categoriaProperty());
-
-        tablaOrdenes.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(ordenProduccionModelo o, boolean empty) {
-                super.updateItem(o, empty);
-                if (o == null || empty) { setStyle(""); return; }
-                switch (o.getEstado()) {
-                    case "Completada" -> setStyle("-fx-background-color:#e8f5e9;");
-                    case "Cancelada"  -> setStyle("-fx-background-color:#fde8e8;");
-                    case "En proceso" -> setStyle("-fx-background-color:#fff8e1;");
-                    default           -> setStyle("");
-                }
-            }
-        });
-
-        FilteredList<ordenProduccionModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        if (txtBuscarTabla != null) {
-            txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-                    listaFiltrada.setPredicate(o -> {
-                        if (newVal == null || newVal.isBlank()) return true;
-                        String f = newVal.toLowerCase();
-                        return o.getResponsable().toLowerCase().contains(f)
-                                || o.getEstado().toLowerCase().contains(f)
-                                || o.getTipoOrden().toLowerCase().contains(f)
-                                || o.getCategoria().toLowerCase().contains(f)
-                                || o.getCliente().toLowerCase().contains(f);
-                    })
-            );
-        }
-        tablaOrdenes.setItems(listaFiltrada);
-
-        tablaOrdenes.getSelectionModel().selectedItemProperty().addListener(
-                (obs, old, sel) -> { if (sel != null) cargarEnFormulario(sel); }
-        );
-
-        cargarOrdenes();
         generarSiguienteId();
     }
 
@@ -220,16 +159,6 @@ public class ordenProduccionController {
             ps.setString(11, txtObservaciones.getText().trim());
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            int nuevoId = rs.next() ? rs.getInt(1) : 0;
-
-            lista.add(0, new ordenProduccionModelo(nuevoId, tipoOrden,
-                    dpFechaInicio.getValue(), dpFechaOrden.getValue(), dpFechaEntrega.getValue(),
-                    idResponsableSeleccionado, lblNombreResponsable.getText(),
-                    cbEstado.getValue(), cbPrioridad.getValue(), categorias,
-                    txtMateriales.getText().trim(), txtObservaciones.getText().trim(),
-                    lblNombreCliente.getText()));
-
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Orden de producción guardada correctamente.");
             limpiarCampos();
 
@@ -240,9 +169,8 @@ public class ordenProduccionController {
 
     @FXML
     private void fnEditar() {
-        ordenProduccionModelo sel = tablaOrdenes.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una orden de la tabla para editar.");
+        if (ordenCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una orden por ID antes de editar.");
             return;
         }
         if (!validarCampos()) return;
@@ -268,23 +196,9 @@ public class ordenProduccionController {
             ps.setString(9, categorias);
             ps.setString(10, txtMateriales.getText().trim());
             ps.setString(11, txtObservaciones.getText().trim());
-            ps.setInt(12, sel.getIdOrden());
+            ps.setInt(12, ordenCargada.getIdOrden());
             ps.executeUpdate();
 
-            sel.setTipoOrden(tipoOrden);
-            sel.setFechaOrden(dpFechaOrden.getValue());
-            sel.setFechaInicio(dpFechaInicio.getValue());
-            sel.setFechaEntrega(dpFechaEntrega.getValue());
-            sel.setIdResponsable(idResponsableSeleccionado);
-            sel.setResponsable(lblNombreResponsable.getText());
-            sel.setEstado(cbEstado.getValue());
-            sel.setPrioridad(cbPrioridad.getValue());
-            sel.setCategoria(categorias);
-            sel.setMateriales(txtMateriales.getText().trim());
-            sel.setObservaciones(txtObservaciones.getText().trim());
-            sel.setCliente(lblNombreCliente.getText());
-
-            tablaOrdenes.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Orden actualizada correctamente.");
             limpiarCampos();
 
@@ -295,25 +209,24 @@ public class ordenProduccionController {
 
     @FXML
     private void fnEliminar() {
-        ordenProduccionModelo sel = tablaOrdenes.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una orden de la tabla para eliminar.");
+        if (ordenCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una orden por ID antes de eliminar.");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar eliminación");
         confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar la orden #" + sel.getIdOrden() + "?");
+        confirm.setContentText("¿Eliminar la orden #" + ordenCargada.getIdOrden() + "?");
 
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion();
                      PreparedStatement ps = conn.prepareStatement(
                              "DELETE FROM tbl_orden_produccion WHERE id_orden=?")) {
-                    ps.setInt(1, sel.getIdOrden());
+                    ps.setInt(1, ordenCargada.getIdOrden());
                     ps.executeUpdate();
-                    lista.remove(sel);
+                    ordenCargada = null;
                     mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Orden eliminada correctamente.");
                     limpiarCampos();
                 } catch (Exception e) {
@@ -338,15 +251,6 @@ public class ordenProduccionController {
             return;
         }
 
-        for (ordenProduccionModelo o : lista) {
-            if (o.getIdOrden() == idBuscar) {
-                tablaOrdenes.getSelectionModel().select(o);
-                tablaOrdenes.scrollTo(o);
-                cargarEnFormulario(o);
-                return;
-            }
-        }
-
         String sql = "SELECT o.id_orden, o.tipo_orden, o.fecha_inicio, o.fecha_orden, o.fecha_entrega, " +
                 "o.id_responsable, e.nombre + ' ' + e.apellido AS responsable, " +
                 "o.estado, o.prioridad, o.categoria, o.materiales, o.observaciones, " +
@@ -361,7 +265,8 @@ public class ordenProduccionController {
             ps.setInt(1, idBuscar);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                cargarEnFormulario(mapearOrden(rs));
+                ordenCargada = mapearOrden(rs);
+                cargarEnFormulario(ordenCargada);
                 mostrarAlerta(Alert.AlertType.INFORMATION, "Encontrado", "Orden cargada en el formulario.");
             } else {
                 mostrarAlerta(Alert.AlertType.WARNING, "No encontrado", "No existe una orden con el ID " + idBuscar + ".");
@@ -393,27 +298,8 @@ public class ordenProduccionController {
         chkRellenos.setSelected(false);
         txtMateriales.clear();
         txtObservaciones.clear();
-        tablaOrdenes.getSelectionModel().clearSelection();
+        ordenCargada = null;
         generarSiguienteId();
-    }
-
-    private void cargarOrdenes() {
-        lista.clear();
-        String sql = "SELECT o.id_orden, o.tipo_orden, o.fecha_inicio, o.fecha_orden, o.fecha_entrega, " +
-                "o.id_responsable, e.nombre + ' ' + e.apellido AS responsable, " +
-                "o.estado, o.prioridad, o.categoria, o.materiales, o.observaciones, " +
-                "ISNULL(c.nombre + ' ' + c.apellido, '') AS cliente " +
-                "FROM tbl_orden_produccion o " +
-                "LEFT JOIN tbl_empleado e ON o.id_responsable = e.id_empleado " +
-                "LEFT JOIN tbl_cliente c ON o.id_cliente = c.id_cliente " +
-                "ORDER BY o.fecha_orden DESC";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) lista.add(mapearOrden(rs));
-        } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar órdenes", e.getMessage());
-        }
     }
 
     private ordenProduccionModelo mapearOrden(ResultSet rs) throws SQLException {
@@ -425,7 +311,7 @@ public class ordenProduccionController {
                 rs.getString("tipo_orden"),
                 dInicio  != null ? dInicio.toLocalDate()  : null,
                 dOrden   != null ? dOrden.toLocalDate()   : null,
-                dEntrega != null ? dEntrega.toLocalDate()  : null,
+                dEntrega != null ? dEntrega.toLocalDate() : null,
                 rs.getInt("id_responsable"),
                 rs.getString("responsable"),
                 rs.getString("estado"),
@@ -519,6 +405,7 @@ public class ordenProduccionController {
     }
 
     // -- Navegacion --
+    @FXML private void irAConsultaOrdenProduccion(javafx.event.ActionEvent e){ Navegacion.irA("/vistasFinales/vistaConsultaOrdenProduccion.fxml", e); }
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -535,11 +422,11 @@ public class ordenProduccionController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }
