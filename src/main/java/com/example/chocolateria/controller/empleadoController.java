@@ -2,9 +2,6 @@ package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.empleadoModelo;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -20,20 +17,9 @@ public class empleadoController {
     @FXML private TextField txtTelefono;
     @FXML private ComboBox<String> cbTipoEmpleado;
     @FXML private ComboBox<String> cbRol;
-    @FXML private TextField txtBuscarTabla;
 
-    @FXML private TableView<empleadoModelo>           tablaEmpleados;
-    @FXML private TableColumn<empleadoModelo, Number> colId;
-    @FXML private TableColumn<empleadoModelo, String> colNombre;
-    @FXML private TableColumn<empleadoModelo, String> colApellido;
-    @FXML private TableColumn<empleadoModelo, String> colCedula;
-    @FXML private TableColumn<empleadoModelo, String> colTelefono;
-    @FXML private TableColumn<empleadoModelo, String> colTipoEmpleado;
-    @FXML private TableColumn<empleadoModelo, String> colRol;
-    @FXML private TableColumn<empleadoModelo, String> colEstado;
-
-    private final ObservableList<empleadoModelo> listaEmpleados = FXCollections.observableArrayList();
     private final conexion con = new conexion();
+    private empleadoModelo empleadoCargado = null;
 
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
@@ -45,48 +31,6 @@ public class empleadoController {
         cbTipoEmpleado.getItems().addAll("Supervisor", "Empleado", "Maestro Chocolatero");
         cbRol.getItems().addAll("Administrador", "Usuario", "Supervisor");
 
-        colId.setCellValueFactory(d           -> d.getValue().idEmpleadoProperty());
-        colNombre.setCellValueFactory(d       -> d.getValue().nombreProperty());
-        colApellido.setCellValueFactory(d     -> d.getValue().apellidoProperty());
-        colCedula.setCellValueFactory(d       -> d.getValue().cedulaProperty());
-        colTelefono.setCellValueFactory(d     -> d.getValue().telefonoProperty());
-        colTipoEmpleado.setCellValueFactory(d -> d.getValue().tipoEmpleadoProperty());
-        colRol.setCellValueFactory(d          -> d.getValue().rolProperty());
-        colEstado.setCellValueFactory(d       -> d.getValue().estadoProperty());
-
-        tablaEmpleados.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(empleadoModelo e, boolean empty) {
-                super.updateItem(e, empty);
-                if (e == null || empty) {
-                    setStyle("");
-                } else if ("Inactivo".equalsIgnoreCase(e.getEstado())) {
-                    setStyle("-fx-background-color:#e0e0e0; -fx-text-fill:#888;");
-                } else {
-                    setStyle("");
-                }
-            }
-        });
-
-        FilteredList<empleadoModelo> listaFiltrada = new FilteredList<>(listaEmpleados, p -> true);
-        if (txtBuscarTabla != null) {
-            txtBuscarTabla.textProperty().addListener((obs, oldVal, newVal) ->
-                    listaFiltrada.setPredicate(e -> {
-                        if (newVal == null || newVal.isBlank()) return true;
-                        String f = newVal.toLowerCase();
-                        return e.getNombre().toLowerCase().contains(f)
-                                || e.getApellido().toLowerCase().contains(f)
-                                || e.getCedula().toLowerCase().contains(f);
-                    })
-            );
-        }
-        tablaEmpleados.setItems(listaFiltrada);
-
-        tablaEmpleados.getSelectionModel().selectedItemProperty().addListener(
-                (obs, old, sel) -> { if (sel != null) cargarEnFormulario(sel); }
-        );
-
-        cargarEmpleados();
         generarSiguienteId();
     }
 
@@ -108,14 +52,6 @@ public class empleadoController {
             ps.setString(6, cbRol.getValue());
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            int nuevoId = rs.next() ? rs.getInt(1) : 0;
-
-            listaEmpleados.add(new empleadoModelo(nuevoId,
-                    txtNombre.getText().trim(), txtApellido.getText().trim(),
-                    txtCedula.getText().trim(), txtTelefono.getText().trim(),
-                    cbTipoEmpleado.getValue(), cbRol.getValue(), "Activo"));
-
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Empleado registrado correctamente.");
             limpiar();
 
@@ -126,35 +62,26 @@ public class empleadoController {
 
     @FXML
     private void fnEditar() {
-        empleadoModelo sel = tablaEmpleados.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona un empleado de la tabla para editar.");
+        if (empleadoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un registro por ID primero.");
             return;
         }
         if (!validarCampos()) return;
-
-        sel.setNombre(txtNombre.getText().trim());
-        sel.setApellido(txtApellido.getText().trim());
-        sel.setCedula(txtCedula.getText().trim());
-        sel.setTelefono(txtTelefono.getText().trim());
-        sel.setTipoEmpleado(cbTipoEmpleado.getValue());
-        sel.setRol(cbRol.getValue());
 
         String sql = "UPDATE tbl_empleado SET nombre=?, apellido=?, cedula=?, telefono=?, tipo_empleado=?, rol=? WHERE id_empleado=?";
 
         try (Connection c = con.establecerConexion();
              PreparedStatement ps = c.prepareStatement(sql)) {
 
-            ps.setString(1, sel.getNombre());
-            ps.setString(2, sel.getApellido());
-            ps.setString(3, sel.getCedula());
-            ps.setString(4, sel.getTelefono());
-            ps.setString(5, sel.getTipoEmpleado());
-            ps.setString(6, sel.getRol());
-            ps.setInt(7, sel.getIdEmpleado());
+            ps.setString(1, txtNombre.getText().trim());
+            ps.setString(2, txtApellido.getText().trim());
+            ps.setString(3, txtCedula.getText().trim());
+            ps.setString(4, txtTelefono.getText().trim());
+            ps.setString(5, cbTipoEmpleado.getValue());
+            ps.setString(6, cbRol.getValue());
+            ps.setInt(7, empleadoCargado.getIdEmpleado());
             ps.executeUpdate();
 
-            tablaEmpleados.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Empleado actualizado correctamente.");
             limpiar();
 
@@ -165,25 +92,23 @@ public class empleadoController {
 
     @FXML
     private void fnEliminar() {
-        empleadoModelo sel = tablaEmpleados.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona un empleado de la tabla para eliminar.");
+        if (empleadoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un registro por ID primero.");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar eliminación");
         confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar a " + sel.getNombre() + " " + sel.getApellido() + "?");
+        confirm.setContentText("¿Eliminar a " + empleadoCargado.getNombre() + " " + empleadoCargado.getApellido() + "?");
 
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try (Connection c = con.establecerConexion();
                      PreparedStatement ps = c.prepareStatement("DELETE FROM tbl_empleado WHERE id_empleado=?")) {
 
-                    ps.setInt(1, sel.getIdEmpleado());
+                    ps.setInt(1, empleadoCargado.getIdEmpleado());
                     ps.executeUpdate();
-                    listaEmpleados.remove(sel);
                     mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Empleado eliminado correctamente.");
                     limpiar();
 
@@ -196,23 +121,21 @@ public class empleadoController {
 
     @FXML
     private void fnDeshabilitar() {
-        empleadoModelo sel = tablaEmpleados.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona un empleado de la tabla.");
+        if (empleadoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un registro por ID primero.");
             return;
         }
 
-        String nuevoEstado = "Activo".equalsIgnoreCase(sel.getEstado()) ? "Inactivo" : "Activo";
+        String nuevoEstado = "Activo".equalsIgnoreCase(empleadoCargado.getEstado()) ? "Inactivo" : "Activo";
 
         try (Connection c = con.establecerConexion();
              PreparedStatement ps = c.prepareStatement("UPDATE tbl_empleado SET estado=? WHERE id_empleado=?")) {
 
             ps.setString(1, nuevoEstado);
-            ps.setInt(2, sel.getIdEmpleado());
+            ps.setInt(2, empleadoCargado.getIdEmpleado());
             ps.executeUpdate();
 
-            sel.setEstado(nuevoEstado);
-            tablaEmpleados.refresh();
+            empleadoCargado.setEstado(nuevoEstado);
             mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Empleado marcado como " + nuevoEstado + ".");
 
         } catch (SQLException e) {
@@ -234,15 +157,6 @@ public class empleadoController {
         } catch (NumberFormatException ex) {
             mostrarAlerta(Alert.AlertType.WARNING, "ID inválido", "El ID debe ser un número entero.");
             return;
-        }
-
-        for (empleadoModelo e : listaEmpleados) {
-            if (e.getIdEmpleado() == idBuscar) {
-                tablaEmpleados.getSelectionModel().select(e);
-                tablaEmpleados.scrollTo(e);
-                cargarEnFormulario(e);
-                return;
-            }
         }
 
         String sql = "SELECT id_empleado, nombre, apellido, cedula, telefono, tipo_empleado, rol, estado FROM tbl_empleado WHERE id_empleado = ?";
@@ -281,35 +195,12 @@ public class empleadoController {
         txtTelefono.clear();
         cbTipoEmpleado.setValue(null);
         cbRol.setValue(null);
-        tablaEmpleados.getSelectionModel().clearSelection();
+        empleadoCargado = null;
         generarSiguienteId();
     }
 
-    private void cargarEmpleados() {
-        listaEmpleados.clear();
-        String sql = "SELECT id_empleado, nombre, apellido, cedula, telefono, tipo_empleado, rol, estado FROM tbl_empleado";
-        try (Connection c = con.establecerConexion();
-             Statement st = c.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                listaEmpleados.add(new empleadoModelo(
-                        rs.getInt("id_empleado"),
-                        rs.getString("nombre"),
-                        rs.getString("apellido"),
-                        rs.getString("cedula"),
-                        rs.getString("telefono"),
-                        rs.getString("tipo_empleado"),
-                        rs.getString("rol"),
-                        rs.getString("estado")
-                ));
-            }
-        } catch (SQLException e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar empleados", e.getMessage());
-        }
-    }
-
     private void cargarEnFormulario(empleadoModelo e) {
+        this.empleadoCargado = e;
         txtIdEmpleado.setText(String.valueOf(e.getIdEmpleado()));
         txtNombre.setText(e.getNombre());
         txtApellido.setText(e.getApellido());
@@ -371,11 +262,12 @@ public class empleadoController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAConsultaEmpleados(javafx.event.ActionEvent e)   { Navegacion.irA("/vistasFinales/vistaConsultaEmpleados.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }

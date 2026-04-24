@@ -3,10 +3,8 @@ package com.example.chocolateria.controller;
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.ordenProveedorDetalleModelo;
 import com.example.chocolateria.modelo.ordenProveedorModelo;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -24,7 +22,6 @@ public class ordenProveedorController {
     @FXML private ComboBox<String> cbEstadoPago;
     @FXML private TextArea         txtDescripcion;
     @FXML private TextField        txtMontoTotal;
-    @FXML private TextField        txtBuscarTabla;
 
     @FXML private CheckBox chkBombones, chkTabletas, chkTrufas, chkBanos;
     @FXML private CheckBox chkRellenos, chkCoberturas, chkMateriaPrima, chkEmpaque;
@@ -41,17 +38,6 @@ public class ordenProveedorController {
     @FXML private TableColumn<ordenProveedorDetalleModelo, Number> colDetPrecio;
     @FXML private TableColumn<ordenProveedorDetalleModelo, Number> colDetSubtotal;
 
-    @FXML private TableView<ordenProveedorModelo>                  tablaOrdenes;
-    @FXML private TableColumn<ordenProveedorModelo, Number>        colId;
-    @FXML private TableColumn<ordenProveedorModelo, String>        colRnc;
-    @FXML private TableColumn<ordenProveedorModelo, LocalDate>     colFecha;
-    @FXML private TableColumn<ordenProveedorModelo, String>        colPrioridad;
-    @FXML private TableColumn<ordenProveedorModelo, String>        colCategoria;
-    @FXML private TableColumn<ordenProveedorModelo, Number>        colMonto;
-    @FXML private TableColumn<ordenProveedorModelo, String>        colEstadoPago;
-    @FXML private TableColumn<ordenProveedorModelo, String>        colProductos;
-
-    private final ObservableList<ordenProveedorModelo>        lista        = FXCollections.observableArrayList();
     private final ObservableList<ordenProveedorDetalleModelo> listaDetalle = FXCollections.observableArrayList();
     private final conexion con = new conexion();
     private final Map<String, String> mapaRncNombre = new HashMap<>();
@@ -75,45 +61,6 @@ public class ordenProveedorController {
         tablaDetalle.setItems(listaDetalle);
         listaDetalle.addListener((javafx.collections.ListChangeListener<ordenProveedorDetalleModelo>) c -> recalcularMonto());
 
-        colId.setCellValueFactory(d         -> d.getValue().codigoProperty());
-        colRnc.setCellValueFactory(d        -> d.getValue().proveedorProperty());
-        colFecha.setCellValueFactory(d      -> d.getValue().fechaRequeridaProperty());
-        colPrioridad.setCellValueFactory(d  -> d.getValue().prioridadProperty());
-        colCategoria.setCellValueFactory(d  -> d.getValue().categoriaProperty());
-        colMonto.setCellValueFactory(d      -> d.getValue().montoTotalProperty());
-        colEstadoPago.setCellValueFactory(d -> d.getValue().estadoPagoProperty());
-        colProductos.setCellValueFactory(d  -> new SimpleStringProperty(cargarResumenProductos(d.getValue().getCodigo())));
-
-        tablaOrdenes.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(ordenProveedorModelo o, boolean empty) {
-                super.updateItem(o, empty);
-                if (o == null || empty) { setStyle(""); return; }
-                switch (o.getEstadoPago()) {
-                    case "Pagado"    -> setStyle("-fx-background-color:#e8f5e9;");
-                    case "Cancelado" -> setStyle("-fx-background-color:#fde8e8;");
-                    case "Parcial"   -> setStyle("-fx-background-color:#fff8e1;");
-                    default          -> setStyle("");
-                }
-            }
-        });
-
-        FilteredList<ordenProveedorModelo> listaFiltrada = new FilteredList<>(lista, p -> true);
-        txtBuscarTabla.textProperty().addListener((obs, o, nv) ->
-            listaFiltrada.setPredicate(ord -> {
-                if (nv == null || nv.isBlank()) return true;
-                String f = nv.toLowerCase();
-                return ord.getProveedor().toLowerCase().contains(f)
-                    || ord.getEstadoPago().toLowerCase().contains(f);
-            }));
-        tablaOrdenes.setItems(listaFiltrada);
-
-        tablaOrdenes.getSelectionModel().selectedItemProperty().addListener(
-            (obs, old, sel) -> {
-                if (sel != null) { cargarEnFormulario(sel); cargarDetalle(sel.getCodigo()); }
-            });
-
-        cargarOrdenes();
         generarSiguienteId();
     }
 
@@ -206,8 +153,6 @@ public class ordenProveedorController {
                     psDet.setDouble(5,d.getPrecio()); psDet.addBatch(); }
                 psDet.executeBatch(); }
 
-            lista.add(0, new ordenProveedorModelo(nuevoId,rnc,proveedor,dpFechaRequerida.getValue(),
-                cbPrioridad.getValue(),categoria,cbEstadoPago.getValue(),monto,txtDescripcion.getText().trim()));
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Orden #" + nuevoId + " guardada.");
             limpiar();
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al guardar",e.getMessage()); }
@@ -215,8 +160,10 @@ public class ordenProveedorController {
 
     @FXML
     private void fnEditar() {
-        ordenProveedorModelo sel = tablaOrdenes.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Selecciona una orden para editar."); return; }
+        String idTexto = txtId.getText().trim();
+        if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Carga una orden primero usando Buscar."); return; }
+        int codigo;
+        try { codigo = Integer.parseInt(idTexto); } catch (NumberFormatException ex) { mostrarAlerta(Alert.AlertType.WARNING,"ID invalido","El ID debe ser un numero entero."); return; }
         if (!validarCampos()) return;
         String itemRnc   = cbRncProveedor.getValue();
         String rnc       = mapaRncNombre.getOrDefault(itemRnc, itemRnc);
@@ -232,24 +179,19 @@ public class ordenProveedorController {
             ps.setDate(3,Date.valueOf(dpFechaRequerida.getValue()));
             ps.setString(4,cbPrioridad.getValue()); ps.setString(5,categoria);
             ps.setString(6,cbEstadoPago.getValue()); ps.setDouble(7,monto);
-            ps.setString(8,txtDescripcion.getText().trim()); ps.setInt(9,sel.getCodigo());
+            ps.setString(8,txtDescripcion.getText().trim()); ps.setInt(9,codigo);
             ps.executeUpdate();
 
             try (PreparedStatement psDel = conn.prepareStatement("DELETE FROM tbl_orden_proveedor_detalle WHERE id_orden=?")) {
-                psDel.setInt(1,sel.getCodigo()); psDel.executeUpdate(); }
+                psDel.setInt(1,codigo); psDel.executeUpdate(); }
             String sqlDet = "INSERT INTO tbl_orden_proveedor_detalle(id_orden,codigo_prod,producto,cantidad,precio) VALUES(?,?,?,?,?)";
             try (PreparedStatement psDet = conn.prepareStatement(sqlDet)) {
                 for (ordenProveedorDetalleModelo d : listaDetalle) {
-                    psDet.setInt(1,sel.getCodigo()); psDet.setString(2,d.getCodigoProd());
+                    psDet.setInt(1,codigo); psDet.setString(2,d.getCodigoProd());
                     psDet.setString(3,d.getProducto()); psDet.setInt(4,d.getCantidad());
                     psDet.setDouble(5,d.getPrecio()); psDet.addBatch(); }
                 psDet.executeBatch(); }
 
-            sel.setRncProveedor(rnc); sel.setProveedor(proveedor);
-            sel.setFechaRequerida(dpFechaRequerida.getValue()); sel.setPrioridad(cbPrioridad.getValue());
-            sel.setCategoria(categoria); sel.setEstadoPago(cbEstadoPago.getValue());
-            sel.setMontoTotal(monto); sel.setDescripcion(txtDescripcion.getText().trim());
-            tablaOrdenes.refresh();
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Orden actualizada correctamente.");
             limpiar();
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al editar",e.getMessage()); }
@@ -257,19 +199,21 @@ public class ordenProveedorController {
 
     @FXML
     private void fnEliminar() {
-        ordenProveedorModelo sel = tablaOrdenes.getSelectionModel().getSelectedItem();
-        if (sel == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Selecciona una orden para eliminar."); return; }
+        String idTexto = txtId.getText().trim();
+        if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Carga una orden primero usando Buscar."); return; }
+        int codigo;
+        try { codigo = Integer.parseInt(idTexto); } catch (NumberFormatException ex) { mostrarAlerta(Alert.AlertType.WARNING,"ID invalido","El ID debe ser un numero entero."); return; }
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setHeaderText(null);
-        confirm.setContentText("Eliminar la orden #" + sel.getCodigo() + "?");
+        confirm.setContentText("Eliminar la orden #" + codigo + "?");
         confirm.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion()) {
                     try (PreparedStatement ps = conn.prepareStatement("DELETE FROM tbl_orden_proveedor_detalle WHERE id_orden=?")) {
-                        ps.setInt(1,sel.getCodigo()); ps.executeUpdate(); }
+                        ps.setInt(1,codigo); ps.executeUpdate(); }
                     try (PreparedStatement ps = conn.prepareStatement("DELETE FROM tbl_orden_proveedor WHERE codigo=?")) {
-                        ps.setInt(1,sel.getCodigo()); ps.executeUpdate(); }
-                    lista.remove(sel); listaDetalle.clear();
+                        ps.setInt(1,codigo); ps.executeUpdate(); }
+                    listaDetalle.clear();
                     mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Orden eliminada correctamente.");
                     limpiar();
                 } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al eliminar",e.getMessage()); }
@@ -283,15 +227,28 @@ public class ordenProveedorController {
         if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Escribe un ID para buscar."); return; }
         try {
             int idBuscar = Integer.parseInt(idTexto);
-            for (ordenProveedorModelo o : lista) {
-                if (o.getCodigo() == idBuscar) {
-                    tablaOrdenes.getSelectionModel().select(o);
-                    tablaOrdenes.scrollTo(o);
-                    cargarEnFormulario(o); cargarDetalle(o.getCodigo()); return;
+            String sql = "SELECT codigo,rnc_proveedor,proveedor,fecha_requerida,prioridad,categoria,estado_pago,monto_total,descripcion FROM tbl_orden_proveedor WHERE codigo=?";
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, idBuscar);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    Date d = rs.getDate("fecha_requerida");
+                    ordenProveedorModelo o = new ordenProveedorModelo(
+                        rs.getInt("codigo"), rs.getString("rnc_proveedor"),
+                        rs.getString("proveedor") != null ? rs.getString("proveedor") : "",
+                        d != null ? d.toLocalDate() : null,
+                        rs.getString("prioridad"), rs.getString("categoria"),
+                        rs.getString("estado_pago"), rs.getDouble("monto_total"),
+                        rs.getString("descripcion") != null ? rs.getString("descripcion") : "");
+                    cargarEnFormulario(o); cargarDetalle(o.getCodigo());
+                    mostrarAlerta(Alert.AlertType.INFORMATION,"Encontrado","Orden encontrada y cargada en el formulario.");
+                } else {
+                    mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe orden con el ID " + idBuscar + ".");
                 }
             }
-            mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe orden con el ID " + idBuscar + ".");
         } catch (NumberFormatException ex) { mostrarAlerta(Alert.AlertType.WARNING,"ID invalido","El ID debe ser un numero entero."); }
+        catch (Exception ex) { mostrarAlerta(Alert.AlertType.ERROR,"Error de busqueda",ex.getMessage()); }
     }
 
     @FXML
@@ -304,27 +261,7 @@ public class ordenProveedorController {
         txtCodigoProducto.clear(); lblNombreProducto.setText("");
         txtCantidadDetalle.clear(); txtPrecioDetalle.clear();
         productoSeleccionado = ""; listaDetalle.clear();
-        tablaOrdenes.getSelectionModel().clearSelection();
         generarSiguienteId();
-    }
-
-    private void cargarOrdenes() {
-        lista.clear();
-        String sql = "SELECT codigo,rnc_proveedor,proveedor,fecha_requerida,prioridad,categoria,estado_pago,monto_total,descripcion FROM tbl_orden_proveedor ORDER BY codigo DESC";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Date d = rs.getDate("fecha_requerida");
-                lista.add(new ordenProveedorModelo(
-                    rs.getInt("codigo"), rs.getString("rnc_proveedor"),
-                    rs.getString("proveedor") != null ? rs.getString("proveedor") : "",
-                    d != null ? d.toLocalDate() : null,
-                    rs.getString("prioridad"), rs.getString("categoria"),
-                    rs.getString("estado_pago"), rs.getDouble("monto_total"),
-                    rs.getString("descripcion") != null ? rs.getString("descripcion") : ""));
-            }
-        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al cargar ordenes",e.getMessage()); }
     }
 
     private void cargarDetalle(int idOrden) {
@@ -339,17 +276,6 @@ public class ordenProveedorController {
                 rs.getString("codigo_prod"), rs.getString("producto"),
                 rs.getInt("cantidad"), rs.getDouble("precio")));
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al cargar detalle",e.getMessage()); }
-    }
-
-    private String cargarResumenProductos(int idOrden) {
-        StringBuilder sb = new StringBuilder();
-        try (Connection conn = con.establecerConexion();
-             PreparedStatement ps = conn.prepareStatement("SELECT producto FROM tbl_orden_proveedor_detalle WHERE id_orden=?")) {
-            ps.setInt(1, idOrden);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) { if (sb.length()>0) sb.append(", "); sb.append(rs.getString("producto")); }
-        } catch (Exception ignored) {}
-        return sb.toString();
     }
 
     private void cargarEnFormulario(ordenProveedorModelo o) {
@@ -422,11 +348,12 @@ public class ordenProveedorController {
     @FXML private void irARegistroCliente(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
     @FXML private void irARegistroSuplidor(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
-    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
-    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAReportesVentas(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesCompras(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesInventario(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
+    @FXML private void irAReportesProduccion(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
-    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultas.fxml", e); }
+    @FXML private void irAConsultaOrdenProveedor(javafx.event.ActionEvent e){ Navegacion.irA("/vistasFinales/vistaConsultaOrdenProveedor.fxml", e); }
+    @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 }
