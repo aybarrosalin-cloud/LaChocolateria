@@ -46,8 +46,16 @@ public class crearUsuarioController {
         "Técnico de Mantenimiento"
     );
 
+
+    @FXML private Button btnBuscar, btnLimpiar;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEditar;
+    @FXML private Button btnEliminar;
+    @FXML private Button btnDeshabilitar;
+
     @FXML
     public void initialize() {
+        actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         if (!"Administrador".equalsIgnoreCase(SesionManager.getInstancia().getRol())) {
@@ -113,6 +121,7 @@ public class crearUsuarioController {
 
     @FXML
     private void fnEditar() {
+        actualizarBotones(2);
         if (usuarioCargado == null) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un usuario por ID primero para editar.");
             return;
@@ -214,6 +223,7 @@ public class crearUsuarioController {
 
     @FXML
     private void fnBuscar() {
+        actualizarBotones(0);
         String idTexto = txtIdUsuario.getText().trim();
         if (idTexto.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención",
@@ -244,6 +254,7 @@ public class crearUsuarioController {
                         rs.getInt("id_usuario"), rs.getString("usuario"),
                         rs.getString("rol"), rs.getString("estado"),
                         rs.getInt("id_departamento"), rs.getString("departamento")));
+                actualizarBotones(1);
                 mostrarAlerta(Alert.AlertType.INFORMATION, "Encontrado",
                         "Usuario encontrado y cargado en el formulario.");
             } else {
@@ -257,6 +268,7 @@ public class crearUsuarioController {
 
     @FXML
     public void limpiar() {
+        actualizarBotones(0);
         txtUsuario.clear();
         txtPassword.clear();
         txtConfirmarPassword.clear();
@@ -354,4 +366,27 @@ public class crearUsuarioController {
     @FXML private void irAGestionUsuarios(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionUsuarios.fxml", e); }
     @FXML private void irAConsultaUsuarios(ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaConsultaUsuarios.fxml", e); }
     @FXML private void salir(ActionEvent e)                  { Navegacion.salir(e); }
+
+    // ── Estado de botones ─────────────────────────────────────────────
+    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    private void actualizarBotones(int estado) {
+        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        btnBuscar.setDisable(false);
+        btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnLimpiar.setDisable(false);
+        btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actGuardar = (estado != 1);
+        btnGuardar.setDisable(!actGuardar);
+        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEditar = (estado == 1);
+        btnEditar.setDisable(!actEditar);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actDesha = (estado == 1);
+        btnDeshabilitar.setDisable(!actDesha);
+        btnDeshabilitar.setStyle(actDesha ? "-fx-background-color:#7a5c00; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+    }
+
 }
