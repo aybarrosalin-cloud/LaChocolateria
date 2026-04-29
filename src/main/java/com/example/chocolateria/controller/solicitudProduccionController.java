@@ -58,8 +58,15 @@ public class solicitudProduccionController {
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
+
+    @FXML private Button btnBuscar, btnLimpiar;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEditar;
+    @FXML private Button btnEliminar;
+
     @FXML
     public void initialize() {
+        actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbPrioridad.setItems(FXCollections.observableArrayList("Alta", "Media", "Baja"));
@@ -118,6 +125,7 @@ public class solicitudProduccionController {
                         if (sel != null) {
                             cargarEnFormulario(sel);
                             cargarDetalle(sel.getId());
+                            actualizarBotones(1);
                         }
                     }
             );
@@ -290,6 +298,7 @@ public class solicitudProduccionController {
     // ── Editar solicitud (datos generales) ────────────────────────────────────
     @FXML
     private void fnEditar() {
+        actualizarBotones(2);
         solicitudProduccionModelo sel = tablaSolicitudes.getSelectionModel().getSelectedItem();
         if (sel == null) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una solicitud de la tabla para editar.");
@@ -392,6 +401,7 @@ public class solicitudProduccionController {
     // ── Buscar por ID ─────────────────────────────────────────────────────────
     @FXML
     private void fnBuscar() {
+        actualizarBotones(0);
         String idTexto = txtIdSolicitud.getText().trim();
         if (idTexto.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe un ID para buscar.");
@@ -413,6 +423,7 @@ public class solicitudProduccionController {
                 }
                 cargarEnFormulario(s);
                 cargarDetalle(s.getId());
+                actualizarBotones(1);
                 return;
             }
         }
@@ -499,6 +510,7 @@ public class solicitudProduccionController {
     // ── Limpiar ───────────────────────────────────────────────────────────────
     @FXML
     private void limpiar() {
+        actualizarBotones(0);
         txtIdSolicitud.clear();
         dpFechaSolicitud.setValue(null);
         dpFechaProduccion.setValue(null);
@@ -663,4 +675,23 @@ public class solicitudProduccionController {
     @FXML private void irAConsultas(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAConsultaSolicitudesProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaConsultaSolicitudesProduccion.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
+
+    // ── Estado de botones ─────────────────────────────────────────────
+    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    private void actualizarBotones(int estado) {
+        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        btnBuscar.setDisable(false);
+        btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnLimpiar.setDisable(false);
+        btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actGuardar = (estado != 1);
+        btnGuardar.setDisable(!actGuardar);
+        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEditar = (estado == 1);
+        btnEditar.setDisable(!actEditar);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+    }
 }

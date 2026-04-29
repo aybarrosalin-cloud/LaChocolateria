@@ -46,8 +46,15 @@ public class ordenProveedorController {
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
+
+    @FXML private Button btnBuscar, btnLimpiar;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEditar;
+    @FXML private Button btnEliminar;
+
     @FXML
     public void initialize() {
+        actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbPrioridad.setItems(FXCollections.observableArrayList("Alta", "Media", "Baja"));
         cbEstadoPago.setItems(FXCollections.observableArrayList("Pendiente", "Parcial", "Pagado", "Cancelado"));
@@ -160,6 +167,7 @@ public class ordenProveedorController {
 
     @FXML
     private void fnEditar() {
+        actualizarBotones(2);
         String idTexto = txtId.getText().trim();
         if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Carga una orden primero usando Buscar."); return; }
         int codigo;
@@ -223,6 +231,7 @@ public class ordenProveedorController {
 
     @FXML
     private void fnBuscar() {
+        actualizarBotones(0);
         String idTexto = txtId.getText().trim();
         if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Escribe un ID para buscar."); return; }
         try {
@@ -242,6 +251,7 @@ public class ordenProveedorController {
                         rs.getString("estado_pago"), rs.getDouble("monto_total"),
                         rs.getString("descripcion") != null ? rs.getString("descripcion") : "");
                     cargarEnFormulario(o); cargarDetalle(o.getCodigo());
+                actualizarBotones(1);
                     mostrarAlerta(Alert.AlertType.INFORMATION,"Encontrado","Orden encontrada y cargada en el formulario.");
                 } else {
                     mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe orden con el ID " + idBuscar + ".");
@@ -253,6 +263,7 @@ public class ordenProveedorController {
 
     @FXML
     private void limpiar() {
+        actualizarBotones(0);
         txtId.clear(); cbRncProveedor.setValue(null); dpFechaRequerida.setValue(null);
         cbPrioridad.setValue(null); cbEstadoPago.setValue(null);
         txtDescripcion.clear(); txtMontoTotal.clear();
@@ -356,4 +367,24 @@ public class ordenProveedorController {
     @FXML private void irAConsultaOrdenProveedor(javafx.event.ActionEvent e){ Navegacion.irA("/vistasFinales/vistaConsultaOrdenProveedor.fxml", e); }
     @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
+
+    // ── Estado de botones ─────────────────────────────────────────────
+    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    private void actualizarBotones(int estado) {
+        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        btnBuscar.setDisable(false);
+        btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnLimpiar.setDisable(false);
+        btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actGuardar = (estado != 1);
+        btnGuardar.setDisable(!actGuardar);
+        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEditar = (estado == 1);
+        btnEditar.setDisable(!actEditar);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+    }
+
 }

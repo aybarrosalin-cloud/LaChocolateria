@@ -187,10 +187,10 @@
                         <Separator />
 
                         <HBox alignment="CENTER" spacing="10">
-                            <Button mnemonicParsing="false" onAction="#registrarDeuda" prefHeight="30" prefWidth="130" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Registrar Deuda"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" onAction="#fnEliminar" prefHeight="30" prefWidth="100" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Eliminar"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" onAction="#limpiar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnRegistrar" onAction="#registrarDeuda" prefHeight="30" prefWidth="130" text="Registrar Deuda"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnBuscar" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnEliminar" onAction="#fnEliminar" prefHeight="30" prefWidth="100" text="Eliminar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnLimpiar" onAction="#limpiar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
                             <Button mnemonicParsing="false" onAction="#irAConsultaPagosCompra" prefHeight="30" prefWidth="130" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="📋  Ver Consulta"><font><Font size="11.0" /></font></Button>
                         </HBox>
                     </VBox>
@@ -205,7 +205,7 @@
                             <TextField fx:id="txtMontoAbono" prefHeight="28" prefWidth="130" promptText="Monto abono (RD$)" style="-fx-background-color:white; -fx-text-fill:black;                                               -fx-border-color:#C5A8E8; -fx-border-radius:6;                                               -fx-background-radius:6;" />
                             <ComboBox fx:id="cbMetodoPago" prefHeight="28" prefWidth="150" style="-fx-background-color:white; -fx-border-color:#C5A8E8;                                              -fx-border-radius:6; -fx-background-radius:6;" />
                             <TextField fx:id="txtNumeroReferencia" prefHeight="28" prefWidth="140" promptText="N° referencia" style="-fx-background-color:white; -fx-text-fill:black;                                               -fx-border-color:#C5A8E8; -fx-border-radius:6;                                               -fx-background-radius:6;" />
-                            <Button onAction="#registrarAbono" prefHeight="28" prefWidth="130" style="-fx-background-color:#2e7d32; -fx-text-fill:white;                                            -fx-font-weight:bold; -fx-background-radius:8;" text="✔  Registrar Abono" />
+                            <Button fx:id="btnAbono" onAction="#registrarAbono" prefHeight="28" prefWidth="130" text="✔  Registrar Abono" />
                         </HBox>
 
                         <TableView fx:id="tablaAbonos" prefHeight="140" style="-fx-background-radius:10; -fx-border-radius:10;                                           -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="NEVER">
