@@ -43,8 +43,15 @@ public class ordenClienteController {
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
+
+    @FXML private Button btnBuscar, btnLimpiar;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEditar;
+    @FXML private Button btnEliminar;
+
     @FXML
     public void initialize() {
+        actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
         cbMetodoPago.setItems(FXCollections.observableArrayList(
@@ -205,6 +212,7 @@ public class ordenClienteController {
 
     @FXML
     private void fnEditar() {
+        actualizarBotones(2);
         if (ordenCargada == null) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una orden por ID antes de editar.");
             return;
@@ -291,6 +299,7 @@ public class ordenClienteController {
 
     @FXML
     private void fnBuscar() {
+        actualizarBotones(0);
         String idTexto = txtCodigo.getText().trim();
         if (idTexto.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe un ID para buscar.");
@@ -325,6 +334,7 @@ public class ordenClienteController {
                 cargarEnFormulario(ordenCargada);
                 cargarDetalle(idBuscar);
             } else {
+                actualizarBotones(1);
                 mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
                     "No existe una orden con el ID " + idBuscar + ".");
             }
@@ -335,6 +345,7 @@ public class ordenClienteController {
 
     @FXML
     private void limpiarCampos() {
+        actualizarBotones(0);
         txtCodigo.clear();
         cmbCliente.setValue(null);
         dpFecha.setValue(null);
@@ -464,4 +475,24 @@ public class ordenClienteController {
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
     @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
+
+    // ── Estado de botones ─────────────────────────────────────────────
+    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    private void actualizarBotones(int estado) {
+        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        btnBuscar.setDisable(false);
+        btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnLimpiar.setDisable(false);
+        btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actGuardar = (estado != 1);
+        btnGuardar.setDisable(!actGuardar);
+        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEditar = (estado == 1);
+        btnEditar.setDisable(!actEditar);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+    }
+
 }

@@ -61,8 +61,15 @@ public class pagoCompraController {
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
+
+    @FXML private Button btnBuscar, btnLimpiar;
+    @FXML private Button btnRegistrar;
+    @FXML private Button btnEliminar;
+    @FXML private Button btnAbono;
+
     @FXML
     public void initialize() {
+        actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbMetodoPago.setItems(FXCollections.observableArrayList(
                 "Efectivo", "Transferencia", "Cheque", "Tarjeta de crédito", "Tarjeta de débito"));
@@ -122,6 +129,7 @@ public class pagoCompraController {
                         if (sel != null) {
                             cargarEnFormulario(sel);
                             cargarAbonos(sel.getIdDeuda());
+                            actualizarBotones(1);
                         }
                     }
             );
@@ -290,6 +298,7 @@ public class pagoCompraController {
 
     @FXML
     private void fnBuscar() {
+        actualizarBotones(0);
         String idTexto = txtIdDeuda.getText().trim();
         if (idTexto.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe un ID para buscar.");
@@ -310,6 +319,7 @@ public class pagoCompraController {
                 }
                 cargarEnFormulario(d);
                 cargarAbonos(d.getIdDeuda());
+                actualizarBotones(1);
                 return;
             }
         }
@@ -358,6 +368,7 @@ public class pagoCompraController {
 
     @FXML
     private void limpiar() {
+        actualizarBotones(0);
         txtIdDeuda.clear();
         txtIdRecepcion.clear();
         lblInfoRecepcion.setText("");
@@ -549,4 +560,23 @@ public class pagoCompraController {
     @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAConsultaPagosCompra(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaConsultaPagosCompra.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
+
+    // ── Estado de botones ─────────────────────────────────────────────
+    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    private void actualizarBotones(int estado) {
+        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        btnBuscar.setDisable(false);
+        btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnLimpiar.setDisable(false);
+        btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actRegistrar = (estado == 0);
+        btnRegistrar.setDisable(!actRegistrar);
+        btnRegistrar.setStyle(actRegistrar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actAbono = (estado != 0);
+        btnAbono.setDisable(!actAbono);
+        btnAbono.setStyle(actAbono ? "-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+    }
 }
