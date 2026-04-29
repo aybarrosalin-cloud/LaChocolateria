@@ -37,8 +37,15 @@ public class reclamoController {
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
+
+    @FXML private Button btnBuscar, btnLimpiar;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEditar;
+    @FXML private Button btnEliminar;
+
     @FXML
     public void initialize() {
+        actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbTipoReclamo.setItems(FXCollections.observableArrayList(
             "Producto en mal estado",
@@ -155,6 +162,7 @@ public class reclamoController {
 
     @FXML
     private void fnEditar() {
+        actualizarBotones(2);
         if (reclamoCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Busca un reclamo por ID primero para editar."); return; }
         if (!validarCampos()) return;
 
@@ -201,6 +209,7 @@ public class reclamoController {
 
     @FXML
     private void fnBuscar() {
+        actualizarBotones(0);
         String idTexto = txtId.getText().trim();
         if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Escribe un ID para buscar."); return; }
         try {
@@ -219,6 +228,7 @@ public class reclamoController {
                         rs.getString("prioridad"),
                         rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
                         d != null ? d.toLocalDate() : null));
+                actualizarBotones(1);
                     mostrarAlerta(Alert.AlertType.INFORMATION,"Encontrado","Reclamo encontrado y cargado en el formulario.");
                 } else {
                     mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe reclamo con el ID " + idBuscar + ".");
@@ -230,6 +240,7 @@ public class reclamoController {
 
     @FXML
     private void limpiar() {
+        actualizarBotones(0);
         txtId.clear(); cbCliente.setValue(null); cbTipoReclamo.setValue(null);
         cbEstado.setValue(null); cbOrden.getItems().clear(); cbOrden.setValue(null);
         txtDescripcion.clear(); rbMedia.setSelected(true);
@@ -308,4 +319,24 @@ public class reclamoController {
     @FXML private void irAConsultaReclamos(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaConsultaReclamos.fxml", e); }
     @FXML private void irAGestionUsuarios(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionUsuarios.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
+
+    // ── Estado de botones ─────────────────────────────────────────────
+    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    private void actualizarBotones(int estado) {
+        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        btnBuscar.setDisable(false);
+        btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnLimpiar.setDisable(false);
+        btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actGuardar = (estado != 1);
+        btnGuardar.setDisable(!actGuardar);
+        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEditar = (estado == 1);
+        btnEditar.setDisable(!actEditar);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+    }
+
 }

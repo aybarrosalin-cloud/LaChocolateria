@@ -175,19 +175,19 @@
 
                         <!-- Botones principales -->
                         <HBox alignment="CENTER" spacing="10">
-                            <Button mnemonicParsing="false" onAction="#guardar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar">
+                            <Button mnemonicParsing="false" fx:id="btnGuardar" onAction="#guardar" prefHeight="30" prefWidth="100" text="Guardar">
                                 <font><Font size="11.0" /></font>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#fnEditar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar">
+                            <Button mnemonicParsing="false" fx:id="btnEditar" onAction="#fnEditar" prefHeight="30" prefWidth="100" text="Editar">
                                 <font><Font size="11.0" /></font>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#fnEliminar" prefHeight="30" prefWidth="100" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Eliminar">
+                            <Button mnemonicParsing="false" fx:id="btnEliminar" onAction="#fnEliminar" prefHeight="30" prefWidth="100" text="Eliminar">
                                 <font><Font size="11.0" /></font>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar">
+                            <Button mnemonicParsing="false" fx:id="btnBuscar" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar">
                                 <font><Font size="11.0" /></font>
                             </Button>
-                            <Button mnemonicParsing="false" onAction="#limpiarCampos" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
+                            <Button mnemonicParsing="false" fx:id="btnLimpiar" onAction="#limpiarCampos" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar">
                                 <font><Font size="11.0" /></font>
                             </Button>
                             <Button prefHeight="30" prefWidth="140" onAction="#irAConsultaOrdenCliente" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-cursor:hand; -fx-font-size:11px;" text="📋 Ver Consulta" />

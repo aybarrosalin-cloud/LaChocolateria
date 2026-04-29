@@ -71,8 +71,15 @@ public class ventaController {
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
+
+    @FXML private Button btnBuscar, btnLimpiar;
+    @FXML private Button btnRegistrar;
+    @FXML private Button btnEliminar;
+    @FXML private Button btnAbono;
+
     @FXML
     public void initialize() {
+        actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbTipoPago.setItems(FXCollections.observableArrayList("Contado", "Crédito"));
         cbMetodoPago.setItems(FXCollections.observableArrayList("Efectivo", "Transferencia", "Tarjeta", "Cheque"));
@@ -141,6 +148,7 @@ public class ventaController {
                         if (sel != null) {
                             cargarEnFormulario(sel);
                             cargarPagos(sel.getIdVenta());
+                            actualizarBotones(1);
                         }
                     }
             );
@@ -240,8 +248,8 @@ public class ventaController {
 
             String sql = "INSERT INTO tbl_venta (fecha_venta, monto_total, id_empleado, descuento, " +
                     "subtotal, itbis, tipo_pago, estado_pago, monto_pagado, balance_pendiente, " +
-                    "id_orden, metodo_pago) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "id_orden) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (Connection conn = con.establecerConexion();
                  PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -258,7 +266,6 @@ public class ventaController {
                 ps.setDouble(10, balance);
                 ps.setObject(11, txtIdOrden.getText().trim().isEmpty() ? null
                         : Integer.parseInt(txtIdOrden.getText().trim()));
-                ps.setString(12, cbMetodoPago.getValue());
                 ps.executeUpdate();
 
                 ResultSet rs = ps.getGeneratedKeys();
@@ -318,7 +325,7 @@ public class ventaController {
                 return;
             }
 
-            String sql = "INSERT INTO tbl_pago_venta (id_venta, fecha_pago, monto_pagado, metodo_pago, numero_referencia) " +
+            String sql = "INSERT INTO tbl_pago_venta (id_venta, fecha_pago, monto_pagado, metodo_pagado, numero_referencia) " +
                     "VALUES (?, ?, ?, ?, ?)";
 
             try (Connection conn = con.establecerConexion();
@@ -354,13 +361,13 @@ public class ventaController {
                         dpFechaPago.getValue(), montoAbono,
                         cbMetodoPagoAbono.getValue(), txtReferencia.getText().trim(), ""));
 
-                // Actualizar fila en tabla
+                // Actualizar fila en tabla (si existe tablaVentas en esta vista)
                 for (ventaModelo v : listaVentas) {
                     if (v.getIdVenta() == idVentaSeleccionada) {
                         v.setMontoPagado(nuevoPagado);
                         v.setBalancePendiente(nuevoBalance);
                         v.setEstadoPago(nuevoEstado);
-                        tablaVentas.refresh();
+                        if (tablaVentas != null) tablaVentas.refresh();
                         break;
                     }
                 }
@@ -380,6 +387,7 @@ public class ventaController {
 
     @FXML
     private void fnBuscar() {
+        actualizarBotones(0);
         String idTexto = txtIdVenta.getText().trim();
         if (idTexto.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe un ID para buscar.");
@@ -400,6 +408,7 @@ public class ventaController {
                 }
                 cargarEnFormulario(v);
                 cargarPagos(v.getIdVenta());
+                actualizarBotones(1);
                 return;
             }
         }
@@ -448,6 +457,7 @@ public class ventaController {
 
     @FXML
     private void limpiar() {
+        actualizarBotones(0);
         txtIdVenta.clear();
         txtIdOrden.clear();
         lblInfoOrden.setText("");
@@ -471,7 +481,7 @@ public class ventaController {
         idVentaSeleccionada = 0;
         listaPagos.clear();
         limpiarCamposAbono();
-        tablaVentas.getSelectionModel().clearSelection();
+        if (tablaVentas != null) tablaVentas.getSelectionModel().clearSelection();
         generarSiguienteId();
     }
 
@@ -525,7 +535,7 @@ public class ventaController {
                 "ISNULL(o.cliente, '') AS cliente, " +
                 "v.subtotal, v.descuento, v.itbis, v.monto_total, " +
                 "v.monto_pagado, v.balance_pendiente, v.tipo_pago, " +
-                "v.estado_pago, v.metodo_pago, " +
+                "v.estado_pago, " +
                 "ISNULL(CAST(v.id_comprobante AS VARCHAR), '') AS ncf, " +
                 "v.id_empleado, " +
                 "ISNULL(e.nombre + ' ' + e.apellido, '') AS empleado " +
@@ -551,7 +561,7 @@ public class ventaController {
                         rs.getDouble("balance_pendiente"),
                         rs.getString("tipo_pago"),
                         rs.getString("estado_pago"),
-                        rs.getString("metodo_pago") != null ? rs.getString("metodo_pago") : "",
+                        "",
                         rs.getString("ncf"),
                         rs.getInt("id_empleado"),
                         rs.getString("empleado")
@@ -565,7 +575,7 @@ public class ventaController {
     private void cargarPagos(int idVenta) {
         listaPagos.clear();
         idVentaSeleccionada = idVenta;
-        String sql = "SELECT id_pago, id_venta, fecha_pago, monto_pagado, metodo_pago, " +
+        String sql = "SELECT id_pago, id_venta, fecha_pago, monto_pagado, metodo_pagado, " +
                 "numero_referencia, observaciones FROM tbl_pago_venta WHERE id_venta = ?";
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -578,7 +588,7 @@ public class ventaController {
                         rs.getInt("id_venta"),
                         d != null ? d.toLocalDate() : null,
                         rs.getDouble("monto_pagado"),
-                        rs.getString("metodo_pago"),
+                        rs.getString("metodo_pagado"),
                         rs.getString("numero_referencia") != null ? rs.getString("numero_referencia") : "",
                         rs.getString("observaciones") != null ? rs.getString("observaciones") : ""
                 ));
@@ -703,4 +713,23 @@ public class ventaController {
     @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAConsultaPagosVenta(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultaPagosVenta.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
+
+    // ── Estado de botones ─────────────────────────────────────────────
+    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    private void actualizarBotones(int estado) {
+        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        btnBuscar.setDisable(false);
+        btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnLimpiar.setDisable(false);
+        btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actRegistrar = (estado == 0);
+        btnRegistrar.setDisable(!actRegistrar);
+        btnRegistrar.setStyle(actRegistrar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        boolean actAbono = (estado != 0);
+        btnAbono.setDisable(!actAbono);
+        btnAbono.setStyle(actAbono ? "-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+    }
 }

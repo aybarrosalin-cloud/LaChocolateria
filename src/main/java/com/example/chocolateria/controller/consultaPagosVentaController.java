@@ -86,12 +86,13 @@ public class consultaPagosVentaController {
                      "ISNULL(o.cliente,'') AS cliente, " +
                      "v.subtotal, v.descuento, v.itbis, v.monto_total, " +
                      "v.monto_pagado, v.balance_pendiente, v.tipo_pago, " +
-                     "v.estado_pago, ISNULL(v.metodo_pago,'') AS metodo_pago, " +
+                     "v.estado_pago, " +
                      "ISNULL(CAST(v.id_comprobante AS VARCHAR),'') AS ncf, " +
                      "ISNULL(v.id_empleado,0) AS id_empleado, " +
-                     "ISNULL(v.empleado,'') AS empleado " +
+                     "ISNULL(e.nombre + ' ' + e.apellido,'') AS empleado " +
                      "FROM tbl_venta v " +
                      "LEFT JOIN tbl_orden_cliente o ON v.id_orden = o.id_orden " +
+                     "LEFT JOIN tbl_empleado e ON v.id_empleado = e.id_empleado " +
                      "ORDER BY v.fecha_venta DESC";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
@@ -111,7 +112,7 @@ public class consultaPagosVentaController {
                     rs.getDouble("balance_pendiente"),
                     rs.getString("tipo_pago")    != null ? rs.getString("tipo_pago")    : "",
                     rs.getString("estado_pago")  != null ? rs.getString("estado_pago")  : "",
-                    rs.getString("metodo_pago"),
+                    "",
                     rs.getString("ncf"),
                     rs.getInt("id_empleado"),
                     rs.getString("empleado")
