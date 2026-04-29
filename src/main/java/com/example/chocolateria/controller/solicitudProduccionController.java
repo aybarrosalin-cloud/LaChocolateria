@@ -1,4 +1,4 @@
-package com.example.chocolateria.controller;
+﻿package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.solicitudDetalleModelo;
@@ -245,6 +245,10 @@ public class solicitudProduccionController {
     // ── Guardar solicitud + detalle ───────────────────────────────────────────
     @FXML
     private void guardar() {
+        if (estadoActual == 1) {
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Acción no disponible", "Ya hay un registro cargado. Usa 'Editar' para modificarlo o 'Limpiar' para crear uno nuevo.");
+            return;
+        }
         if (!validarCampos()) return;
 
         String sqlMaestro = "INSERT INTO tbl_solicitud_produccion " +
@@ -676,22 +680,25 @@ public class solicitudProduccionController {
     @FXML private void irAConsultaSolicitudesProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaConsultaSolicitudesProduccion.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 
+    private int estadoActual = 0;
+
     // ── Estado de botones ─────────────────────────────────────────────
     // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
     private void actualizarBotones(int estado) {
+        this.estadoActual = estado;
         // estado: 0=libre/nuevo  1=encontrado  2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);
         btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         boolean actGuardar = (estado != 1);
-        btnGuardar.setDisable(!actGuardar);
-        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnGuardar.setDisable(false);
+        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#e8d5f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
         boolean actEditar = (estado == 1);
-        btnEditar.setDisable(!actEditar);
-        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnEditar.setDisable(false);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#e8d5f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
         boolean actEliminar = (estado != 0);
-        btnEliminar.setDisable(!actEliminar);
-        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
+        btnEliminar.setDisable(false);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#f5d0da; -fx-text-fill:#c47a8a; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
     }
 }
