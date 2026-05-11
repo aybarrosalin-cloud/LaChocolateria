@@ -1,113 +1,101 @@
 # CHOCOLATERIA
 
-Sistema de gestión empresarial para una chocolatería, desarrollado como aplicación de escritorio con JavaFX y conexión a base de datos SQL Server.
+App de escritorio para manejar todo lo de una chocolatería. Hecha en Java con JavaFX y una base de datos en SQL Server.
 
 ---
 
-## Tecnologías utilizadas
+## Con qué está hecha
 
-- **Java 21**
-- **JavaFX 21** — interfaz gráfica de escritorio
-- **Maven** — gestión de dependencias y build
-- **SQL Server** — base de datos
-- **jpackage** — generación de instalador para Windows
-
----
-
-## Funcionalidades del sistema
-
-### Autenticación y seguridad
-- Pantalla de login con validación de credenciales
-- Sistema de roles y permisos por departamento — cada usuario solo ve y accede a lo que le corresponde según su rol
-- Alerta automática para usuarios inactivos al intentar iniciar sesión
-- Cifrado de contraseñas
-
-### Pantalla de inicio
-- Diseño visual completo con banner y logo de la empresa
-- Menú lateral completamente funcional con navegación entre módulos
-- Accesos rápidos organizados con FlowPane para las funciones más usadas
-- Foto de perfil y nombre del usuario autenticado visibles en todas las pantallas
-- Navegación fluida sin congelamiento de pantalla gracias al uso de hilos de fondo (Task)
-
-### Gestión de usuarios
-- Pantalla para crear, editar y administrar cuentas de usuario
-- Asignación de roles por departamento
-- Control de acceso según el rol asignado
-- Carga dinámica de imagen de perfil personalizada para cada usuario
-
-### Gestión de clientes
-- Registro de nuevos clientes
-- Consulta y búsqueda de clientes existentes
-- Historial de órdenes por cliente
-
-### Gestión de empleados
-- Registro completo de empleados
-- Consulta de empleados activos
-
-### Gestión de productos
-- Registro de productos del catálogo
-- Consulta y visualización de inventario
-
-### Gestión de suplidores
-- Registro y seguimiento de suplidores o proveedores
-- Consulta de suplidores registrados
-
-### Órdenes al proveedor
-- Creación de órdenes de compra a suplidores
-- Seguimiento del estado de cada orden
-- Recepción de mercancía contra orden de proveedor
-
-### Órdenes de cliente
-- Registro de órdenes realizadas por clientes
-- Detalle de productos por orden
-- Consulta de órdenes activas e historial
-
-### Producción
-- Solicitudes de producción con detalle de productos a fabricar
-- Órdenes de producción internas
-- Consulta del estado de producción
-
-### Envíos
-- Pantalla de gestión de envíos a clientes
-- Registro y seguimiento de cada despacho
-- Consulta de envíos realizados
-
-### Reclamos
-- Registro de reclamos de clientes
-- Gestión y seguimiento del estado de cada reclamo
-- Consulta del historial de reclamos
-
-### Maquinaria
-- Registro de maquinaria de la empresa
-- Control de mantenimiento de maquinaria
-- Historial de mantenimientos realizados
-
-### Pagos
-- Registro de pagos de ventas
-- Registro de pagos de compras a proveedores
-- Consulta de pagos realizados
-
-### Módulo de consultas
-- Pantallas de consulta separadas por módulo con tabla de resultados
-- Scroll horizontal en tablas para visualizar todos los datos cómodamente
-- Consultas disponibles: clientes, empleados, envíos, maquinaria, mantenimiento, órdenes de cliente, órdenes de producción, órdenes de proveedor, pagos de compra, pagos de venta, productos, recepción, reclamos, solicitudes de producción, suplidores, usuarios
+- Java 21
+- JavaFX 21
+- Maven
+- SQL Server
+- jpackage (para el instalador de Windows)
 
 ---
 
-## Contribuidoras
+## Qué puede hacer
 
-| Contribuidora | Trabajo realizado |
-|---|---|
-| **Rosalin** | Estructura base del proyecto, pantalla de inicio y menú lateral, sistema de roles y permisos, gestión de usuarios, foto de perfil dinámica, accesos rápidos, alerta de usuario inactivo, navegación sin freeze, módulo de consultas, instalador Windows, correcciones de BOM y controladores |
-| **Yara** | Vista de productos, pantalla de suplidor, maquinaria, envíos, reclamos, orden al proveedor, orden de cliente, recepción, solicitud de producción, organización de carpetas, consultas terminadas |
+**Login y acceso**
+- Pantalla de login
+- Cada usuario tiene un rol y solo ve lo que le toca
+- Si un usuario está inactivo le sale una alerta
+- Las contraseñas van cifradas
+
+**Pantalla de inicio**
+- Menú lateral para moverse entre módulos
+- Accesos rápidos a lo más usado
+- Muestra el nombre y la foto del usuario que entró
+- La navegación no se congela
+
+**Usuarios**
+- Crear y editar usuarios
+- Asignarles rol y departamento
+- Cada quien tiene su foto de perfil
+
+**Clientes**
+- Registrar clientes nuevos
+- Ver y buscar los que ya están guardados
+
+**Empleados**
+- Registrar empleados
+- Consultar la lista
+
+**Productos**
+- Registrar productos
+- Ver el inventario
+
+**Suplidores**
+- Agregar suplidores
+- Consultar los registrados
+
+**Órdenes al proveedor**
+- Hacer órdenes de compra
+- Recibir la mercancía cuando llega
+
+**Órdenes de cliente**
+- Registrar lo que pide cada cliente
+- Ver el historial de órdenes
+
+**Producción**
+- Solicitudes de lo que se va a fabricar
+- Órdenes internas de producción
+
+**Envíos**
+- Registrar cada despacho
+- Ver el historial de envíos
+
+**Reclamos**
+- Anotar los reclamos de clientes
+- Darles seguimiento
+
+**Maquinaria**
+- Registrar las máquinas
+- Llevar el control de mantenimientos
+
+**Pagos**
+- Pagos de ventas
+- Pagos de compras a proveedores
+
+**Consultas**
+- Una pantalla de consulta por cada módulo
+- Las tablas tienen scroll horizontal para ver todo bien
 
 ---
 
-## Instalación
+## Quiénes lo hicieron
 
-1. Clonar el repositorio
-2. Abrir con IntelliJ IDEA
-3. Configurar la conexión a SQL Server en el archivo de base de datos
-4. Ejecutar con Maven: `mvn clean javafx:run`
+**Rosalin** — estructura del proyecto, pantalla de inicio, menú, sistema de roles, gestión de usuarios, foto de perfil, accesos rápidos, alerta de inactivos, navegación fluida, módulo de consultas, instalador Windows, correcciones varias
 
-Para generar el instalador de Windows ejecutar `crear-instalador.bat`
+**Yara** — productos, suplidores, maquinaria, envíos, reclamos, orden al proveedor, orden de cliente, recepción, producción, organización de carpetas, consultas
+
+---
+
+## Cómo correrla
+
+1. Clonar el repo
+2. Abrirlo en IntelliJ IDEA
+3. Configurar la conexión a SQL Server
+4. Correr con Maven: `mvn clean javafx:run`
+
+Para el instalador de Windows: ejecutar `crear-instalador.bat`
