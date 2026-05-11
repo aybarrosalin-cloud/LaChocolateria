@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="720.0" prefWidth="1020.0" style="-fx-background-color: #f3eaf8;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.reportesController">
+
+    <left>
+        <VBox alignment="TOP_CENTER" prefHeight="720.0" prefWidth="190.0" spacing="6" style="-fx-background-color:#48295a;">
+            <padding><Insets bottom="20" left="10" right="10" top="24" /></padding>
+
+            <StackPane maxHeight="80" maxWidth="80" minHeight="80" minWidth="80">
+                <ImageView fx:id="imgFotoPerfil" fitHeight="100.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                    <image><Image url="@../com/example/chocolateria/perfilr.png" /></image>
+                </ImageView>
+            </StackPane>
+
+            <Label fx:id="lblUsuario" alignment="CENTER" prefWidth="160.0" style="-fx-text-fill:#eadcf2; -fx-font-weight:bold;" text="" wrapText="true">
+                <font><Font name="Courier New" size="10" /></font>
+            </Label>
+
+            <Separator opacity="0.2" prefWidth="155.0" />
+
+            <Button maxWidth="Infinity" onAction="#irAInicio" prefHeight="33.0" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-weight:bold; -fx-background-radius:14; -fx-border-color:#c084fc; -fx-border-radius:14; -fx-border-width:1.5;" text="🏠  Inicio">
+                <font><Font size="12" /></font>
+            </Button>
+
+            <Separator opacity="0.1" prefWidth="155.0" />
+
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="530.0" style="-fx-background-color:transparent; -fx-background:transparent; -fx-border-color:transparent;" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                <VBox spacing="4" style="-fx-background-color:transparent; -fx-padding: 0 0 4 0;">
+
+                    <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Ventas">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAOrdenCliente" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Orden de cliente" />
+                            <Button maxWidth="Infinity" onAction="#irAPagoVenta" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de pagos de ventas" wrapText="true" />
+                            <Button maxWidth="Infinity" onAction="#irAGestionEnvios" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Gestión de envíos" />
+                            <Button maxWidth="Infinity" onAction="#irAGestionReclamos" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Gestión de reclamos" />
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Producción">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irASolicitudProduccion" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Solicitud de producción" />
+                            <Button maxWidth="Infinity" onAction="#irAOrdenProduccion" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Orden de producción" />
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Inventario">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irASalidaMateriales" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Salida de materiales para producción" wrapText="true" />
+                            <Button maxWidth="Infinity" onAction="#irASalidaProductos" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Salida de productos por ventas" wrapText="true" />
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Compras">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAOrdenProveedor" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Orden a proveedor" />
+                            <Button maxWidth="Infinity" onAction="#irAPagoCompra" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de pagos por compras" wrapText="true" />
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Registros">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irARegistroProducto" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de productos" />
+                            <Button maxWidth="Infinity" onAction="#irARegistroEmpleado" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de empleado" />
+                            <Button maxWidth="Infinity" onAction="#irARegistroCliente" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de cliente" />
+                            <Button maxWidth="Infinity" onAction="#irARegistroSuplidor" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de suplidor" />
+                            <Button maxWidth="Infinity" onAction="#irARegistroMaquinaria" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de máquinas" />
+                        </VBox>
+                    </TitledPane>
+
+                    <!-- Reportes activo (resaltado) -->
+                    <TitledPane animated="true" expanded="true" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="📊  Reportes">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAReportesVentas" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Facturación" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesCompras" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Delivery y Entrega" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesInventario" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Reclamaciones" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesProduccion" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Pedido" />
+                        </VBox>
+                    </TitledPane>
+
+                    <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Mantenimiento">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAMantenimientoMaquinaria" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Mantenimiento de maquinarias" wrapText="true" />
+                        </VBox>
+                    </TitledPane>
+
+                </VBox>
+            </ScrollPane>
+
+            <Separator opacity="0.1" />
+
+            <Button maxWidth="Infinity" onAction="#salir" prefHeight="38" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:14;" text="🚪  Salir">
+                <font><Font size="13" /></font>
+            </Button>
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="AS_NEEDED">
+            <VBox spacing="10" style="-fx-padding: 0 0 16 0; -fx-background-color: #f3eaf8;">
+
+                <StackPane maxWidth="Infinity" style="-fx-border-color:#9b59b6; -fx-border-width:0 0 2 0;">
+                    <ImageView fitHeight="105.0" fitWidth="830.0" pickOnBounds="true" preserveRatio="false" smooth="true">
+                        <image><Image url="@../com/example/chocolateria/banner.png" /></image>
+                    </ImageView>
+                </StackPane>
+
+                <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
+
+                    <!-- Titulo + buscador -->
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:16px; -fx-font-weight:bold;" text="REPORTES" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="txtBuscar" prefWidth="220" promptText="Buscar en el reporte activo..." style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#C5A8E8;" />
+                        <Button onAction="#ejecutarBusqueda" prefHeight="28" prefWidth="80" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="Buscar" />
+                        <Button onAction="#limpiarBusqueda" prefHeight="28" prefWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="Limpiar" />
+                    </HBox>
+
+                    <!-- Botones de reporte -->
+                    <VBox spacing="6" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:14 18 14 18; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
+                        <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Selecciona un reporte" />
+                        <Separator />
+                        <HBox alignment="CENTER_LEFT" spacing="14">
+                            <Button fx:id="btnFacturacion" onAction="#reporteFacturacion" prefHeight="60" prefWidth="170" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-font-size:15px;" text="Facturación" wrapText="true">
+                                <font><Font size="15" /></font>
+                            </Button>
+                            <Button fx:id="btnDelivery" onAction="#reporteDelivery" prefHeight="60" prefWidth="170" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-font-size:15px;" text="Delivery y Entrega" wrapText="true">
+                                <font><Font size="15" /></font>
+                            </Button>
+                            <Button fx:id="btnReclamaciones" onAction="#reporteReclamaciones" prefHeight="60" prefWidth="170" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-font-size:15px;" text="Reclamaciones" wrapText="true">
+                                <font><Font size="15" /></font>
+                            </Button>
+                            <Button fx:id="btnPedido" onAction="#reportePedido" prefHeight="60" prefWidth="170" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-font-size:15px;" text="Pedido" wrapText="true">
+                                <font><Font size="15" /></font>
+                            </Button>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Label reporte activo -->
+                    <Label fx:id="lblReporteActivo" style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="" />
+
+                    <!-- Tabla resultado -->
+                    <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:12 16 12 16; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
+                        <TableView fx:id="tablaResultados" prefHeight="400" style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
+                            <columnResizePolicy>
+                                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                            <placeholder>
+                                <Label style="-fx-text-fill:#888; -fx-font-size:13px;" text="Selecciona un reporte para ver los resultados" />
+                            </placeholder>
+                        </TableView>
+                        <HBox alignment="CENTER_RIGHT" spacing="10">
+                            <Label fx:id="lblTotal" style="-fx-text-fill:#3B1A5C; -fx-font-size:11px; -fx-font-weight:bold;" text="" />
+                        </HBox>
+                    </VBox>
+
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
