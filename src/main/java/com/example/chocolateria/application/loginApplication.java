@@ -17,7 +17,8 @@ public class loginApplication extends Application {
         );
 
         Scene scene = new Scene(loader.load());
-        stage.setTitle("Login");
+        stage.setTitle("Chocolatería — Sistema de Gestión");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }

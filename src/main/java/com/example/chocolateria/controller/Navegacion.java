@@ -35,6 +35,7 @@ public class Navegacion {
         PERMISOS_FXML.put("/vistasFinales/vistaGestionUsuarios.fxml",          PermisoRol.Pantalla.GESTION_USUARIOS);
         // Todas las vistas de consulta requieren permiso CONSULTAS
         PERMISOS_FXML.put("/vistasFinales/vistaConsultasGenerales.fxml",       PermisoRol.Pantalla.CONSULTAS);
+        PERMISOS_FXML.put("/vistasFinales/vistaReportes.fxml",                    PermisoRol.Pantalla.CONSULTAS);
         PERMISOS_FXML.put("/vistasFinales/vistaConsultaClientes.fxml",         PermisoRol.Pantalla.CONSULTAS);
         PERMISOS_FXML.put("/vistasFinales/vistaConsultaEmpleados.fxml",        PermisoRol.Pantalla.CONSULTAS);
         PERMISOS_FXML.put("/vistasFinales/vistaConsultaProductos.fxml",        PermisoRol.Pantalla.CONSULTAS);
@@ -88,6 +89,7 @@ public class Navegacion {
         try {
             FXMLLoader loader = new FXMLLoader(Navegacion.class.getResource(fxmlPath));
             Parent root = loader.load();
+            stage.setResizable(false);
             stage.setScene(new Scene(root, w, h));
             stage.show();
         } catch (Exception ex) {
@@ -106,6 +108,7 @@ public class Navegacion {
         try {
             FXMLLoader loader = new FXMLLoader(Navegacion.class.getResource("/vistasFinales/vistaPrincipal.fxml"));
             Parent root = loader.load();
+            stage.setResizable(false);
             stage.setScene(new Scene(root, 949, 533));
             stage.show();
         } catch (Exception ex) {
