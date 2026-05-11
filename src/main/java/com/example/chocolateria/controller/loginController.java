@@ -36,27 +36,50 @@ public class loginController {
     }
 
     private boolean validarCredenciales(String usuario, String password) {
-        conexion con = new conexion();
-        try (Connection conn = con.establecerConexion();
+        try (Connection conn = new conexion().establecerConexion();
              PreparedStatement ps = conn.prepareStatement(
-                     "SELECT usuario, foto_perfil, rol FROM tbl_usuario WHERE usuario = ? AND password = ? AND estado = 'Activo'")) {
+                     "SELECT id_usuario, usuario, password, foto_perfil, rol, estado FROM tbl_usuario WHERE usuario = ?")) {
 
             ps.setString(1, usuario);
-            ps.setString(2, password);
-
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                SesionManager.getInstancia().iniciarSesion(
-                        rs.getString("usuario"),
-                        rs.getString("foto_perfil"),
-                        rs.getString("rol"));
-                return true;
+
+            if (!rs.next()) {
+                new Alert(Alert.AlertType.ERROR, "Usuario o contraseña incorrectos.").show();
+                return false;
             }
-            return false;
+
+            String estado = rs.getString("estado");
+            if ("Inactivo".equalsIgnoreCase(estado)) {
+                new Alert(Alert.AlertType.WARNING, "Tu cuenta está inactiva. Contacta al administrador.").show();
+                return false;
+            }
+
+            String storedPassword = rs.getString("password");
+            if (!CifradoUtil.verificarPassword(password, storedPassword)) {
+                new Alert(Alert.AlertType.ERROR, "Usuario o contraseña incorrectos.").show();
+                return false;
+            }
+
+            // Si la contraseña era texto plano, migrarla a hash
+            if (!CifradoUtil.esHashSeguro(storedPassword)) {
+                String nuevoHash = CifradoUtil.hashPassword(password);
+                try (PreparedStatement upd = conn.prepareStatement(
+                        "UPDATE tbl_usuario SET password = ? WHERE id_usuario = ?")) {
+                    upd.setString(1, nuevoHash);
+                    upd.setInt(2, rs.getInt("id_usuario"));
+                    upd.executeUpdate();
+                }
+            }
+
+            SesionManager.getInstancia().iniciarSesion(
+                    rs.getString("usuario"),
+                    rs.getString("foto_perfil"),
+                    rs.getString("rol"));
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Error de conexión: " + e.getMessage()).show();
+            new Alert(Alert.AlertType.ERROR, "No se pudo conectar a la base de datos.").show();
             return false;
         }
     }
