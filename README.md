@@ -1,18 +1,11 @@
 # CHOCOLATERIA
 
-App de escritorio para manejar todo lo de una chocolatería. Hecha en Java con JavaFX y una base de datos en SQL Server.
-
----
-
 ## Con qué está hecha
-
 - Java 21
 - JavaFX 21
 - Maven
 - SQL Server
 - jpackage (para el instalador de Windows)
-
----
 
 ## Qué puede hacer
 
@@ -81,21 +74,4 @@ App de escritorio para manejar todo lo de una chocolatería. Hecha en Java con J
 - Una pantalla de consulta por cada módulo
 - Las tablas tienen scroll horizontal para ver todo bien
 
----
 
-## Quiénes lo hicieron
-
-**Rosalin** — estructura del proyecto, pantalla de inicio, menú, sistema de roles, gestión de usuarios, foto de perfil, accesos rápidos, alerta de inactivos, navegación fluida, módulo de consultas, instalador Windows, correcciones varias
-
-**Yara** — productos, suplidores, maquinaria, envíos, reclamos, orden al proveedor, orden de cliente, recepción, producción, organización de carpetas, consultas
-
----
-
-## Cómo correrla
-
-1. Clonar el repo
-2. Abrirlo en IntelliJ IDEA
-3. Configurar la conexión a SQL Server
-4. Correr con Maven: `mvn clean javafx:run`
-
-Para el instalador de Windows: ejecutar `crear-instalador.bat`
