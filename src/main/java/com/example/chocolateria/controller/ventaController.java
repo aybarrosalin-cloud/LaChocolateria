@@ -6,6 +6,7 @@ import com.example.chocolateria.modelo.ventaModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -154,7 +155,13 @@ public class ventaController {
             );
         }
 
-        cargarVentas();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() {
+                cargarVentas();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
         generarSiguienteId();
     }
 
