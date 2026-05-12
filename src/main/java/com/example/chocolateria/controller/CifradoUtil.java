@@ -4,8 +4,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-// Manejo de contraseñas con SHA-256 + salt
-// Las contraseñas viejas en texto plano siguen funcionando y se migran solas al primer login
+// sha256 + salt para las claves, las viejas se migran solas cuando el usuario entra
 public class CifradoUtil {
 
     private static final String SEPARADOR = ":SHA256:";
@@ -48,7 +47,7 @@ public class CifradoUtil {
             md.update(salt);
             byte[] hashIngresado = md.digest(passwordIngresado.getBytes("UTF-8"));
 
-            // isequal compara byte a byte en tiempo constante para no filtrar info por timing
+            // isEqual va byte por byte, así tarda lo mismo si falla al principio o al final
             return MessageDigest.isEqual(hashIngresado, hashAlmacenado);
 
         } catch (Exception e) {
@@ -56,7 +55,7 @@ public class CifradoUtil {
         }
     }
 
-    // Devuelve true si la contraseña guardada ya está hasheada (no es texto plano)
+    // si tiene el separador es hash, si no es texto plano todavía
     public static boolean esHashSeguro(String storedValue) {
         return storedValue != null && storedValue.contains(SEPARADOR);
     }
