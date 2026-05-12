@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="520.0" prefWidth="900.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.loginController">
+<BorderPane prefHeight="720.0" prefWidth="1020.0" style="-fx-background-color: #F8F5F0;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chocolateria.controller.loginController">
 
     <center>
         <HBox alignment="CENTER" fillHeight="true" maxHeight="460.0" maxWidth="860.0" style="-fx-background-color: white;                      -fx-background-radius: 20;                      -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 20, 0, 0, 8);">
