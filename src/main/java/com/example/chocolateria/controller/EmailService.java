@@ -131,7 +131,7 @@ public class EmailService {
         }
     }
 
-    // Sobrecarga para compatibilidad hacia atrás
+    // Sobrecarga para compatibilidad hacia atras
     public static void notificarNuevoReclamo(int idReclamo, String cliente,
                                              String tipo, String prioridad,
                                              String descripcion) {

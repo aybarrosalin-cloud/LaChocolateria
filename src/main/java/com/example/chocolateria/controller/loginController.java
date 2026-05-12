@@ -60,7 +60,7 @@ public class loginController {
                 return false;
             }
 
-            // Si la contraseña era texto plano, migrarla a hash
+            // si la clave no tiene hash todavía, se guarda cifrada pa la próxima
             if (!CifradoUtil.esHashSeguro(storedPassword)) {
                 String nuevoHash = CifradoUtil.hashPassword(password);
                 try (PreparedStatement upd = conn.prepareStatement(
