@@ -74,6 +74,14 @@
                     </TitledPane>
 
                     <!-- Reportes activo (resaltado) -->
+                    <TitledPane animated="true" expanded="true" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="📊  Reportes">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAReportesVentas" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Facturación" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesCompras" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Delivery y Entrega" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesInventario" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Reclamaciones" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesProduccion" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Pedido" />
+                        </VBox>
+                    </TitledPane>
 
                     <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Mantenimiento">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
