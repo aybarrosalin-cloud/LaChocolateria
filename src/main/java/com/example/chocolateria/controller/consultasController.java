@@ -21,7 +21,7 @@ public class consultasController {
     @FXML private TableView<ObservableList<String>> tablaResultados;
 
     @FXML private Button btnClientes, btnVentas, btnCompras, btnProduccion;
-    @FXML private Button btnInventario, btnPedidos, btnIngresos, btnMasVendidos;
+    @FXML private Button btnInventario, btnPedidos;
     @FXML private Button btnMantenimiento;
     @FXML private Label     lblUsuario;
     @FXML private ImageView imgFotoPerfil;
@@ -48,9 +48,6 @@ public class consultasController {
         configurarBoton(btnPedidos,     rol, PEDIDOS);
         configurarBoton(btnMantenimiento, rol, MANTENIMIENTO);
 
-        // Ingresos y Mas Vendidos: acceso libre, con clave o bloqueado
-        configurarBotonFinanciero(btnIngresos,    rol, INGRESOS);
-        configurarBotonFinanciero(btnMasVendidos, rol, MAS_VENDIDOS);
     }
 
     private void configurarBoton(Button btn, String rol, PermisoRol.Consulta consulta) {
@@ -189,42 +186,6 @@ public class consultasController {
         ejecutarConsulta(sqlActual, tituloActual);
     }
 
-    @FXML private void consultarIngresos() {
-        String rol = SesionManager.getInstancia().getRol();
-        if (PermisoRol.requiereClaveFinanciera(rol) && !validarClaveGerencial()) return;
-
-        sqlActual    = "SELECT YEAR(v.fecha_venta) AS Anio, MONTH(v.fecha_venta) AS Mes, " +
-                       "COUNT(*) AS [Num Ventas], " +
-                       "SUM(v.subtotal) AS Subtotal, " +
-                       "SUM(v.descuento) AS Descuentos, " +
-                       "SUM(v.itbis) AS ITBIS, " +
-                       "SUM(v.monto_total) AS [Total Bruto], " +
-                       "SUM(v.monto_pagado) AS [Total Cobrado], " +
-                       "SUM(v.balance_pendiente) AS [Por Cobrar] " +
-                       "FROM tbl_venta v " +
-                       "GROUP BY YEAR(v.fecha_venta), MONTH(v.fecha_venta) " +
-                       "ORDER BY Anio DESC, Mes DESC";
-        tituloActual = "Reporte de Ingresos por Mes";
-        resaltarBoton(btnIngresos);
-        ejecutarConsulta(sqlActual, tituloActual);
-    }
-
-    @FXML private void consultarMasVendidos() {
-        String rol = SesionManager.getInstancia().getRol();
-        if (PermisoRol.requiereClaveFinanciera(rol) && !validarClaveGerencial()) return;
-
-        sqlActual    = "SELECT d.producto AS Producto, d.codigo AS Codigo, " +
-                       "SUM(d.cantidad) AS [Total Vendido], " +
-                       "COUNT(DISTINCT d.id_orden) AS [Num Ordenes], " +
-                       "p.precio_unitario AS [Precio Unit.], p.categoria AS Categoria " +
-                       "FROM tbl_orden_detalle d " +
-                       "LEFT JOIN tbl_producto p ON d.codigo = p.codigo " +
-                       "GROUP BY d.producto, d.codigo, p.precio_unitario, p.categoria " +
-                       "ORDER BY [Total Vendido] DESC";
-        tituloActual = "Reporte de Productos mas Vendidos";
-        resaltarBoton(btnMasVendidos);
-        ejecutarConsulta(sqlActual, tituloActual);
-    }
 
     @FXML private void consultarMantenimiento() {
         sqlActual    = "SELECT m.id_mantenimiento AS ID, maq.nombre AS Maquinaria, " +
@@ -325,8 +286,6 @@ public class consultasController {
         if (btnProduccion  != null) btnProduccion.setStyle(normal);
         if (btnInventario  != null) btnInventario.setStyle(normal);
         if (btnPedidos     != null) btnPedidos.setStyle(normal);
-        if (btnIngresos    != null) btnIngresos.setStyle(verde);
-        if (btnMasVendidos != null) btnMasVendidos.setStyle(verde);
         if (btnMantenimiento != null) btnMantenimiento.setStyle(oscuro);
 
         if (activo != null) activo.setStyle(activos);
