@@ -22,7 +22,6 @@ public class inicioController {
     @FXML private TitledPane paneInventario;
     @FXML private TitledPane paneCompras;
     @FXML private TitledPane paneRegistros;
-    @FXML private TitledPane paneReportes;
     @FXML private TitledPane paneMantenimiento;
     @FXML private TitledPane paneConsultas;
     @FXML private TitledPane paneAdministracion;
@@ -51,7 +50,6 @@ public class inicioController {
     @FXML private Button cardInventario;
     @FXML private Button cardCompras;
     @FXML private Button cardRegistros;
-    @FXML private Button cardReportes;
 
     // ── Header ────────────────────────────────────────────────────────────────
     @FXML private Label     lblFecha;
@@ -103,9 +101,6 @@ public class inicioController {
         ocultarSiVacio(paneRegistros,
             btnRegProducto, btnRegEmpleado, btnRegCliente, btnRegSuplidor, btnRegMaquinaria);
 
-        // Reportes (todos van a consultas, se muestran si tiene acceso a consultas)
-        ocultar(paneReportes, !PermisoRol.tieneAcceso(rol, CONSULTAS));
-
         // Mantenimiento
         ocultar(btnMantenimientoMaquinaria, !PermisoRol.tieneAcceso(rol, MANTENIMIENTO));
         ocultarSiVacio(paneMantenimiento, btnMantenimientoMaquinaria);
@@ -122,7 +117,6 @@ public class inicioController {
         ocultar(cardInventario,!PermisoRol.tieneAcceso(rol, RECEPCION));
         ocultar(cardCompras,   !tieneAlguno(rol, ORDEN_PROVEEDOR, PAGO_COMPRA));
         ocultar(cardRegistros, !tieneAlguno(rol, REG_PRODUCTO, REG_EMPLEADO, REG_CLIENTE, REG_SUPLIDOR, REG_MAQUINARIA));
-        ocultar(cardReportes,  !PermisoRol.tieneAcceso(rol, CONSULTAS));
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -173,10 +167,6 @@ public class inicioController {
     @FXML private void irARegistroSuplidor(ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroSuplidor.fxml", e); }
     @FXML private void irARegistroMaquinaria(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroMaquinaria.fxml", e); }
 
-    @FXML private void irAReportesVentas(ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaReportes.fxml", e); }
-    @FXML private void irAReportesCompras(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaReportes.fxml", e); }
-    @FXML private void irAReportesInventario(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaReportes.fxml", e); }
-    @FXML private void irAReportesProduccion(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaReportes.fxml", e); }
 
     @FXML private void irAMantenimientoMaquinaria(ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
     @FXML private void irAConsultas(ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
@@ -189,5 +179,4 @@ public class inicioController {
     @FXML private void cardInventario(ActionEvent e) { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
     @FXML private void cardCompras(ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void cardRegistros(ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaRegistroDeCliente.fxml", e); }
-    @FXML private void cardReportes(ActionEvent e)   { Navegacion.irA("/vistasFinales/vistaReportes.fxml", e); }
 }
