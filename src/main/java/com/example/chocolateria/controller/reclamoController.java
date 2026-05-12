@@ -13,6 +13,10 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 public class reclamoController {
 
     @FXML private TextField        txtId;
@@ -298,6 +302,70 @@ public class reclamoController {
     }
 
     // -- Navegacion --
+    private String sqlReporte() {
+        return "SELECT r.id_reclamo AS ID, " +
+               "ISNULL(c.nombre + ' ' + c.apellido,'') AS Cliente, " +
+               "r.tipo_reclamo AS [Tipo Reclamo], " +
+               "r.descripcion AS Descripcion, " +
+               "r.fecha_reclamo AS [Fecha Reclamo], " +
+               "r.estado AS Estado, " +
+               "ISNULL(r.resolucion,'') AS Resolucion, " +
+               "ISNULL(CONVERT(VARCHAR,r.fecha_resolucion,23),'Pendiente') AS [Fecha Resolucion] " +
+               "FROM tbl_reclamo r " +
+               "LEFT JOIN tbl_cliente c ON r.id_cliente = c.id_cliente " +
+               "ORDER BY r.fecha_reclamo DESC";
+    }
+    private String tituloReporte() { return "Reporte de Reclamaciones"; }
+
+    // ── Generar Reporte ───────────────────────────────────────────────────────
+
+    @FXML
+    private void generarReporte() {
+        mostrarReporte(sqlReporte(), tituloReporte());
+    }
+
+    private void mostrarReporte(String sql, String titulo) {
+        try (java.sql.Connection conn = new conexion().establecerConexion();
+             java.sql.Statement  st   = conn.createStatement();
+             java.sql.ResultSet  rs   = st.executeQuery(sql)) {
+
+            TableView<ObservableList<String>> tabla = new TableView<>();
+            java.sql.ResultSetMetaData meta = rs.getMetaData();
+            int cols = meta.getColumnCount();
+            for (int i = 1; i <= cols; i++) {
+                final int idx = i - 1;
+                TableColumn<ObservableList<String>, String> col =
+                        new TableColumn<>(meta.getColumnLabel(i));
+                col.setCellValueFactory(data -> new SimpleStringProperty(
+                        data.getValue().size() > idx ? data.getValue().get(idx) : ""));
+                col.setMinWidth(100);
+                col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white;" +
+                             "-fx-font-weight:bold; -fx-alignment:CENTER;");
+                tabla.getColumns().add(col);
+            }
+            ObservableList<ObservableList<String>> data =
+                    javafx.collections.FXCollections.observableArrayList();
+            while (rs.next()) {
+                ObservableList<String> fila =
+                        javafx.collections.FXCollections.observableArrayList();
+                for (int i = 1; i <= cols; i++)
+                    fila.add(rs.getString(i) != null ? rs.getString(i) : "");
+                data.add(fila);
+            }
+            tabla.setItems(data);
+            tabla.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+
+            Stage stage = new Stage();
+            stage.setTitle(titulo + "  —  " + data.size() + " registros");
+            stage.setScene(new Scene(new BorderPane(tabla), 950, 520));
+            stage.show();
+
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR,
+                      "Error al generar reporte: " + e.getMessage()).showAndWait();
+        }
+    }
+
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -347,3 +415,4 @@ public class reclamoController {
     }
 
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
