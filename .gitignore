@@ -11,6 +11,7 @@ target/
 
 ### Build output ###
 out/
+.claude/
 
 ### Eclipse ###
 .apt_generated
