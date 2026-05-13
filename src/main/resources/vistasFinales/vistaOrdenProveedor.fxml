@@ -182,7 +182,7 @@
                     <!-- Tarjeta agregar producto -->
                     <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:12 16 12 16; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
-                        <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="📦  Productos de la orden" />
+                        <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Productos de la orden" />
 
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <TextField fx:id="txtCodigoProducto" prefHeight="28" prefWidth="110" promptText="Código producto" style="-fx-background-color:white; -fx-text-fill:black; -fx-border-color:#C5A8E8; -fx-border-radius:6; -fx-background-radius:6;" />

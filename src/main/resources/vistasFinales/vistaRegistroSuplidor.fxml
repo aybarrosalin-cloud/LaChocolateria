@@ -127,7 +127,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="110" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Suplidor" />
-                                <TextField fx:id="txtId" editable="true" prefHeight="28" promptText="Auto" style="-fx-background-color:#f0eaf8; -fx-text-fill:#555;                                                   -fx-border-color:purple; -fx-border-radius:6;                                                   -fx-background-radius:6;" />
+                                <TextField fx:id="txtId" editable="true" prefHeight="28" promptText="ID  " style="-fx-background-color:#f0eaf8; -fx-text-fill:#555;                                                   -fx-border-color:purple; -fx-border-radius:6;                                                   -fx-background-radius:6;" />
                             </VBox>
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Nombre" />
