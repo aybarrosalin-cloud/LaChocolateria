@@ -203,14 +203,13 @@
                             <Button onAction="#quitarProducto" prefHeight="28" prefWidth="93.0" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;" text="✖  Quitar" />
                         </HBox>
 
-                        <TableView fx:id="tablaDetalle" prefHeight="220" VBox.vgrow="ALWAYS" styleClass="tabla-morada">
-                            <stylesheets><String fx:value="@../com/example/chocolateria/tabla.css"/></stylesheets>
+                        <TableView fx:id="tablaDetalle" prefHeight="220" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colDetCodigo"   prefWidth="100" text="Código" />
-                                <TableColumn fx:id="colDetProducto" prefWidth="210" text="Producto" />
-                                <TableColumn fx:id="colDetCantidad" prefWidth="80"  text="Cantidad" />
-                                <TableColumn fx:id="colDetPrecio"   prefWidth="120" text="Precio unit. (RD$)" />
-                                <TableColumn fx:id="colDetTotal"    prefWidth="130" text="Subtotal (RD$)" />
+                                <TableColumn fx:id="colDetCodigo" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="100" text="Código" />
+                                <TableColumn fx:id="colDetProducto" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="210" text="Producto" />
+                                <TableColumn fx:id="colDetCantidad" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="80"  text="Cantidad" />
+                                <TableColumn fx:id="colDetPrecio" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="120" text="Precio unit. (RD$)" />
+                                <TableColumn fx:id="colDetTotal" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="130" text="Subtotal (RD$)" />
                             </columns>
                         </TableView>
 

@@ -74,6 +74,14 @@
                     </TitledPane>
 
                     <!-- Reportes activo (resaltado) -->
+                    <TitledPane animated="true" expanded="true" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="📊  Reportes">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAReportesVentas" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Facturación" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesCompras" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Delivery y Entrega" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesInventario" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Reclamaciones" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesProduccion" style="-fx-background-color:#5a2d82; -fx-text-fill:#ffd6ff; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent; -fx-font-weight:bold;" text="• Pedido" />
+                        </VBox>
+                    </TitledPane>
 
                     <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Mantenimiento">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
@@ -127,4 +135,33 @@
                             <Button fx:id="btnReclamaciones" onAction="#reporteReclamaciones" prefHeight="60" prefWidth="170" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-font-size:15px;" text="Reclamaciones" wrapText="true">
                                 <font><Font size="15" /></font>
                             </Button>
-                            <Button fx:id="btnPedido" onAction="#reportePedido" prefHeight="60" prefWidth="170" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-
+                            <Button fx:id="btnPedido" onAction="#reportePedido" prefHeight="60" prefWidth="170" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-font-size:15px;" text="Pedido" wrapText="true">
+                                <font><Font size="15" /></font>
+                            </Button>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Label reporte activo -->
+                    <Label fx:id="lblReporteActivo" style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="" />
+
+                    <!-- Tabla resultado -->
+                    <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:12 16 12 16; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
+                        <TableView fx:id="tablaResultados" prefHeight="400" style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
+                            <columnResizePolicy>
+                                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                            <placeholder>
+                                <Label style="-fx-text-fill:#888; -fx-font-size:13px;" text="Selecciona un reporte para ver los resultados" />
+                            </placeholder>
+                        </TableView>
+                        <HBox alignment="CENTER_RIGHT" spacing="10">
+                            <Label fx:id="lblTotal" style="-fx-text-fill:#3B1A5C; -fx-font-size:11px; -fx-font-weight:bold;" text="" />
+                        </HBox>
+                    </VBox>
+
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
