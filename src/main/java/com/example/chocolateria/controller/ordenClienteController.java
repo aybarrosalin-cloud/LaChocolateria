@@ -12,9 +12,16 @@ import javafx.scene.image.ImageView;
 import java.sql.*;
 import java.time.LocalDate;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.Priority;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 public class ordenClienteController {
 
@@ -39,6 +46,9 @@ public class ordenClienteController {
     @FXML private TableColumn<ordenDetalleModelo, String>     colDetProducto;
     @FXML private TableColumn<ordenDetalleModelo, Number>     colDetCantidad;
     @FXML private TableColumn<ordenDetalleModelo, Number>     colDetPrecio;
+    @FXML private TableColumn<ordenDetalleModelo, Number>     colDetTotal;
+
+    @FXML private Label lblTotal;
 
     private final ObservableList<ordenDetalleModelo>  listaDetalle = FXCollections.observableArrayList();
     private final conexion con = new conexion();
@@ -70,7 +80,10 @@ public class ordenClienteController {
         colDetProducto.setCellValueFactory(d -> d.getValue().productoProperty());
         colDetCantidad.setCellValueFactory(d -> d.getValue().cantidadProperty());
         colDetPrecio.setCellValueFactory(d   -> d.getValue().precioProperty());
+        colDetTotal.setCellValueFactory(d    -> new SimpleDoubleProperty(
+                d.getValue().getCantidad() * d.getValue().getPrecio()));
         tablaDetalle.setItems(listaDetalle);
+        listaDetalle.addListener((javafx.collections.ListChangeListener<ordenDetalleModelo>) c -> recalcularTotal());
 
         generarSiguienteId();
     }
@@ -456,6 +469,112 @@ public class ordenClienteController {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    private void recalcularTotal() {
+        double total = listaDetalle.stream()
+                .mapToDouble(d -> d.getCantidad() * d.getPrecio())
+                .sum();
+        lblTotal.setText(String.format("RD$ %,.2f", total));
+    }
+
+    @FXML
+    private void generarCotizacion() {
+        if (listaDetalle.isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Sin productos", "Agrega productos a la orden antes de generar la cotización.");
+            return;
+        }
+
+        String cliente   = cmbCliente.getValue() != null ? cmbCliente.getValue() : "—";
+        String metodo    = cbMetodoPago.getValue() != null ? cbMetodoPago.getValue() : "—";
+        String estado    = cbEstado.getValue() != null ? cbEstado.getValue() : "—";
+        String fechaReg  = dpFecha.getValue() != null ? dpFecha.getValue().toString() : "—";
+        String fechaEnt  = dpFecha1.getValue() != null ? dpFecha1.getValue().toString() : "—";
+        String idOrden   = txtCodigo.getText().trim();
+        double total     = listaDetalle.stream().mapToDouble(d -> d.getCantidad() * d.getPrecio()).sum();
+
+        // ── Encabezado ──────────────────────────────────────────────────────────
+        VBox root = new VBox(14);
+        root.setPadding(new Insets(24, 30, 24, 30));
+        root.setStyle("-fx-background-color:#f9f5ff;");
+
+        Label titulo = new Label("COTIZACIÓN DE VENTA");
+        titulo.setStyle("-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:#48295a;");
+
+        Label empresa = new Label("Chocolatería — Gestión de Pedidos");
+        empresa.setStyle("-fx-font-size:12px; -fx-text-fill:#6d3c87;");
+
+        javafx.scene.control.Separator sep1 = new javafx.scene.control.Separator();
+
+        // ── Datos de la orden ────────────────────────────────────────────────────
+        javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
+        grid.setHgap(18);
+        grid.setVgap(6);
+        String[][] campos = {
+            {"N° Orden:", idOrden.isEmpty() ? "(nueva)" : "#" + idOrden},
+            {"Cliente:", cliente},
+            {"Fecha de registro:", fechaReg},
+            {"Fecha de entrega:", fechaEnt},
+            {"Método de pago:", metodo},
+            {"Estado:", estado}
+        };
+        for (int i = 0; i < campos.length; i++) {
+            Label lbl = new Label(campos[i][0]);
+            lbl.setStyle("-fx-font-weight:bold; -fx-text-fill:#3B1A5C; -fx-font-size:12px;");
+            Label val = new Label(campos[i][1]);
+            val.setStyle("-fx-text-fill:#333; -fx-font-size:12px;");
+            grid.add(lbl, 0, i);
+            grid.add(val, 1, i);
+        }
+
+        // ── Tabla de productos ───────────────────────────────────────────────────
+        TableView<ordenDetalleModelo> tabla = new TableView<>();
+        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tabla.setPrefHeight(200);
+
+        TableColumn<ordenDetalleModelo, String> cCod  = new TableColumn<>("Código");
+        cCod.setCellValueFactory(d -> d.getValue().codigoProperty());
+
+        TableColumn<ordenDetalleModelo, String> cProd = new TableColumn<>("Producto");
+        cProd.setCellValueFactory(d -> d.getValue().productoProperty());
+
+        TableColumn<ordenDetalleModelo, Number> cCant = new TableColumn<>("Cantidad");
+        cCant.setCellValueFactory(d -> d.getValue().cantidadProperty());
+
+        TableColumn<ordenDetalleModelo, String> cPrec = new TableColumn<>("Precio unit. (RD$)");
+        cPrec.setCellValueFactory(d -> new SimpleStringProperty(
+                String.format("%,.2f", d.getValue().getPrecio())));
+
+        TableColumn<ordenDetalleModelo, String> cSub  = new TableColumn<>("Subtotal (RD$)");
+        cSub.setCellValueFactory(d -> new SimpleStringProperty(
+                String.format("%,.2f", d.getValue().getCantidad() * d.getValue().getPrecio())));
+
+        tabla.getColumns().addAll(cCod, cProd, cCant, cPrec, cSub);
+        tabla.setItems(listaDetalle);
+
+        // ── Total ────────────────────────────────────────────────────────────────
+        HBox hTotal = new HBox(10);
+        hTotal.setAlignment(Pos.CENTER_RIGHT);
+        Label lblTituloTotal = new Label("TOTAL:");
+        lblTituloTotal.setStyle("-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#48295a;");
+        Label lblValorTotal = new Label(String.format("RD$ %,.2f", total));
+        lblValorTotal.setStyle("-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#48295a; " +
+                "-fx-background-color:#e8d5f0; -fx-background-radius:8; -fx-padding:4 16 4 16; " +
+                "-fx-border-color:#C5A8E8; -fx-border-radius:8;");
+        hTotal.getChildren().addAll(lblTituloTotal, lblValorTotal);
+
+        // ── Nota ─────────────────────────────────────────────────────────────────
+        Label nota = new Label("Esta cotización es válida por 30 días desde la fecha de registro.");
+        nota.setStyle("-fx-font-size:10px; -fx-text-fill:#888; -fx-font-style:italic;");
+
+        root.getChildren().addAll(titulo, empresa, sep1, grid,
+                new javafx.scene.control.Separator(), tabla, hTotal, nota);
+
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Cotización — " + cliente);
+        stage.setScene(new Scene(root, 740, 560));
+        stage.show();
     }
 
     // -- Navegacion --
