@@ -5,10 +5,14 @@ import com.example.chocolateria.modelo.productoModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class consultaProductosController {
 
@@ -53,22 +57,30 @@ public class consultaProductosController {
             }));
         tablaProductos.setItems(listaFiltrada);
 
-        cargarProductos();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarProductos();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarProductos() {
-        lista.clear();
+        List<productoModelo> tmp = new ArrayList<>();
         String sql = "SELECT codigo,nombre,precio_unitario,precio_mayor,descripcion,unidad_medida,categoria,tipo,stock FROM tbl_producto ORDER BY codigo";
         try (Connection c = con.establecerConexion();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) lista.add(new productoModelo(
+            while (rs.next()) tmp.add(new productoModelo(
                 rs.getString("codigo"), rs.getString("nombre"),
                 rs.getDouble("precio_unitario"), rs.getDouble("precio_mayor"),
                 rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
                 rs.getString("unidad_medida") != null ? rs.getString("unidad_medida") : "",
                 rs.getString("categoria"), rs.getString("tipo"), rs.getInt("stock")));
-        } catch (Exception e) {
+        Platform.runLater(() -> lista.setAll(tmp));
+    } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar productos: " + e.getMessage()).showAndWait();
         }
     }

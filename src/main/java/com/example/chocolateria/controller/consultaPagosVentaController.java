@@ -5,11 +5,15 @@ import com.example.chocolateria.modelo.ventaModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 public class consultaPagosVentaController {
@@ -77,11 +81,19 @@ public class consultaPagosVentaController {
             );
         }
         tablaVentas.setItems(filtrada);
-        cargarVentas();
+
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarVentas();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarVentas() {
-        lista.clear();
+        List<ventaModelo> tmp = new ArrayList<>();
         String sql = "SELECT v.id_venta, v.id_orden, v.fecha_venta, " +
                      "ISNULL(o.cliente,'') AS cliente, " +
                      "v.subtotal, v.descuento, v.itbis, v.monto_total, " +
@@ -99,7 +111,7 @@ public class consultaPagosVentaController {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 Date d = rs.getDate("fecha_venta");
-                lista.add(new ventaModelo(
+                tmp.add(new ventaModelo(
                     rs.getInt("id_venta"),
                     rs.getInt("id_orden"),
                     d != null ? d.toLocalDate() : null,
@@ -117,7 +129,8 @@ public class consultaPagosVentaController {
                     rs.getInt("id_empleado"),
                     rs.getString("empleado")
                 ));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar ventas: " + e.getMessage()).showAndWait();
         }

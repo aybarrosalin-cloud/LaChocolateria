@@ -6,10 +6,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,8 +80,15 @@ public class consultaOrdenProveedorController {
             }));
         tablaOrdenes.setItems(listaFiltrada);
 
-        cargarProductosMap();
-        cargarOrdenes();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarProductosMap();
+                cargarOrdenes();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarProductosMap() {
@@ -92,7 +103,7 @@ public class consultaOrdenProveedorController {
     }
 
     private void cargarOrdenes() {
-        lista.clear();
+        List<ordenProveedorModelo> tmp = new ArrayList<>();
         String sql = "SELECT codigo, rnc_proveedor, ISNULL(proveedor,'') AS proveedor, " +
                      "fecha_requerida, prioridad, categoria, estado_pago, monto_total, " +
                      "ISNULL(descripcion,'') AS descripcion " +
@@ -102,7 +113,7 @@ public class consultaOrdenProveedorController {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 Date d = rs.getDate("fecha_requerida");
-                lista.add(new ordenProveedorModelo(
+                tmp.add(new ordenProveedorModelo(
                     rs.getInt("codigo"),
                     rs.getString("rnc_proveedor") != null ? rs.getString("rnc_proveedor") : "",
                     rs.getString("proveedor"),
@@ -112,7 +123,8 @@ public class consultaOrdenProveedorController {
                     rs.getString("estado_pago")!= null ? rs.getString("estado_pago"): "",
                     rs.getDouble("monto_total"),
                     rs.getString("descripcion")));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar órdenes: " + e.getMessage()).showAndWait();
         }

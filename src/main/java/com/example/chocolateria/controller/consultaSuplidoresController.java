@@ -5,11 +5,15 @@ import com.example.chocolateria.modelo.suplidorModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class consultaSuplidoresController {
 
@@ -55,18 +59,26 @@ public class consultaSuplidoresController {
             );
         }
         tablaSuplidores.setItems(filtrada);
-        cargarSuplidores();
+
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarSuplidores();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarSuplidores() {
-        lista.clear();
+        List<suplidorModelo> tmp = new ArrayList<>();
         String sql = "SELECT id_suplidor, nombre, apellido, rnc, telefono, correo, ciudad " +
                      "FROM tbl_suplidor ORDER BY nombre";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
-                lista.add(new suplidorModelo(
+                tmp.add(new suplidorModelo(
                     rs.getInt("id_suplidor"),
                     rs.getString("nombre"),
                     rs.getString("apellido"),
@@ -75,7 +87,8 @@ public class consultaSuplidoresController {
                     rs.getString("correo")   != null ? rs.getString("correo")   : "",
                     rs.getString("ciudad")   != null ? rs.getString("ciudad")   : ""
                 ));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar suplidores: " + e.getMessage()).showAndWait();
         }

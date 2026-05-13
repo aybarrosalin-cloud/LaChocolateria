@@ -138,6 +138,22 @@
                                        style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#C5A8E8;" />
                         </HBox>
 
-                        <TableView fx:id="tablaRecepciones" prefHeight="460"
                                    style="-fx-background-radius:10; -fx-border-radius:10;
-                                          -fx-border-color:#C5A8E8; -fx-bac
+                        <TableView fx:id="tablaRecepciones" prefHeight="460"
+                                   style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS" columnResizePolicy="$TableView.CONSTRAINED_RESIZE_POLICY">
+                            <columns>
+                                <TableColumn fx:id="colId" prefWidth="55" minWidth="40" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
+                                <TableColumn fx:id="colNumeroOrden" prefWidth="80" minWidth="60" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="N° Orden" />
+                                <TableColumn fx:id="colRnc" prefWidth="105" minWidth="85" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="RNC" />
+                                <TableColumn fx:id="colFecha" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha" />
+                                <TableColumn fx:id="colMonto" prefWidth="85" minWidth="65" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Monto" />
+                                <TableColumn fx:id="colObservaciones" prefWidth="170" minWidth="150" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Observaciones" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -140,6 +140,21 @@
 
                         <TableView fx:id="tablaOrdenes" prefHeight="460"
                                    style="-fx-background-radius:10; -fx-border-radius:10;
-                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
+                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS" columnResizePolicy="$TableView.CONSTRAINED_RESIZE_POLICY">
                             <columns>
-                                <TableColumn fx:id="colId"          style="-fx
+                                <TableColumn fx:id="colId" prefWidth="55" minWidth="40" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
+                                <TableColumn fx:id="colCliente" prefWidth="130" minWidth="110" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Cliente" />
+                                <TableColumn fx:id="colFechaReg" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha Reg." />
+                                <TableColumn fx:id="colFechaEnt" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha Entrega" />
+                                <TableColumn fx:id="colEstado" prefWidth="80" minWidth="60" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" />
+                                <TableColumn fx:id="colMetodoPago" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Método Pago" />
+                                <TableColumn fx:id="colProductos" prefWidth="170" minWidth="150" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Productos" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

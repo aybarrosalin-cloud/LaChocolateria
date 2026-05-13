@@ -5,11 +5,15 @@ import com.example.chocolateria.modelo.maquinariaModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 public class consultaMaquinariasController {
@@ -73,11 +77,19 @@ public class consultaMaquinariasController {
             );
         }
         tablaMaquinarias.setItems(filtrada);
-        cargarMaquinarias();
+
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarMaquinarias();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarMaquinarias() {
-        lista.clear();
+        List<maquinariaModelo> tmp = new ArrayList<>();
         String sql = "SELECT id_maquinaria, nombre, tipo, marca_modelo, numero_serie, " +
                      "fecha_adquisicion, estado, id_responsable, responsable " +
                      "FROM tbl_maquinaria ORDER BY nombre";
@@ -86,7 +98,7 @@ public class consultaMaquinariasController {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 Date d = rs.getDate("fecha_adquisicion");
-                lista.add(new maquinariaModelo(
+                tmp.add(new maquinariaModelo(
                     rs.getInt("id_maquinaria"),
                     rs.getString("nombre"),
                     rs.getString("tipo"),
@@ -97,7 +109,8 @@ public class consultaMaquinariasController {
                     rs.getInt("id_responsable"),
                     rs.getString("responsable")   != null ? rs.getString("responsable")   : ""
                 ));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar maquinarias: " + e.getMessage()).showAndWait();
         }
