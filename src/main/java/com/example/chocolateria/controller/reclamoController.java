@@ -164,6 +164,18 @@ public class reclamoController {
             ResultSet rs = ps.getGeneratedKeys();
             int nuevoId = rs.next() ? rs.getInt(1) : 0;
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo #" + nuevoId + " registrado correctamente.");
+
+            // Notifica por correo al administrador y al encargado del departamento
+            final int idFinal     = nuevoId;
+            final String nomCliente = nombreCliente;
+            final String tipo       = cbTipoReclamo.getValue();
+            final String prio       = prioridad;
+            final String desc       = txtDescripcion.getText().trim();
+            final String usuario    = SesionManager.getInstancia().getUsuario();
+            new Thread(() ->
+                EmailService.notificarNuevoReclamo(idFinal, nomCliente, tipo, prio, desc, usuario)
+            ).start();
+
             limpiar();
         } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al guardar",e.getMessage()); }
     }

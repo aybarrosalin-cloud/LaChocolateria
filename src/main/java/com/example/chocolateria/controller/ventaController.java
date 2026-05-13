@@ -178,21 +178,28 @@ public class ventaController {
         }
         try {
             int id = Integer.parseInt(idTexto);
+            // Primero trae los datos generales de la orden
+            String sqlOrden = "SELECT o.cliente, o.metodo_pago, " +
+                    "ISNULL(SUM(d.precio * d.cantidad), 0) AS subtotal_calc, " +
+                    "STUFF((SELECT ', ' + d2.producto FROM tbl_orden_detalle d2 " +
+                    "       WHERE d2.id_orden = o.id_orden FOR XML PATH('')), 1, 2, '') AS productos " +
+                    "FROM tbl_orden_cliente o " +
+                    "LEFT JOIN tbl_orden_detalle d ON o.id_orden = d.id_orden " +
+                    "WHERE o.id_orden = ? " +
+                    "GROUP BY o.id_orden, o.cliente, o.metodo_pago";
             try (Connection conn = con.establecerConexion();
-                 PreparedStatement ps = conn.prepareStatement(
-                         "SELECT cliente, producto, cantidad, metodo_pago FROM tbl_orden_cliente WHERE id_orden = ?")) {
+                 PreparedStatement ps = conn.prepareStatement(sqlOrden)) {
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
-                    String cliente  = rs.getString("cliente");
-                    String producto = rs.getString("producto");
-                    int    cantidad = rs.getInt("cantidad");
+                    String cliente   = rs.getString("cliente");
+                    String productos = rs.getString("productos");
+                    subtotalBase     = rs.getDouble("subtotal_calc");
 
-                    // Buscar precio del producto
-                    double precioUnit = buscarPrecioProducto(conn, producto);
-                    subtotalBase = precioUnit * cantidad;
-
-                    lblInfoOrden.setText(cliente + " - " + producto + " x" + cantidad);
+                    String resumen = (productos != null && !productos.isBlank())
+                            ? cliente + " — " + productos
+                            : cliente;
+                    lblInfoOrden.setText(resumen);
                     txtSubtotal.setText(String.format("%.2f", subtotalBase));
                     txtDescuento.setText("0.00");
                     if (rs.getString("metodo_pago") != null)

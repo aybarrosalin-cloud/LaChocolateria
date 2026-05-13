@@ -1,9 +1,11 @@
 package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -246,27 +248,41 @@ public class consultasController {
         if (sqlActual.isEmpty()) { mostrarAlerta("Selecciona una consulta primero."); return; }
         if (filtro.isEmpty())    { ejecutarConsulta(sqlActual, tituloActual); return; }
 
-        ObservableList<ObservableList<String>> todos = FXCollections.observableArrayList();
-        try (Connection conn = con.establecerConexion();
-             Statement st   = conn.createStatement();
-             ResultSet rs   = st.executeQuery(sqlActual)) {
+        lblTotal.setText("Filtrando…");
+        Task<Void> tarea = new Task<>() {
+            @Override protected Void call() throws Exception {
+                ObservableList<ObservableList<String>> todos = FXCollections.observableArrayList();
+                try (Connection conn = con.establecerConexion();
+                     Statement st   = conn.createStatement();
+                     ResultSet rs   = st.executeQuery(sqlActual)) {
 
-            ResultSetMetaData meta = rs.getMetaData();
-            int cols = meta.getColumnCount();
-            while (rs.next()) {
-                ObservableList<String> fila = FXCollections.observableArrayList();
-                boolean coincide = false;
-                for (int i = 1; i <= cols; i++) {
-                    String val = rs.getString(i) != null ? rs.getString(i) : "";
-                    fila.add(val);
-                    if (val.toLowerCase().contains(filtro.toLowerCase())) coincide = true;
+                    ResultSetMetaData meta = rs.getMetaData();
+                    int cols = meta.getColumnCount();
+                    String filtroMin = filtro.toLowerCase();
+                    while (rs.next()) {
+                        ObservableList<String> fila = FXCollections.observableArrayList();
+                        boolean coincide = false;
+                        for (int i = 1; i <= cols; i++) {
+                            String val = rs.getString(i) != null ? rs.getString(i) : "";
+                            fila.add(val);
+                            if (val.toLowerCase().contains(filtroMin)) coincide = true;
+                        }
+                        if (coincide) todos.add(fila);
+                    }
                 }
-                if (coincide) todos.add(fila);
+                Platform.runLater(() -> {
+                    tablaResultados.setItems(todos);
+                    lblTotal.setText("Resultados filtrados: " + todos.size());
+                });
+                return null;
             }
-        } catch (Exception e) { mostrarAlerta("Error al filtrar: " + e.getMessage()); return; }
-
-        tablaResultados.setItems(todos);
-        lblTotal.setText("Resultados filtrados: " + todos.size());
+            @Override protected void failed() {
+                Platform.runLater(() -> mostrarAlerta("Error al filtrar: " + getException().getMessage()));
+            }
+        };
+        Thread hilo = new Thread(tarea);
+        hilo.setDaemon(true);
+        hilo.start();
     }
 
     @FXML private void limpiarBusqueda() {
@@ -277,39 +293,64 @@ public class consultasController {
     private void ejecutarConsulta(String sql, String titulo) {
         tablaResultados.getColumns().clear();
         tablaResultados.getItems().clear();
-        lblConsultaActiva.setText(titulo);
+        lblConsultaActiva.setText(titulo + "  (cargando…)");
         lblTotal.setText("");
 
-        try (Connection conn = con.establecerConexion();
-             Statement st   = conn.createStatement();
-             ResultSet rs   = st.executeQuery(sql)) {
+        Task<Void> tarea = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableList<TableColumn<ObservableList<String>, String>> columnas =
+                        FXCollections.observableArrayList();
+                ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
 
-            ResultSetMetaData meta = rs.getMetaData();
-            int cols = meta.getColumnCount();
+                try (Connection conn = con.establecerConexion();
+                     Statement st   = conn.createStatement();
+                     ResultSet rs   = st.executeQuery(sql)) {
 
-            for (int i = 1; i <= cols; i++) {
-                final int idx = i - 1;
-                TableColumn<ObservableList<String>, String> col = new TableColumn<>(meta.getColumnLabel(i));
-                col.setCellValueFactory(data -> new SimpleStringProperty(
-                    data.getValue().size() > idx ? data.getValue().get(idx) : ""));
-                col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;");
-                col.setMinWidth(90);
-                col.setPrefWidth(140);
-                tablaResultados.getColumns().add(col);
+                    ResultSetMetaData meta = rs.getMetaData();
+                    int cols = meta.getColumnCount();
+
+                    for (int i = 1; i <= cols; i++) {
+                        final int idx = i - 1;
+                        TableColumn<ObservableList<String>, String> col =
+                                new TableColumn<>(meta.getColumnLabel(i));
+                        col.setCellValueFactory(d -> new SimpleStringProperty(
+                                d.getValue().size() > idx ? d.getValue().get(idx) : ""));
+                        col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white;" +
+                                "-fx-font-weight:bold; -fx-alignment:CENTER;");
+                        col.setMinWidth(90);
+                        col.setPrefWidth(140);
+                        columnas.add(col);
+                    }
+
+                    while (rs.next()) {
+                        ObservableList<String> fila = FXCollections.observableArrayList();
+                        for (int i = 1; i <= cols; i++)
+                            fila.add(rs.getString(i) != null ? rs.getString(i) : "");
+                        data.add(fila);
+                    }
+                }
+
+                // Actualiza la tabla desde el hilo de JavaFX
+                Platform.runLater(() -> {
+                    tablaResultados.getColumns().setAll(columnas);
+                    tablaResultados.setItems(data);
+                    lblConsultaActiva.setText(titulo);
+                    lblTotal.setText("Total de registros: " + data.size());
+                });
+                return null;
             }
 
-            ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
-            while (rs.next()) {
-                ObservableList<String> fila = FXCollections.observableArrayList();
-                for (int i = 1; i <= cols; i++) fila.add(rs.getString(i) != null ? rs.getString(i) : "");
-                data.add(fila);
+            @Override
+            protected void failed() {
+                Platform.runLater(() ->
+                        mostrarAlerta("Error al ejecutar la consulta: " + getException().getMessage()));
             }
-            tablaResultados.setItems(data);
-            lblTotal.setText("Total de registros: " + data.size());
+        };
 
-        } catch (Exception e) {
-            mostrarAlerta("Error al ejecutar la consulta: " + e.getMessage());
-        }
+        Thread hilo = new Thread(tarea);
+        hilo.setDaemon(true);
+        hilo.start();
     }
 
     // ── Resaltar boton activo ─────────────────────────────────────────────────
