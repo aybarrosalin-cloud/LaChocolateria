@@ -140,4 +140,31 @@
                                     style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="&#128203; Pedidos"><font><Font size="11" /></font></Button>
                             <Button fx:id="btnIngresos"    onAction="#consultarIngresos"    prefHeight="34" prefWidth="155"
                                     style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="&#128200; Reporte Ingresos"><font><Font size="11" /></font></Button>
-                            <Button fx:id="btnMasVendi
+                            <Button fx:id="btnMasVendidos" onAction="#consultarMasVendidos" prefHeight="34" prefWidth="155"
+                                    style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="⭐ Más Vendidos"><font><Font size="11" /></font></Button>
+                            <Button fx:id="btnMantenimiento" onAction="#consultarMantenimiento" prefHeight="34" prefWidth="155"
+                                    style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="🔧 Mantenimiento"><font><Font size="11" /></font></Button>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Resultados -->
+                    <VBox spacing="6" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:14 18 14 18; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label fx:id="lblConsultaActiva" style="-fx-text-fill:#3B1A5C; -fx-font-size:13px; -fx-font-weight:bold;" text="Selecciona una consulta para comenzar" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label style="-fx-text-fill:#6d3c87; -fx-font-size:11px;" text="Total registros:" />
+                            <Label fx:id="lblTotal" style="-fx-text-fill:#48295a; -fx-font-weight:bold; -fx-font-size:11px;" text="0" />
+                        </HBox>
+                        <Separator />
+                        <TableView fx:id="tablaResultados" VBox.vgrow="ALWAYS" prefHeight="380" styleClass="tabla-morada">
+                            <stylesheets><String fx:value="@../com/example/chocolateria/tabla.css"/></stylesheets>
+                            <placeholder><Label text="Selecciona una consulta del panel superior" style="-fx-text-fill:#888;" /></placeholder>
+                        </TableView>
+                    </VBox>
+
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

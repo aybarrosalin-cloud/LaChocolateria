@@ -183,7 +183,8 @@
                             <Button onAction="#quitarProducto" prefHeight="28" prefWidth="100" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;" text="🗑 Quitar" />
                         </HBox>
 
-                        <TableView fx:id="tablaDetalle" prefHeight="200" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tablaDetalle" prefHeight="200" VBox.vgrow="ALWAYS" styleClass="tabla-morada">
+                            <stylesheets><String fx:value="@../com/example/chocolateria/tabla.css"/></stylesheets>
                             <columns>
                                 <TableColumn fx:id="colDetCodigo"   prefWidth="110" text="Código" />
                                 <TableColumn fx:id="colDetProducto" prefWidth="220" text="Producto" />
