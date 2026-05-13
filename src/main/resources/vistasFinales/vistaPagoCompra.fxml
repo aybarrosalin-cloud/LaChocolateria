@@ -200,14 +200,13 @@
                             <Button fx:id="btnAbono" onAction="#registrarAbono" prefHeight="28" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;" text="✔ Registrar abono" />
                         </HBox>
 
-                        <TableView fx:id="tablaAbonos" prefHeight="180" styleClass="tabla-morada">
-                            <stylesheets><String fx:value="@../com/example/chocolateria/tabla.css"/></stylesheets>
+                        <TableView fx:id="tablaAbonos" prefHeight="180">
                             <columns>
-                                <TableColumn fx:id="colAbonoId"     prefWidth="60"  text="ID" />
-                                <TableColumn fx:id="colAbonoFecha"  prefWidth="120" text="Fecha" />
-                                <TableColumn fx:id="colAbonoMonto"  prefWidth="130" text="Monto (RD$)" />
-                                <TableColumn fx:id="colAbonoMetodo" prefWidth="130" text="Método" />
-                                <TableColumn fx:id="colAbonoRef"    prefWidth="150" text="Referencia" />
+                                <TableColumn fx:id="colAbonoId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="60"  text="ID" />
+                                <TableColumn fx:id="colAbonoFecha" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="120" text="Fecha" />
+                                <TableColumn fx:id="colAbonoMonto" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="130" text="Monto (RD$)" />
+                                <TableColumn fx:id="colAbonoMetodo" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="130" text="Método" />
+                                <TableColumn fx:id="colAbonoRef" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="150" text="Referencia" />
                             </columns>
                             <placeholder><Label text="Sin abonos registrados" style="-fx-text-fill:#888;" /></placeholder>
                         </TableView>
@@ -221,17 +220,16 @@
                             <Region HBox.hgrow="ALWAYS" />
                             <TextField fx:id="txtBuscarTabla" prefHeight="28" prefWidth="200" promptText="Filtrar por RNC, estado u orden…" style="-fx-background-color:white; -fx-border-color:#C5A8E8; -fx-border-radius:8; -fx-background-radius:8;" />
                         </HBox>
-                        <TableView fx:id="tablaDeudas" VBox.vgrow="ALWAYS" prefHeight="230" styleClass="tabla-morada">
-                            <stylesheets><String fx:value="@../com/example/chocolateria/tabla.css"/></stylesheets>
+                        <TableView fx:id="tablaDeudas" VBox.vgrow="ALWAYS" prefHeight="230">
                             <columns>
-                                <TableColumn fx:id="colId"         prefWidth="60"  text="ID" />
-                                <TableColumn fx:id="colOrden"      prefWidth="100" text="N° Orden" />
-                                <TableColumn fx:id="colRnc"        prefWidth="120" text="RNC Suplidor" />
-                                <TableColumn fx:id="colFecha"      prefWidth="100" text="Fecha" />
-                                <TableColumn fx:id="colTotal"      prefWidth="110" text="Total (RD$)" />
-                                <TableColumn fx:id="colPagado"     prefWidth="110" text="Pagado (RD$)" />
-                                <TableColumn fx:id="colPendiente"  prefWidth="115" text="Pendiente (RD$)" />
-                                <TableColumn fx:id="colEstado"     prefWidth="90"  text="Estado" />
+                                <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="60"  text="ID" />
+                                <TableColumn fx:id="colOrden" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="100" text="N° Orden" />
+                                <TableColumn fx:id="colRnc" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="120" text="RNC Suplidor" />
+                                <TableColumn fx:id="colFecha" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="100" text="Fecha" />
+                                <TableColumn fx:id="colTotal" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="110" text="Total (RD$)" />
+                                <TableColumn fx:id="colPagado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="110" text="Pagado (RD$)" />
+                                <TableColumn fx:id="colPendiente" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="115" text="Pendiente (RD$)" />
+                                <TableColumn fx:id="colEstado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" prefWidth="90"  text="Estado" />
                             </columns>
                             <placeholder><Label text="Sin deudas registradas" style="-fx-text-fill:#888;" /></placeholder>
                         </TableView>

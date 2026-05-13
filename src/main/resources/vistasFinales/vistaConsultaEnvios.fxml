@@ -146,7 +146,7 @@
                                 <TableColumn fx:id="colCliente" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Cliente" />
                                 <TableColumn fx:id="colFechaEnvio" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="F. Envio" />
                                 <TableColumn fx:id="colFechaEntrega" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="F. Entrega" />
-                                <TableColumn fx:id="colTransportista"Transportista" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="" />
+                                <TableColumn fx:id="colTransportista" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Transportista" />
                                 <TableColumn fx:id="colEstado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" prefWidth="80" />
                                 <TableColumn fx:id="colGuia" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Guia" />
                                 <TableColumn fx:id="colProvincia" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Provincia" />

@@ -56,7 +56,7 @@
                     <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Compras">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
                             <Button maxWidth="Infinity" onAction="#irAOrdenProveedor" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Orden a proveedor" />
-                            <Button maxWidth="Infinity" onAction="#irASalidaMateriales" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Recepción de productos" wrapText="true" />
+                            <Button maxWidth="Infinity" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" onAction="#irASalidaMateriales" text="• Recepción de productos" wrapText="true" />
                             <Button maxWidth="Infinity" onAction="#irAPagoCompra" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de pagos por compras" wrapText="true" />
                         </VBox>
                     </TitledPane>
@@ -78,6 +78,14 @@
                         </VBox>
                     </TitledPane>
 
+                    <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Reportes">
+                        <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
+                            <Button maxWidth="Infinity" onAction="#irAReportesVentas" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Facturación" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesCompras" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Delivery y Entrega" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesInventario" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Reclamaciones" />
+                            <Button maxWidth="Infinity" onAction="#irAReportesProduccion" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Pedido" />
+                        </VBox>
+                    </TitledPane>
 
                     <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Mantenimiento">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
@@ -116,7 +124,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <VBox prefHeight="233.0" prefWidth="790.0" spacing="8" style="-fx-background-color: white; -fx-background-radius: 12;                                              -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                              -fx-padding: 14 18 14 18;                                              -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
+                    <VBox prefHeight="520.0" prefWidth="773.0" spacing="8" style="-fx-background-color: white; -fx-background-radius: 12;                                              -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                              -fx-padding: 14 18 14 18;                                              -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="REGISTRO DE SUPLIDOR">
                             <font><Font name="Arial" size="12.0" /></font>
@@ -127,7 +135,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="110" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Suplidor" />
-                                <TextField fx:id="txtId" editable="true" prefHeight="28" promptText="ID  " style="-fx-background-color:#f0eaf8; -fx-text-fill:#555;                                                   -fx-border-color:purple; -fx-border-radius:6;                                                   -fx-background-radius:6;" />
+                                <TextField fx:id="txtId" editable="true" prefHeight="28" promptText="Auto" style="-fx-background-color:#f0eaf8; -fx-text-fill:#555;                                                   -fx-border-color:purple; -fx-border-radius:6;                                                   -fx-background-radius:6;" />
                             </VBox>
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Nombre" />
@@ -160,16 +168,17 @@
                         </HBox>
 
                         <Separator />
+
                         <HBox alignment="CENTER" spacing="10">
-                            <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#guardar" prefHeight="30" prefWidth="100" text="Guardar"><font><Font size="11.0" /></font></Button>
-                            <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#fnEditar" prefHeight="30" prefWidth="100" text="Editar"><font><Font size="11.0" /></font></Button>
-                            <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#fnEliminar" prefHeight="30" prefWidth="100" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Eliminar"><font><Font size="11.0" /></font></Button>
-                            <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
-                            <Button fx:id="btnLimpiar" mnemonicParsing="false" onAction="#limpiar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
-                        
-                            <Button onAction="#irAConsultaSuplidores" prefHeight="30" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand; -fx-font-size:11px;" text="📋 Ver Consulta"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnGuardar" onAction="#guardar" prefHeight="30" prefWidth="100" text="Guardar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnEditar" onAction="#fnEditar" prefHeight="30" prefWidth="100" text="Editar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnEliminar" onAction="#fnEliminar" prefHeight="30" prefWidth="100" text="Eliminar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnBuscar" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnLimpiar" onAction="#limpiar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" onAction="#irAConsultaSuplidores" prefHeight="30" prefWidth="130" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="📋  Ver Consulta"><font><Font size="11.0" /></font></Button>
                         </HBox>
                     </VBox>
+
                 </VBox>
             </VBox>
         </ScrollPane>
