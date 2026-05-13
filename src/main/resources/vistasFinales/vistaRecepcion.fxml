@@ -180,18 +180,21 @@
                             <TextField fx:id="txtCantidadDetalle" prefHeight="28" prefWidth="80" promptText="Cantidad" style="-fx-background-color:white; -fx-text-fill:black;                                               -fx-border-color:#C5A8E8; -fx-border-radius:6;                                               -fx-background-radius:6;" />
                             <TextField fx:id="txtPrecioDetalle" prefHeight="28" prefWidth="120" promptText="Precio unit." style="-fx-background-color:white; -fx-text-fill:black;                                               -fx-border-color:#C5A8E8; -fx-border-radius:6;                                               -fx-background-radius:6;" />
                             <Button onAction="#agregarProducto" prefHeight="28" prefWidth="105" style="-fx-background-color:#48295a; -fx-text-fill:white;                                            -fx-font-weight:bold; -fx-background-radius:8;" text="➕  Agregar" />
+                            <Button onAction="#quitarProducto" prefHeight="28" prefWidth="100" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;" text="🗑 Quitar" />
                         </HBox>
-                        <TableView fx:id="tablaDetalle" prefHeight="200" VBox.vgrow="ALWAYS"
-                                   style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;">
+
+                        <TableView fx:id="tablaDetalle" prefHeight="200" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colDetCodigo" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Código" />
-                                <TableColumn fx:id="colDetProducto" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Producto" />
-                                <TableColumn fx:id="colDetCantidad" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Cantidad" />
-                                <TableColumn fx:id="colDetPrecio" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Precio" />
-                                <TableColumn fx:id="colDetMonto" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Monto" />
+                                <TableColumn fx:id="colDetCodigo"   prefWidth="110" text="Código" />
+                                <TableColumn fx:id="colDetProducto" prefWidth="220" text="Producto" />
+                                <TableColumn fx:id="colDetCantidad" prefWidth="90"  text="Cantidad" />
+                                <TableColumn fx:id="colDetPrecio"   prefWidth="110" text="Precio unit." />
+                                <TableColumn fx:id="colDetMonto"    prefWidth="110" text="Monto (RD$)" />
                             </columns>
                         </TableView>
+
                     </VBox>
+
                 </VBox>
             </VBox>
         </ScrollPane>

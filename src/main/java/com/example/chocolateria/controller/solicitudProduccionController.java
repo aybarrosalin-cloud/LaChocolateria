@@ -3,16 +3,20 @@ package com.example.chocolateria.controller;
 import com.example.chocolateria.baseDeDatos.conexion;
 import com.example.chocolateria.modelo.solicitudDetalleModelo;
 import com.example.chocolateria.modelo.solicitudProduccionModelo;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class solicitudProduccionController {
 
@@ -50,6 +54,8 @@ public class solicitudProduccionController {
     private final ObservableList<solicitudProduccionModelo> lista        = FXCollections.observableArrayList();
     private final ObservableList<solicitudDetalleModelo>    listaDetalle = FXCollections.observableArrayList();
     private final conexion con = new conexion();
+    // Cache de resúmenes de productos para evitar N+1 queries al renderizar la tabla
+    private final Map<Integer, String> cacheProductos = new HashMap<>();
 
     private int    idResponsableSeleccionado = 0;
     private String productoDetalleSeleccionado = "";
@@ -80,8 +86,9 @@ public class solicitudProduccionController {
             colResponsable.setCellValueFactory(d     -> d.getValue().responsableProperty());
             colPrioridad.setCellValueFactory(d       -> d.getValue().prioridadProperty());
             colEstado.setCellValueFactory(d          -> d.getValue().estadoProperty());
+            // Usa el cache para no abrir una conexión nueva por cada fila renderizada
             colProductos.setCellValueFactory(d       -> new SimpleStringProperty(
-                    cargarResumenProductos(d.getValue().getId())));
+                    cacheProductos.getOrDefault(d.getValue().getId(), "")));
         }
 
         // Columnas detalle
@@ -131,7 +138,14 @@ public class solicitudProduccionController {
             );
         }
 
-        cargarSolicitudes();
+        // Carga los datos en un hilo secundario para no bloquear la interfaz
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() {
+                cargarSolicitudes();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
         generarSiguienteId();
     }
 
@@ -536,10 +550,18 @@ public class solicitudProduccionController {
     // ── Métodos de soporte ────────────────────────────────────────────────────
 
     private void cargarSolicitudes() {
-        lista.clear();
+        ObservableList<solicitudProduccionModelo> temporal = FXCollections.observableArrayList();
+        Map<Integer, String> tempCache = new HashMap<>();
+
+        // Un solo JOIN trae solicitudes y resumen de productos sin queries adicionales
         String sql = "SELECT s.id_solicitud, s.fecha_solicitud, s.fecha_produccion, " +
                 "s.prioridad, s.estado, s.id_responsable, " +
-                "e.nombre + ' ' + e.apellido AS responsable, s.observaciones " +
+                "ISNULL(e.nombre + ' ' + e.apellido, '') AS responsable, " +
+                "ISNULL(s.observaciones, '') AS observaciones, " +
+                "ISNULL(STUFF((SELECT ', ' + d.producto " +
+                "              FROM tbl_solicitud_detalle d " +
+                "              WHERE d.id_solicitud = s.id_solicitud " +
+                "              FOR XML PATH('')), 1, 2, ''), '') AS resumen_productos " +
                 "FROM tbl_solicitud_produccion s " +
                 "LEFT JOIN tbl_empleado e ON s.id_responsable = e.id_empleado " +
                 "ORDER BY s.fecha_solicitud DESC";
@@ -549,20 +571,30 @@ public class solicitudProduccionController {
             while (rs.next()) {
                 Date dSol  = rs.getDate("fecha_solicitud");
                 Date dProd = rs.getDate("fecha_produccion");
-                lista.add(new solicitudProduccionModelo(
-                        rs.getInt("id_solicitud"),
+                int idSol  = rs.getInt("id_solicitud");
+                temporal.add(new solicitudProduccionModelo(
+                        idSol,
                         dSol  != null ? dSol.toLocalDate()  : null,
                         dProd != null ? dProd.toLocalDate() : null,
                         rs.getString("prioridad"),
                         rs.getString("estado"),
                         rs.getInt("id_responsable"),
-                        rs.getString("responsable") != null ? rs.getString("responsable") : "",
-                        rs.getString("observaciones") != null ? rs.getString("observaciones") : ""
+                        rs.getString("responsable"),
+                        rs.getString("observaciones")
                 ));
+                tempCache.put(idSol, rs.getString("resumen_productos"));
             }
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar solicitudes", e.getMessage());
+            Platform.runLater(() ->
+                mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar solicitudes", e.getMessage()));
+            return;
         }
+        // Actualiza la UI desde el hilo de JavaFX
+        Platform.runLater(() -> {
+            cacheProductos.clear();
+            cacheProductos.putAll(tempCache);
+            lista.setAll(temporal);
+        });
     }
 
     private void cargarDetalle(int idSolicitud) {
