@@ -8,7 +8,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +62,6 @@ public class ordenProveedorController {
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         cbPrioridad.setItems(FXCollections.observableArrayList("Alta", "Media", "Baja"));
         cbEstadoPago.setItems(FXCollections.observableArrayList("Pendiente", "Parcial", "Pagado", "Cancelado"));
-        cargarProveedores();
 
         colDetCodigo.setCellValueFactory(d   -> d.getValue().codigoProdProperty());
         colDetProducto.setCellValueFactory(d -> d.getValue().productoProperty());
@@ -68,10 +71,20 @@ public class ordenProveedorController {
         tablaDetalle.setItems(listaDetalle);
         listaDetalle.addListener((javafx.collections.ListChangeListener<ordenProveedorDetalleModelo>) c -> recalcularMonto());
 
+
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() {
+            cargarProveedores();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
         generarSiguienteId();
     }
 
     private void cargarProveedores() {
+        List<String> tmpItems = new ArrayList<>();
+        java.util.Map<String,String> tmpMapa = new java.util.LinkedHashMap<>();
         String sql = "SELECT rnc, nombre + ' ' + apellido AS nombre_completo FROM tbl_suplidor ORDER BY nombre";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
@@ -80,10 +93,15 @@ public class ordenProveedorController {
                 String rnc  = rs.getString("rnc");
                 String nom  = rs.getString("nombre_completo");
                 String item = rnc + " - " + nom;
-                cbRncProveedor.getItems().add(item);
-                mapaRncNombre.put(item, rnc);
+                tmpItems.add(item);
+                tmpMapa.put(item, rnc);
             }
-        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error",e.getMessage()); }
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            Platform.runLater(() -> mostrarAlerta(Alert.AlertType.ERROR,"Error",msg));
+            return;
+        }
+        Platform.runLater(() -> { cbRncProveedor.getItems().addAll(tmpItems); mapaRncNombre.putAll(tmpMapa); });
     }
 
     @FXML

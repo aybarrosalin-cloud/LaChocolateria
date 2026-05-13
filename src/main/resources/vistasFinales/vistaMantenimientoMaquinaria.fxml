@@ -168,5 +168,20 @@
                         </HBox>
 
                         <Separator />
+                        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding:6 0 6 0;">
+                            <Label fx:id="lblAlerta" text="" style="-fx-text-fill:#3B1A5C; -fx-font-size:11px;" />
+                            <Button mnemonicParsing="false" fx:id="btnLimpiar" onAction="#limpiarCampos" prefHeight="30" prefWidth="100" text="Limpiar" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnGuardar" onAction="#guardarMantenimiento" prefHeight="30" prefWidth="100" text="Guardar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnEditar" onAction="#fnEditar" prefHeight="30" prefWidth="100" text="Editar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnEliminar" onAction="#fnEliminar" prefHeight="30" prefWidth="100" text="Eliminar" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnBuscar" onAction="#fnBuscar" prefHeight="30" prefWidth="100" text="Buscar" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"><font><Font size="11.0" /></font></Button>
+                        
+                            <Button prefHeight="30" prefWidth="140" onAction="#irAConsultaMantenimientoMaquinaria" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand; -fx-font-size:11px;" text="&#128203; Ver Consulta"><font><Font size="11.0" /></font></Button>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
 
-                     
+</BorderPane>

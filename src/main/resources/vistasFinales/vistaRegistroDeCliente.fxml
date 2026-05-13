@@ -177,4 +177,17 @@
                             <Button mnemonicParsing="false" fx:id="btnEditar" onAction="#fnEditar" prefHeight="30" prefWidth="100" text="Editar">
                                 <font><Font size="11.0" /></font>
                             </Button>
-                            <Button mnemonicParsing="false" fx:id="btnLimpiar" onActi
+                            <Button mnemonicParsing="false" fx:id="btnBuscar" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnLimpiar" onAction="#limpiarCampos" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnEliminar" onAction="#fnEliminar" prefHeight="30" prefWidth="100" text="Eliminar" style="-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" fx:id="btnDeshabilitar" onAction="#fnDeshabilitar" prefHeight="30" prefWidth="100" text="Deshabilitar" style="-fx-background-color:#7a5c00; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"><font><Font size="11.0" /></font></Button>
+                        
+                            <Button prefHeight="30" prefWidth="140" onAction="#irAConsultaClientes" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand; -fx-font-size:11px;" text="&#128203; Ver Consulta"><font><Font size="11.0" /></font></Button>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

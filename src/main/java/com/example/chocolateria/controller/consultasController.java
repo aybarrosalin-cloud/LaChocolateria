@@ -1,14 +1,18 @@
 package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.chocolateria.controller.PermisoRol.Consulta.*;
@@ -96,17 +100,23 @@ public class consultasController {
         String claveIngresada = campoOculto.getText();
         if (claveIngresada == null || claveIngresada.isBlank()) return false;
 
-        // Verificar contra la BD: cualquier Administrador o Gerente activo
-        String sql = "SELECT COUNT(*) FROM tbl_usuario " +
-                     "WHERE password=? AND estado='Activo' " +
+        // Traer los hashes de todos los Administradores/Gerentes activos
+        // y verificar con CifradoUtil igual que el login
+        String sql = "SELECT password FROM tbl_usuario " +
+                     "WHERE estado='Activo' " +
                      "AND rol IN ('Administrador','Gerente General')";
         try (Connection c = con.establecerConexion();
-             PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, claveIngresada);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) return true;
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String hashAlmacenado = rs.getString("password");
+                if (CifradoUtil.verificarPassword(claveIngresada, hashAlmacenado)) {
+                    return true;
+                }
+            }
         } catch (SQLException e) {
             mostrarAlerta("Error al verificar la clave: " + e.getMessage());
+            return false;
         }
 
         mostrarAlerta("Contraseña incorrecta o usuario sin permiso.");
@@ -275,41 +285,66 @@ public class consultasController {
     }
 
     private void ejecutarConsulta(String sql, String titulo) {
+        // Limpiar tabla e indicar carga
         tablaResultados.getColumns().clear();
         tablaResultados.getItems().clear();
         lblConsultaActiva.setText(titulo);
-        lblTotal.setText("");
+        lblTotal.setText("Cargando...");
 
-        try (Connection conn = con.establecerConexion();
-             Statement st   = conn.createStatement();
-             ResultSet rs   = st.executeQuery(sql)) {
+        Task<Void> tarea = new Task<>() {
+            // Resultados temporales fuera del hilo FX
+            List<String> nombresColumnas = new ArrayList<>();
+            List<List<String>> filas     = new ArrayList<>();
 
-            ResultSetMetaData meta = rs.getMetaData();
-            int cols = meta.getColumnCount();
+            @Override
+            protected Void call() throws Exception {
+                try (Connection conn = con.establecerConexion();
+                     Statement st   = conn.createStatement();
+                     ResultSet rs   = st.executeQuery(sql)) {
 
-            for (int i = 1; i <= cols; i++) {
-                final int idx = i - 1;
-                TableColumn<ObservableList<String>, String> col = new TableColumn<>(meta.getColumnLabel(i));
-                col.setCellValueFactory(data -> new SimpleStringProperty(
-                    data.getValue().size() > idx ? data.getValue().get(idx) : ""));
-                col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;");
-                col.setMinWidth(90);
-                col.setPrefWidth(140);
-                tablaResultados.getColumns().add(col);
+                    ResultSetMetaData meta = rs.getMetaData();
+                    int cols = meta.getColumnCount();
+                    for (int i = 1; i <= cols; i++) nombresColumnas.add(meta.getColumnLabel(i));
+
+                    while (rs.next()) {
+                        List<String> fila = new ArrayList<>();
+                        for (int i = 1; i <= cols; i++)
+                            fila.add(rs.getString(i) != null ? rs.getString(i) : "");
+                        filas.add(fila);
+                    }
+                }
+                return null;
             }
 
-            ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
-            while (rs.next()) {
-                ObservableList<String> fila = FXCollections.observableArrayList();
-                for (int i = 1; i <= cols; i++) fila.add(rs.getString(i) != null ? rs.getString(i) : "");
-                data.add(fila);
+            @Override
+            protected void succeeded() {
+                // Construir columnas en hilo FX
+                for (int i = 0; i < nombresColumnas.size(); i++) {
+                    final int idx = i;
+                    TableColumn<ObservableList<String>, String> col =
+                            new TableColumn<>(nombresColumnas.get(i));
+                    col.setCellValueFactory(data -> new SimpleStringProperty(
+                        data.getValue().size() > idx ? data.getValue().get(idx) : ""));
+                    col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;");
+                    col.setMinWidth(90);
+                    col.setPrefWidth(140);
+                    tablaResultados.getColumns().add(col);
+                }
+                ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
+                for (List<String> f : filas) data.add(FXCollections.observableArrayList(f));
+                tablaResultados.setItems(data);
+                lblTotal.setText("Total de registros: " + data.size());
             }
-            tablaResultados.setItems(data);
-            lblTotal.setText("Total de registros: " + data.size());
 
-        } catch (Exception e) {
-            mostrarAlerta("Error al ejecutar la consulta: " + e.getMessage());
-        }
+            @Override
+            protected void failed() {
+                String msg = getException() != null ? getException().getMessage() : "Error desconocido";
+                Platform.runLater(() -> mostrarAlerta("Error al ejecutar la consulta: " + msg));
+                lblTotal.setText("");
+            }
+        };
+
+        new Thread(tarea).start();
     }
 
     // ── Resaltar boton activo ─────────────────────────────────────────────────

@@ -5,10 +5,14 @@ import com.example.chocolateria.modelo.mantenimientoMaquinariaModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 public class consultaMantenimientoMaquinariaController {
@@ -57,11 +61,18 @@ public class consultaMantenimientoMaquinariaController {
             }));
         tablaMantenimientos.setItems(listaFiltrada);
 
-        cargarMantenimientos();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarMantenimientos();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarMantenimientos() {
-        lista.clear();
+        List<mantenimientoMaquinariaModelo> tmp = new ArrayList<>();
         String sql = "SELECT id, fecha_mantenimiento, fecha_proximo_mantenimiento, maquina, tecnico, costo, " +
                      "estado_maquina, tipo_mantenimiento, observaciones " +
                      "FROM tbl_mantenimiento_maquinaria ORDER BY id DESC";
@@ -71,7 +82,7 @@ public class consultaMantenimientoMaquinariaController {
             while (rs.next()) {
                 Date dF = rs.getDate("fecha_mantenimiento");
                 Date dP = rs.getDate("fecha_proximo_mantenimiento");
-                lista.add(new mantenimientoMaquinariaModelo(
+                tmp.add(new mantenimientoMaquinariaModelo(
                     rs.getInt("id"),
                     dF != null ? dF.toLocalDate() : null,
                     dP != null ? dP.toLocalDate() : null,
@@ -81,7 +92,8 @@ public class consultaMantenimientoMaquinariaController {
                     rs.getString("estado_maquina"),
                     rs.getString("tipo_mantenimiento"),
                     rs.getString("observaciones") != null ? rs.getString("observaciones") : ""));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar mantenimientos: " + e.getMessage()).showAndWait();
         }

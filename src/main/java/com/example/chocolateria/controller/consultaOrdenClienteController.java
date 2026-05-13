@@ -6,10 +6,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,8 +74,15 @@ public class consultaOrdenClienteController {
             }));
         tablaOrdenes.setItems(listaFiltrada);
 
-        cargarProductosMap();
-        cargarOrdenes();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarProductosMap();
+                cargarOrdenes();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarProductosMap() {
@@ -86,7 +97,7 @@ public class consultaOrdenClienteController {
     }
 
     private void cargarOrdenes() {
-        lista.clear();
+        List<ordenClienteModelo> tmp = new ArrayList<>();
         String sql = "SELECT id_orden, id_cliente, cliente, fecha_registro, fecha_entrega, metodo_pago, estado, " +
                      "ISNULL(observaciones,'') AS observaciones " +
                      "FROM tbl_orden_cliente ORDER BY id_orden DESC";
@@ -96,7 +107,7 @@ public class consultaOrdenClienteController {
             while (rs.next()) {
                 Date dR = rs.getDate("fecha_registro");
                 Date dE = rs.getDate("fecha_entrega");
-                lista.add(new ordenClienteModelo(
+                tmp.add(new ordenClienteModelo(
                     rs.getInt("id_orden"), rs.getInt("id_cliente"),
                     rs.getString("cliente"),
                     dR != null ? dR.toLocalDate() : null,
@@ -104,7 +115,8 @@ public class consultaOrdenClienteController {
                     rs.getString("metodo_pago"),
                     rs.getString("estado"),
                     rs.getString("observaciones")));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar ordenes: " + e.getMessage()).showAndWait();
         }
