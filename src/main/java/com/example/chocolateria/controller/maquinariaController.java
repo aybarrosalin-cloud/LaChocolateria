@@ -6,12 +6,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,20 +63,11 @@ public class maquinariaController {
             "Activo", "En mantenimiento", "Fuera de servicio", "Retirado"
         ));
 
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-            cargarResponsables();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
+        cargarResponsables();
         generarSiguienteId();
     }
 
     private void cargarResponsables() {
-        List<String> tmpItems = new ArrayList<>();
-        java.util.Map<String,Integer> tmpMapa = new java.util.LinkedHashMap<>();
         String sql = "SELECT id_empleado, nombre + ' ' + apellido AS nombre_completo FROM tbl_empleado ORDER BY nombre";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
@@ -88,15 +75,12 @@ public class maquinariaController {
             while (rs.next()) {
                 String nombre = rs.getString("nombre_completo");
                 int id = rs.getInt("id_empleado");
-                tmpItems.add(nombre);
-                tmpMapa.put(nombre, id);
+                cbResponsable.getItems().add(nombre);
+                mapaResponsables.put(nombre, id);
             }
         } catch (Exception e) {
-            String msg = e.getMessage();
-            Platform.runLater(() -> mostrarAlerta(Alert.AlertType.ERROR, "Error", msg));
-            return;
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
-        Platform.runLater(() -> { cbResponsable.getItems().addAll(tmpItems); mapaResponsables.putAll(tmpMapa); });
     }
 
     @FXML

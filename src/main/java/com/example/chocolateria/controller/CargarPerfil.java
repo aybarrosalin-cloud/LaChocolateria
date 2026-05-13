@@ -15,24 +15,24 @@ public class CargarPerfil {
     private static final String FOTO_DEFAULT       = CARPETA_CLASSPATH + "perfil.png";
 
     public static void aplicar(Label lblUsuario, ImageView imgPerfil) {
-        try {
-            SesionManager sesion = SesionManager.getInstancia();
-            if (lblUsuario != null) lblUsuario.setText(sesion.getUsuario());
-            if (imgPerfil == null) return;
+        SesionManager sesion = SesionManager.getInstancia();
+        lblUsuario.setText(sesion.getUsuario());
 
-            String ruta = sesion.getFotoPerfil();
-            Image img = (ruta != null && !ruta.isBlank()) ? cargarImagen(ruta) : cargarDefault();
-            if (img != null) imgPerfil.setImage(img);
-        } catch (Exception ignored) {
-            // En Scene Builder no hay sesion activa; se ignora para no romper la vista
+        String ruta = sesion.getFotoPerfil();
+        if (ruta != null && !ruta.isBlank()) {
+            imgPerfil.setImage(cargarImagen(ruta));
+        } else {
+            imgPerfil.setImage(cargarDefault());
         }
     }
 
     private static Image cargarImagen(String ruta) {
+        // Si no tiene separadores de directorio, es un nombre de archivo del classpath
         if (!ruta.contains("/") && !ruta.contains("\\")) {
             InputStream is = CargarPerfil.class.getResourceAsStream(CARPETA_CLASSPATH + ruta);
             if (is != null) return new Image(is);
         }
+        // Ruta absoluta del sistema de archivos
         try (FileInputStream fis = new FileInputStream(ruta)) {
             return new Image(fis);
         } catch (Exception e) {
@@ -41,7 +41,6 @@ public class CargarPerfil {
     }
 
     private static Image cargarDefault() {
-        InputStream is = CargarPerfil.class.getResourceAsStream(FOTO_DEFAULT);
-        return is != null ? new Image(is) : null; // null si no existe (p.ej. en Scene Builder)
+        return new Image(CargarPerfil.class.getResourceAsStream(FOTO_DEFAULT));
     }
 }

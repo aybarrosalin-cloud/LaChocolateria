@@ -6,11 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -103,15 +99,8 @@ public class envioController {
         cbProvincia.setItems(FXCollections.observableArrayList(PROVINCIAS.keySet()));
         cbProvincia.setOnAction(e -> actualizarCiudades());
 
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-            cargarClientes();
-            cargarTransportistas();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
+        cargarClientes();
+        cargarTransportistas();
         generarSiguienteId();
     }
 
@@ -124,8 +113,6 @@ public class envioController {
     }
 
     private void cargarClientes() {
-        List<String> tmpItems = new ArrayList<>();
-        java.util.Map<String,Integer> tmpMapa = new java.util.LinkedHashMap<>();
         String sql = "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente ORDER BY nombre";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
@@ -134,30 +121,19 @@ public class envioController {
                 int id      = rs.getInt("id_cliente");
                 String nom  = rs.getString("nombre_completo");
                 String item = id + " - " + nom;
-                tmpItems.add(item);
-                tmpMapa.put(item, id);
+                cbCliente.getItems().add(item);
+                mapaClientes.put(item, id);
             }
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            Platform.runLater(() -> mostrarAlerta(Alert.AlertType.ERROR,"Error",msg));
-            return;
-        }
-        Platform.runLater(() -> { cbCliente.getItems().addAll(tmpItems); mapaClientes.putAll(tmpMapa); });
+        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error",e.getMessage()); }
     }
 
     private void cargarTransportistas() {
-        List<String> tmp = new ArrayList<>();
         String sql = "SELECT nombre FROM tbl_transportista WHERE estado='Activo' ORDER BY nombre";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) tmp.add(rs.getString("nombre"));
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            Platform.runLater(() -> mostrarAlerta(Alert.AlertType.ERROR,"Error",msg));
-            return;
-        }
-        Platform.runLater(() -> cbTransportista.getItems().addAll(tmp));
+            while (rs.next()) cbTransportista.getItems().add(rs.getString("nombre"));
+        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error",e.getMessage()); }
     }
 
     @FXML
@@ -419,7 +395,6 @@ public class envioController {
     @FXML private void irAMantenimientoMaquinaria(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaMantenimientoMaquinaria.fxml", e); }
     @FXML private void irAConsultas(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaConsultasGenerales.fxml", e); }
     @FXML private void irAConsultaEnvios(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaConsultaEnvios.fxml", e); }
-    @FXML private void irAGestionUsuarios(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionUsuarios.fxml", e); }
     @FXML private void salir(javafx.event.ActionEvent e)                  { Navegacion.salir(e); }
 
     private int estadoActual = 0;
@@ -445,3 +420,4 @@ public class envioController {
     }
 
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.concurrent.Task;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -45,6 +44,8 @@ public class mantenimientoMaquinariaController {
         cbEstadoMaquina.setItems(FXCollections.observableArrayList("Operativa", "En reparación", "Fuera de servicio"));
         cbTipoMantenimiento.setItems(FXCollections.observableArrayList("Preventivo", "Correctivo"));
 
+        cargarMaquinas();
+        cargarTecnicos();
 
         cbMaquina.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == null) {
@@ -67,15 +68,6 @@ public class mantenimientoMaquinariaController {
         });
 
         verificarAlertas();
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-            cargarMaquinas();
-            cargarTecnicos();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
     }
 
     private void cargarMaquinas() {

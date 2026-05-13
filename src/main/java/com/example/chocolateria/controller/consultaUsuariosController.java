@@ -5,14 +5,10 @@ import com.example.chocolateria.modelo.usuarioModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class consultaUsuariosController {
 
@@ -61,18 +57,11 @@ public class consultaUsuariosController {
             }));
         tablaUsuarios.setItems(listaFiltrada);
 
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() throws Exception {
-                cargarUsuarios();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
-    
+        cargarUsuarios();
     }
 
     private void cargarUsuarios() {
-        List<usuarioModelo> tmp = new ArrayList<>();
+        lista.clear();
         String sql = "SELECT u.id_usuario, u.usuario, u.rol, u.estado, " +
                      "ISNULL(u.id_departamento, 0) AS id_departamento, " +
                      "ISNULL(d.nombre, '') AS departamento " +
@@ -82,15 +71,14 @@ public class consultaUsuariosController {
         try (Connection c = con.establecerConexion();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) tmp.add(new usuarioModelo(
+            while (rs.next()) lista.add(new usuarioModelo(
                 rs.getInt("id_usuario"),
                 rs.getString("usuario"),
                 rs.getString("rol")         != null ? rs.getString("rol")         : "",
                 rs.getString("estado")      != null ? rs.getString("estado")      : "",
                 rs.getInt("id_departamento"),
                 rs.getString("departamento")));
-        Platform.runLater(() -> lista.setAll(tmp));
-    } catch (Exception e) {
+        } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar usuarios: " + e.getMessage()).showAndWait();
         }
     }

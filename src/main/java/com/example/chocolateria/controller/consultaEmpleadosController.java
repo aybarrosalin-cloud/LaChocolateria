@@ -5,15 +5,11 @@ import com.example.chocolateria.modelo.empleadoModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class consultaEmpleadosController {
 
@@ -72,26 +68,18 @@ public class consultaEmpleadosController {
             );
         }
         tablaEmpleados.setItems(filtrada);
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() throws Exception {
-                cargarEmpleados();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
-    
+        cargarEmpleados();
     }
 
     private void cargarEmpleados() {
-        List<empleadoModelo> tmp = new ArrayList<>();
+        lista.clear();
         String sql = "SELECT id_empleado, nombre, apellido, cedula, telefono, tipo_empleado, rol, estado " +
                      "FROM tbl_empleado ORDER BY nombre";
         try (Connection c = con.establecerConexion();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
-                tmp.add(new empleadoModelo(
+                lista.add(new empleadoModelo(
                     rs.getInt("id_empleado"),
                     rs.getString("nombre"),
                     rs.getString("apellido"),
@@ -101,8 +89,7 @@ public class consultaEmpleadosController {
                     rs.getString("rol"),
                     rs.getString("estado")
                 ));
-        Platform.runLater(() -> lista.setAll(tmp));
-    }
+            }
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar empleados: " + e.getMessage()).showAndWait();
         }

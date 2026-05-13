@@ -1,7 +1,6 @@
 package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -12,34 +11,34 @@ import javafx.scene.text.Font;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Optional;
 
 /**
  * Dialogo de verificacion de clave de administrador.
- * La verificacion corre en hilo de fondo para no congelar la UI.
+ * Se usa para proteger el acceso a las vistas de consulta historica.
  */
 public class VerificarClave {
 
+    /**
+     * Muestra el dialogo de clave y devuelve true si el usuario
+     * ingreso una contrasena valida de algun Administrador o Gerente General.
+     */
     public static boolean pedirClaveAdmin() {
-        AtomicBoolean verificado = new AtomicBoolean(false);
-
+        // Usamos TextInputDialog como base (probado y estable en el proyecto)
+        // pero reemplazamos su contenido con un PasswordField oculto
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Acceso a Consulta");
         dialog.setHeaderText(null);
 
-        // ── PasswordField ─────────────────────────────────────────────────────
+        // ── PasswordField personalizado ───────────────────────────────────────
         PasswordField pfClave = new PasswordField();
-        pfClave.setPromptText("Contraseña de administrador");
+        pfClave.setPromptText("Ingresa la contraseña de administrador");
         pfClave.setStyle("-fx-background-color:white; -fx-border-color:#9b59b6; "
                 + "-fx-border-radius:6; -fx-background-radius:6; -fx-font-size:12px;");
         pfClave.setPrefHeight(34);
 
-        // ── Mensaje de error / estado ─────────────────────────────────────────
-        Label lblError = new Label(" ");
-        lblError.setStyle("-fx-text-fill:#a83c5b; -fx-font-size:11px; -fx-font-weight:bold;");
-
         // ── Contenido ────────────────────────────────────────────────────────
-        VBox contenido = new VBox(8);
+        VBox contenido = new VBox(10);
         contenido.setPadding(new Insets(16, 24, 8, 24));
         contenido.setAlignment(Pos.CENTER_LEFT);
 
@@ -58,82 +57,54 @@ public class VerificarClave {
         Label lblCampo = new Label("Contraseña:");
         lblCampo.setStyle("-fx-text-fill:#3B1A5C; -fx-font-weight:bold; -fx-font-size:11px;");
 
-        contenido.getChildren().addAll(titulo, lblSub, lblCampo, pfClave, lblError);
+        contenido.getChildren().addAll(titulo, lblSub, lblCampo, pfClave);
 
+        // Reemplaza el contenido del dialog con nuestro VBox
         dialog.getDialogPane().setContent(contenido);
         dialog.getDialogPane().setStyle("-fx-background-color:#f3eaf8;");
 
-        // ── Botones ───────────────────────────────────────────────────────────
-        javafx.scene.Node nodeOk     = dialog.getDialogPane().lookupButton(ButtonType.OK);
-        javafx.scene.Node nodeCancel = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-        if (nodeOk     != null) nodeOk.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;");
-        if (nodeCancel != null) nodeCancel.setStyle("-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;");
+        // Estilo de los botones (lookup seguro con null-check)
+        javafx.scene.Node btnOk     = dialog.getDialogPane().lookupButton(ButtonType.OK);
+        javafx.scene.Node btnCancel = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+        if (btnOk     != null) btnOk.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;");
+        if (btnCancel != null) btnCancel.setStyle("-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;");
 
-        if (nodeOk instanceof Button) {
-            Button okBtn = (Button) nodeOk;
-
-            // Deshabilitar OK mientras el campo esté vacío
-            okBtn.disableProperty().unbind();
-            okBtn.disableProperty().bind(pfClave.textProperty().isEmpty());
-
-            // Enter en el PasswordField dispara OK
-            pfClave.setOnAction(e -> okBtn.fire());
-
-            // ── Interceptar clic en OK: verificar en hilo de fondo ────────────
-            okBtn.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
-                event.consume(); // Evitar que el dialog se cierre solo
-
-                String clave = pfClave.getText().trim();
-                if (clave.isBlank()) return;
-
-                // Deshabilitar controles mientras verifica
-                okBtn.disableProperty().unbind();
-                okBtn.setDisable(true);
-                pfClave.setDisable(true);
-                lblError.setStyle("-fx-text-fill:#6d3c87; -fx-font-size:11px;");
-                lblError.setText("Verificando...");
-
-                Thread t = new Thread(() -> {
-                    boolean ok = verificarEnDB(clave);
-                    Platform.runLater(() -> {
-                        if (ok) {
-                            verificado.set(true);
-                            dialog.close(); // Cierra el dialog con éxito
-                        } else {
-                            // Mostrar error y permitir reintento
-                            pfClave.setDisable(false);
-                            pfClave.clear();
-                            pfClave.requestFocus();
-                            okBtn.disableProperty().bind(pfClave.textProperty().isEmpty());
-                            lblError.setStyle("-fx-text-fill:#a83c5b; -fx-font-size:11px; -fx-font-weight:bold;");
-                            lblError.setText("❌ Contraseña incorrecta. Intenta de nuevo.");
-                        }
-                    });
-                });
-                t.setDaemon(true);
-                t.start();
-            });
+        // CRÍTICO: TextInputDialog deshabilita OK cuando su TextField interno está vacío.
+        // Como reemplazamos el contenido, el TextField interno siempre está vacío → OK queda gris.
+        // Desconectamos ese binding y lo enlazamos a nuestro PasswordField.
+        if (btnOk != null) {
+            btnOk.disableProperty().unbind();
+            btnOk.disableProperty().bind(pfClave.textProperty().isEmpty());
         }
 
-        dialog.showAndWait(); // Espera hasta que el dialog se cierre (Cancel o éxito)
-        return verificado.get();
+        // Enter en el PasswordField dispara OK
+        if (btnOk instanceof javafx.scene.control.Button) {
+            pfClave.setOnAction(e -> ((javafx.scene.control.Button) btnOk).fire());
+        }
+
+        // Mostrar y esperar
+        // showAndWait() de TextInputDialog retorna Optional.empty() si el usuario canceló
+        Optional<String> resultado = dialog.showAndWait();
+        if (resultado.isEmpty()) return false; // Canceló o cerró con X
+
+        // Leer la clave directamente del PasswordField (no del TextField interno del dialog)
+        String clave = pfClave.getText();
+        if (clave == null || clave.isBlank()) return false;
+
+        return verificarEnDB(clave.trim());
     }
 
-    // ── Verificacion en BD (corre en hilo de fondo) ───────────────────────────
+    // ── Verificacion en BD ────────────────────────────────────────────────────
 
     private static boolean verificarEnDB(String clave) {
         conexion con = new conexion();
-        String sql = "SELECT password FROM tbl_usuario "
-                + "WHERE rol IN ('Administrador','Gerente General') AND estado = 'Activo'";
+        String sql = "SELECT COUNT(*) FROM tbl_usuario "
+                + "WHERE password = ? AND rol IN ('Administrador','Gerente General') AND estado = 'Activo'";
         try (Connection conn = con.establecerConexion();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                String hashAlmacenado = rs.getString("password");
-                if (CifradoUtil.verificarPassword(clave, hashAlmacenado)) {
-                    return true;
-                }
-            }
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, clave);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }

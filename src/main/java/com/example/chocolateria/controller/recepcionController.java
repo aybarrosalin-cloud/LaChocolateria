@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.concurrent.Task;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -59,13 +58,6 @@ public class recepcionController {
         colDetMonto.setCellValueFactory(d     -> d.getValue().montoProductoProperty());
         tablaDetalle.setItems(listaDetalle);
 
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-                return null;
-            }
-        };
-        new Thread(cargar).start();
         generarSiguienteId();
     }
 

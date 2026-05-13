@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.concurrent.Task;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -78,13 +77,6 @@ public class ordenProduccionController {
             }
         });
 
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-                return null;
-            }
-        };
-        new Thread(cargar).start();
         generarSiguienteId();
     }
 

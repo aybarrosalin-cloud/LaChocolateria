@@ -5,14 +5,10 @@ import com.example.chocolateria.modelo.envioModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 
 public class consultaEnviosController {
@@ -74,18 +70,11 @@ public class consultaEnviosController {
             }));
         tablaEnvios.setItems(listaFiltrada);
 
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() throws Exception {
-                cargarEnvios();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
-    
+        cargarEnvios();
     }
 
     private void cargarEnvios() {
-        List<envioModelo> tmp = new ArrayList<>();
+        lista.clear();
         String sql = "SELECT id_envio,id_cliente,cliente,fecha_envio,fecha_entrega,transportista,temperatura_transporte,estado,numero_guia,provincia,ciudad,direccion FROM tbl_envio ORDER BY id_envio DESC";
         try (Connection c = con.establecerConexion();
              Statement st = c.createStatement();
@@ -93,7 +82,7 @@ public class consultaEnviosController {
             while (rs.next()) {
                 Date dEnv = rs.getDate("fecha_envio");
                 Date dEnt = rs.getDate("fecha_entrega");
-                tmp.add(new envioModelo(
+                lista.add(new envioModelo(
                     rs.getInt("id_envio"), rs.getInt("id_cliente"),
                     rs.getString("cliente"),
                     dEnv != null ? dEnv.toLocalDate() : null,
@@ -105,8 +94,7 @@ public class consultaEnviosController {
                     rs.getString("provincia"),
                     rs.getString("ciudad") != null ? rs.getString("ciudad") : "",
                     rs.getString("direccion")));
-        Platform.runLater(() -> lista.setAll(tmp));
-    }
+            }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar envios: " + e.getMessage()).showAndWait();
         }

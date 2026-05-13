@@ -6,14 +6,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,15 +70,8 @@ public class consultaSolicitudesProduccionController {
             }));
         tablaSolicitudes.setItems(listaFiltrada);
 
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() throws Exception {
-                cargarProductosMap();
-                cargarSolicitudes();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
-    
+        cargarProductosMap();
+        cargarSolicitudes();
     }
 
     private void cargarProductosMap() {
@@ -98,7 +87,7 @@ public class consultaSolicitudesProduccionController {
     }
 
     private void cargarSolicitudes() {
-        List<solicitudProduccionModelo> tmp = new ArrayList<>();
+        lista.clear();
         String sql = "SELECT s.id_solicitud, s.fecha_solicitud, s.fecha_produccion, " +
                      "s.prioridad, s.estado, s.id_responsable, " +
                      "ISNULL(e.nombre + ' ' + e.apellido, '') AS responsable, " +
@@ -112,7 +101,7 @@ public class consultaSolicitudesProduccionController {
             while (rs.next()) {
                 Date dSol = rs.getDate("fecha_solicitud");
                 Date dPro = rs.getDate("fecha_produccion");
-                tmp.add(new solicitudProduccionModelo(
+                lista.add(new solicitudProduccionModelo(
                     rs.getInt("id_solicitud"),
                     dSol != null ? dSol.toLocalDate() : null,
                     dPro != null ? dPro.toLocalDate() : null,
@@ -121,8 +110,7 @@ public class consultaSolicitudesProduccionController {
                     rs.getInt("id_responsable"),
                     rs.getString("responsable"),
                     rs.getString("observaciones")));
-        Platform.runLater(() -> lista.setAll(tmp));
-    }
+            }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar solicitudes: " + e.getMessage()).showAndWait();
         }

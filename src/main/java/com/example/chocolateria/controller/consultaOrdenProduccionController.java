@@ -5,14 +5,10 @@ import com.example.chocolateria.modelo.ordenProduccionModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 
 public class consultaOrdenProduccionController {
@@ -76,18 +72,11 @@ public class consultaOrdenProduccionController {
             }));
         tablaOrdenes.setItems(listaFiltrada);
 
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() throws Exception {
-                cargarOrdenes();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
-    
+        cargarOrdenes();
     }
 
     private void cargarOrdenes() {
-        List<ordenProduccionModelo> tmp = new ArrayList<>();
+        lista.clear();
         String sql = "SELECT o.id_orden, o.tipo_orden, o.fecha_inicio, o.fecha_orden, o.fecha_entrega, " +
                      "o.id_responsable, o.estado, o.prioridad, o.categoria, " +
                      "ISNULL(o.materiales,'') AS materiales, ISNULL(o.observaciones,'') AS observaciones, " +
@@ -104,7 +93,7 @@ public class consultaOrdenProduccionController {
                 Date dI = rs.getDate("fecha_inicio");
                 Date dO = rs.getDate("fecha_orden");
                 Date dE = rs.getDate("fecha_entrega");
-                tmp.add(new ordenProduccionModelo(
+                lista.add(new ordenProduccionModelo(
                     rs.getInt("id_orden"),
                     rs.getString("tipo_orden"),
                     dI != null ? dI.toLocalDate() : null,
@@ -118,8 +107,7 @@ public class consultaOrdenProduccionController {
                     rs.getString("materiales"),
                     rs.getString("observaciones"),
                     rs.getString("cliente")));
-        Platform.runLater(() -> lista.setAll(tmp));
-    }
+            }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar ordenes: " + e.getMessage()).showAndWait();
         }
