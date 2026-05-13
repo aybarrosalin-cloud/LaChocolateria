@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -134,18 +134,16 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Listado de Usuarios" />
                             <Region HBox.hgrow="ALWAYS" />
-                            <TextField fx:id="txtBuscarTabla" prefWidth="220" promptText="🔍 Buscar usuario, rol…"
-                                       style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#C5A8E8;" />
-                                       style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#C5A8E8;" />
-                        </HBox>
+
                         <TableView fx:id="tablaUsuarios" prefHeight="460"
-                                   style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS" columnResizePolicy="$TableView.CONSTRAINED_RESIZE_POLICY">
+                                   style="-fx-background-radius:10; -fx-border-radius:10;
+                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colId" prefWidth="55" minWidth="40" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
-                                <TableColumn fx:id="colUsuario" prefWidth="110" minWidth="90" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Usuario" />
-                                <TableColumn fx:id="colRol" prefWidth="90" minWidth="70" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Rol" />
-                                <TableColumn fx:id="colDepartamento" prefWidth="110" minWidth="90" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Departamento" />
-                                <TableColumn fx:id="colEstado" prefWidth="80" minWidth="60" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" />
+                                <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" prefWidth="60" />
+                                <TableColumn fx:id="colUsuario" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Usuario" />
+                                <TableColumn fx:id="colRol" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Rol" />
+                                <TableColumn fx:id="colDepartamento" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Departamento" />
+                                <TableColumn fx:id="colEstado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" prefWidth="80" />
                             </columns>
                         </TableView>
                     </VBox>
@@ -153,5 +151,4 @@
             </VBox>
         </ScrollPane>
     </center>
-
 </BorderPane>

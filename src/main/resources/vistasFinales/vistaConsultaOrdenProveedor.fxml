@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -140,17 +140,17 @@
 
                         <TableView fx:id="tablaOrdenes" prefHeight="460"
                                    style="-fx-background-radius:10; -fx-border-radius:10;
-                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS" columnResizePolicy="$TableView.CONSTRAINED_RESIZE_POLICY">
+                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colId" prefWidth="55" minWidth="40" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
-                                <TableColumn fx:id="colRnc" prefWidth="105" minWidth="85" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="RNC" />
-                                <TableColumn fx:id="colProveedor" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Proveedor" />
-                                <TableColumn fx:id="colFecha" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha" />
-                                <TableColumn fx:id="colPrioridad" prefWidth="80" minWidth="60" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Prioridad" />
-                                <TableColumn fx:id="colCategoria" prefWidth="90" minWidth="70" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Categoría" />
-                                <TableColumn fx:id="colMonto" prefWidth="85" minWidth="65" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Monto" />
-                                <TableColumn fx:id="colEstadoPago" prefWidth="90" minWidth="70" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado Pago" />
-                                <TableColumn fx:id="colProductos" prefWidth="170" minWidth="150" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Productos" />
+                                <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" prefWidth="60" />
+                                <TableColumn fx:id="colRnc" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="RNC" />
+                                <TableColumn fx:id="colProveedor" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Proveedor" />
+                                <TableColumn fx:id="colFecha" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha" />
+                                <TableColumn fx:id="colPrioridad" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Prioridad" />
+                                <TableColumn fx:id="colCategoria" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Categoria" />
+                                <TableColumn fx:id="colMonto" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Monto RD" />
+                                <TableColumn fx:id="colEstadoPago" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado Pago" prefWidth="90" />
+                                <TableColumn fx:id="colProductos" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Productos" />
                             </columns>
                         </TableView>
                     </VBox>
@@ -158,5 +158,4 @@
             </VBox>
         </ScrollPane>
     </center>
-
 </BorderPane>

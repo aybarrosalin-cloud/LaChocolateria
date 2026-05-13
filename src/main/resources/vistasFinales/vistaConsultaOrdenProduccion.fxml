@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -140,18 +140,18 @@
 
                         <TableView fx:id="tablaOrdenes" prefHeight="460"
                                    style="-fx-background-radius:10; -fx-border-radius:10;
-                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS" columnResizePolicy="$TableView.CONSTRAINED_RESIZE_POLICY">
+                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colId" prefWidth="55" minWidth="40" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
-                                <TableColumn fx:id="colTipo" prefWidth="85" minWidth="65" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Tipo" />
-                                <TableColumn fx:id="colCliente" prefWidth="130" minWidth="110" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Cliente" />
-                                <TableColumn fx:id="colFechaOrden" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha Orden" />
-                                <TableColumn fx:id="colFechaInicio" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha Inicio" />
-                                <TableColumn fx:id="colFechaEntrega" prefWidth="105" minWidth="85" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha Entrega" />
-                                <TableColumn fx:id="colResponsable" prefWidth="120" minWidth="100" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Responsable" />
-                                <TableColumn fx:id="colEstado" prefWidth="80" minWidth="60" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" />
-                                <TableColumn fx:id="colPrioridad" prefWidth="80" minWidth="60" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Prioridad" />
-                                <TableColumn fx:id="colCategoria" prefWidth="90" minWidth="70" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Categoría" />
+                                <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" prefWidth="60" />
+                                <TableColumn fx:id="colTipo" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Tipo" />
+                                <TableColumn fx:id="colCliente" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Cliente" />
+                                <TableColumn fx:id="colFechaOrden" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="F. Orden" />
+                                <TableColumn fx:id="colFechaInicio" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="F. Inicio" />
+                                <TableColumn fx:id="colFechaEntrega" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="F. Entrega" />
+                                <TableColumn fx:id="colResponsable" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Responsable" />
+                                <TableColumn fx:id="colEstado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" prefWidth="80" />
+                                <TableColumn fx:id="colPrioridad" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Prioridad" />
+                                <TableColumn fx:id="colCategoria" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Categoria" />
                             </columns>
                         </TableView>
                     </VBox>
@@ -159,5 +159,4 @@
             </VBox>
         </ScrollPane>
     </center>
-
 </BorderPane>

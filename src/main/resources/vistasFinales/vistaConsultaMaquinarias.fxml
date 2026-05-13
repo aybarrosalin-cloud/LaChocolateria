@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -141,16 +141,16 @@
 
                         <TableView fx:id="tablaMaquinarias" prefHeight="460"
                                    style="-fx-background-radius:10; -fx-border-radius:10;
-                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS" columnResizePolicy="$TableView.CONSTRAINED_RESIZE_POLICY">
+                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colId" prefWidth="55" minWidth="40" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
-                                <TableColumn fx:id="colNombre" prefWidth="130" minWidth="110" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Nombre" />
-                                <TableColumn fx:id="colTipo" prefWidth="85" minWidth="65" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Tipo" />
-                                <TableColumn fx:id="colMarca" prefWidth="90" minWidth="70" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Marca" />
-                                <TableColumn fx:id="colSerie" prefWidth="95" minWidth="75" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Serie" />
-                                <TableColumn fx:id="colFecha" prefWidth="100" minWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha" />
-                                <TableColumn fx:id="colEstado" prefWidth="80" minWidth="60" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" />
-                                <TableColumn fx:id="colResponsable" prefWidth="120" minWidth="100" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Responsable" />
+                                <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" prefWidth="60" />
+                                <TableColumn fx:id="colNombre" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Nombre" />
+                                <TableColumn fx:id="colTipo" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Tipo" />
+                                <TableColumn fx:id="colMarca" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Marca" />
+                                <TableColumn fx:id="colSerie" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Serie" />
+                                <TableColumn fx:id="colFecha" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Fecha Compra" />
+                                <TableColumn fx:id="colEstado" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Estado" prefWidth="80" />
+                                <TableColumn fx:id="colResponsable" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Responsable" />
                             </columns>
                         </TableView>
                     </VBox>
@@ -158,5 +158,4 @@
             </VBox>
         </ScrollPane>
     </center>
-
 </BorderPane>

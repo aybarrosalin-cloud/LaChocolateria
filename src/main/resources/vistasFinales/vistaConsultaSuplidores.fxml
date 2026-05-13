@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -141,15 +141,15 @@
 
                         <TableView fx:id="tablaSuplidores" prefHeight="460"
                                    style="-fx-background-radius:10; -fx-border-radius:10;
-                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS" columnResizePolicy="$TableView.CONSTRAINED_RESIZE_POLICY">
+                                          -fx-border-color:#C5A8E8; -fx-background-color:#f3eaf8;" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colId" prefWidth="55" minWidth="40" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" />
-                                <TableColumn fx:id="colNombre" prefWidth="130" minWidth="110" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Nombre" />
-                                <TableColumn fx:id="colApellido" prefWidth="120" minWidth="100" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Apellido" />
-                                <TableColumn fx:id="colRnc" prefWidth="105" minWidth="85" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="RNC" />
-                                <TableColumn fx:id="colTelefono" prefWidth="95" minWidth="75" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Teléfono" />
-                                <TableColumn fx:id="colCorreo" prefWidth="150" minWidth="130" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Correo" />
-                                <TableColumn fx:id="colCiudad" prefWidth="95" minWidth="75" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Ciudad" />
+                                <TableColumn fx:id="colId" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="ID" prefWidth="60" />
+                                <TableColumn fx:id="colNombre" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Nombre" />
+                                <TableColumn fx:id="colApellido" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Apellido" />
+                                <TableColumn fx:id="colRnc" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="RNC" />
+                                <TableColumn fx:id="colTelefono" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Telefono" />
+                                <TableColumn fx:id="colCorreo" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Correo" />
+                                <TableColumn fx:id="colCiudad" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER;" text="Ciudad" />
                             </columns>
                         </TableView>
                     </VBox>
@@ -157,5 +157,4 @@
             </VBox>
         </ScrollPane>
     </center>
-
 </BorderPane>
