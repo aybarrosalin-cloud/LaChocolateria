@@ -36,8 +36,15 @@ public class empleadoController {
         actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
-        cbTipoEmpleado.getItems().addAll("Supervisor", "Empleado", "Maestro Chocolatero");
-        cbRol.getItems().addAll("Administrador", "Usuario", "Supervisor");
+        cbTipoEmpleado.getItems().addAll(
+            "Tiempo Completo", "Medio Tiempo", "Contratista", "Pasante"
+        );
+        cbRol.getItems().addAll(
+            "Administrador", "Gerente General", "Auditor",
+            "Encargado de Finanzas", "Vendedor", "Encargado de Producción",
+            "Operario de Empaque", "Inspector de Calidad", "Encargado de Almacén",
+            "Encargado de Compras", "Encargado de Logística", "Técnico de Mantenimiento"
+        );
 
         generarSiguienteId();
     }
