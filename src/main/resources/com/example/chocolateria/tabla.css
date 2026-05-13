@@ -1,0 +1,16 @@
+.tabla-morada .column-header {
+    -fx-background-color: #48295a;
+    -fx-border-color: transparent;
+}
+.tabla-morada .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER;
+}
+.tabla-morada .column-header-background {
+    -fx-background-color: #48295a;
+}
+.tabla-morada .filler {
+    -fx-background-color: #48295a;
+}
