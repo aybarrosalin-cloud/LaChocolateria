@@ -134,6 +134,9 @@
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Listado de Usuarios" />
                             <Region HBox.hgrow="ALWAYS" />
+                            <TextField fx:id="txtBuscarTabla" prefWidth="220" promptText="Buscar usuario, rol..."
+                                       style="-fx-background-radius:15; -fx-border-radius:15; -fx-border-color:#C5A8E8;" />
+                        </HBox>
 
                         <TableView fx:id="tablaUsuarios" prefHeight="460"
                                    style="-fx-background-radius:10; -fx-border-radius:10;
