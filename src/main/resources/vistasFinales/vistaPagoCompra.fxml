@@ -197,7 +197,7 @@
                             <TextField fx:id="txtMontoAbono" prefHeight="28" prefWidth="130" promptText="Monto abono (RD$)" style="-fx-background-color:white; -fx-text-fill:black;                                               -fx-border-color:#C5A8E8; -fx-border-radius:6;                                               -fx-background-radius:6;" />
                             <ComboBox fx:id="cbMetodoPago" prefHeight="28" prefWidth="150" style="-fx-background-color:white; -fx-border-color:#C5A8E8;                                              -fx-border-radius:6; -fx-background-radius:6;" />
                             <TextField fx:id="txtNumeroReferencia" prefHeight="28" prefWidth="140" promptText="N° referencia" style="-fx-background-color:white; -fx-text-fill:black;                                               -fx-border-color:#C5A8E8; -fx-border-radius:6;                                               -fx-background-radius:6;" />
-                            <Button fx:id="btnAbono" onAction="#registrarAbono" prefHeight="28" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;" text="✔ Registrar abono" />
+                            <Button fx:id="btnAbono" onAction="#registrarAbono" prefHeight="28" prefWidth="140" text="✔ Registrar abono" />
                         </HBox>
 
                         <TableView fx:id="tablaAbonos" prefHeight="180">

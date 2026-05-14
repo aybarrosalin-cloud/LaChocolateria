@@ -376,9 +376,17 @@ public class crearUsuarioController {
         btnLimpiar.setDisable(false);
         btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         boolean actGuardar = (estado != 1);
+        btnGuardar.setDisable(!actGuardar);
+        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
         boolean actEditar = (estado == 1);
+        btnEditar.setDisable(!actEditar);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
         boolean actEliminar = (estado != 0);
+        btnEliminar.setDisable(!actEliminar);
+        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
         boolean actDesha = (estado == 1);
+        btnDeshabilitar.setDisable(!actDesha);
+        btnDeshabilitar.setStyle(actDesha ? "-fx-background-color:#7a5c00; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#c8c8c8; -fx-text-fill:#888; -fx-font-weight:bold; -fx-background-radius:12;");
     }
 
 }
