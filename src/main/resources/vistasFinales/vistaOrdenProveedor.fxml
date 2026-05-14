@@ -174,7 +174,7 @@
                             <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#fnEliminar" prefHeight="30" prefWidth="100" text="Eliminar"><font><Font size="11.0" /></font></Button>
                             <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
                             <Button fx:id="btnLimpiar" mnemonicParsing="false" onAction="#limpiar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
-                            <Button onAction="#irAConsultaOrdenProveedor" prefHeight="30" prefWidth="140" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-cursor:hand; -fx-font-size:11px;" text="📋 Ver Consulta" />
+                            <Button onAction="#irAConsultaOrdenProveedor" prefHeight="30" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-cursor:hand; -fx-font-size:11px;" text="📋 Ver Consulta" />
                         </HBox>
                     </VBox>
 

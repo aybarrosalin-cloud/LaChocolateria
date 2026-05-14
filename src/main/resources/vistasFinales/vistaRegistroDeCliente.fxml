@@ -188,7 +188,7 @@
                             <Button fx:id="btnDeshabilitar" mnemonicParsing="false" onAction="#fnDeshabilitar" prefHeight="30" prefWidth="115" text="Deshabilitar">
                                 <font><Font size="11.0" /></font>
                             </Button>
-                            <Button onAction="#irAConsultaClientes" prefHeight="36" prefWidth="140" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-cursor:hand; -fx-font-size:11px;" text="Ver Consulta" />
+                            <Button onAction="#irAConsultaClientes" prefHeight="36" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-cursor:hand; -fx-font-size:11px;" text="Ver Consulta" />
                         </HBox>
                     </VBox>
 
