@@ -5,10 +5,14 @@ import com.example.chocolateria.modelo.reclamoModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 public class consultaReclamosController {
@@ -66,11 +70,18 @@ public class consultaReclamosController {
             }));
         tablaReclamos.setItems(listaFiltrada);
 
-        cargarReclamos();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarReclamos();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarReclamos() {
-        lista.clear();
+        List<reclamoModelo> tmp = new ArrayList<>();
         String sql = "SELECT r.id_reclamo, r.id_cliente, c.nombre + ' ' + c.apellido AS cliente, " +
                      "r.id_orden, r.tipo_reclamo, r.estado, r.prioridad, r.descripcion, r.fecha_reclamo " +
                      "FROM tbl_reclamo r " +
@@ -81,7 +92,7 @@ public class consultaReclamosController {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 Date d = rs.getDate("fecha_reclamo");
-                lista.add(new reclamoModelo(
+                tmp.add(new reclamoModelo(
                     rs.getInt("id_reclamo"),
                     rs.getInt("id_cliente"),
                     rs.getString("cliente") != null ? rs.getString("cliente") : "",
@@ -91,7 +102,8 @@ public class consultaReclamosController {
                     rs.getString("prioridad") != null ? rs.getString("prioridad") : "",
                     rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
                     d != null ? d.toLocalDate() : null));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar reclamos: " + e.getMessage()).showAndWait();
         }

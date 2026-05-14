@@ -5,11 +5,15 @@ import com.example.chocolateria.modelo.deudaCompraModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 public class consultaPagosCompraController {
@@ -71,11 +75,19 @@ public class consultaPagosCompraController {
             );
         }
         tablaDeudas.setItems(filtrada);
-        cargarDeudas();
+
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarDeudas();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarDeudas() {
-        lista.clear();
+        List<deudaCompraModelo> tmp = new ArrayList<>();
         String sql = "SELECT id_deuda, numero_orden, id_recepcion, rnc_suplidor, fecha_deuda, " +
                      "monto_total, monto_pagado, monto_pendiente, estado, " +
                      "ISNULL(observaciones,'') AS observaciones " +
@@ -85,7 +97,7 @@ public class consultaPagosCompraController {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 Date d = rs.getDate("fecha_deuda");
-                lista.add(new deudaCompraModelo(
+                tmp.add(new deudaCompraModelo(
                     rs.getInt("id_deuda"),
                     rs.getString("numero_orden")    != null ? rs.getString("numero_orden")  : "",
                     rs.getInt("id_recepcion"),
@@ -97,7 +109,8 @@ public class consultaPagosCompraController {
                     rs.getString("estado"),
                     rs.getString("observaciones")
                 ));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar historial de pagos: " + e.getMessage()).showAndWait();
         }

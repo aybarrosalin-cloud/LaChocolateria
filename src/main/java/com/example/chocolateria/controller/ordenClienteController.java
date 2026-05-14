@@ -8,8 +8,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 import javafx.beans.property.SimpleDoubleProperty;
@@ -74,7 +78,6 @@ public class ordenClienteController {
         cbEstado.setItems(FXCollections.observableArrayList(
             "Pendiente", "En proceso", "Completada", "Cancelada", "Entregada"));
 
-        cargarClientes();
 
         colDetCodigo.setCellValueFactory(d   -> d.getValue().codigoProperty());
         colDetProducto.setCellValueFactory(d -> d.getValue().productoProperty());
@@ -85,20 +88,30 @@ public class ordenClienteController {
         tablaDetalle.setItems(listaDetalle);
         listaDetalle.addListener((javafx.collections.ListChangeListener<ordenDetalleModelo>) c -> recalcularTotal());
 
+
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() {
+            cargarClientes();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
         generarSiguienteId();
     }
 
     private void cargarClientes() {
+        List<String> tmp = new ArrayList<>();
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(
                  "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente ORDER BY nombre")) {
-            while (rs.next()) {
-                cmbCliente.getItems().add(rs.getString("nombre_completo"));
-            }
+            while (rs.next()) tmp.add(rs.getString("nombre_completo"));
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
+            String msg = e.getMessage();
+            Platform.runLater(() -> mostrarAlerta(Alert.AlertType.ERROR, "Error", msg));
+            return;
         }
+        Platform.runLater(() -> cmbCliente.getItems().addAll(tmp));
     }
 
     @FXML
