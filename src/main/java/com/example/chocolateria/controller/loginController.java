@@ -60,7 +60,7 @@ public class loginController {
                 return false;
             }
 
-            // si la clave no tiene hash todavía, se guarda cifrada pa la próxima
+            // si la clave aun no tiene hash, la ciframos para la proxima
             if (!CifradoUtil.esHashSeguro(storedPassword)) {
                 String nuevoHash = CifradoUtil.hashPassword(password);
                 try (PreparedStatement upd = conn.prepareStatement(

@@ -14,10 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Dialogo de verificacion de clave de administrador.
- * La verificacion corre en hilo de fondo para no congelar la UI.
- */
+// dialogo de verificacion de clave de administrador
+// corre en hilo de fondo para no congelar la ui
 public class VerificarClave {
 
     public static boolean pedirClaveAdmin() {
@@ -27,18 +25,18 @@ public class VerificarClave {
         dialog.setTitle("Acceso a Consulta");
         dialog.setHeaderText(null);
 
-        // ── PasswordField ─────────────────────────────────────────────────────
+        // campo de contrasena
         PasswordField pfClave = new PasswordField();
         pfClave.setPromptText("Contraseña de administrador");
         pfClave.setStyle("-fx-background-color:white; -fx-border-color:#9b59b6; "
                 + "-fx-border-radius:6; -fx-background-radius:6; -fx-font-size:12px;");
         pfClave.setPrefHeight(34);
 
-        // ── Mensaje de error / estado ─────────────────────────────────────────
+        // mensaje de error o estado
         Label lblError = new Label(" ");
         lblError.setStyle("-fx-text-fill:#a83c5b; -fx-font-size:11px; -fx-font-weight:bold;");
 
-        // ── Contenido ────────────────────────────────────────────────────────
+        // contenido
         VBox contenido = new VBox(8);
         contenido.setPadding(new Insets(16, 24, 8, 24));
         contenido.setAlignment(Pos.CENTER_LEFT);
@@ -63,7 +61,7 @@ public class VerificarClave {
         dialog.getDialogPane().setContent(contenido);
         dialog.getDialogPane().setStyle("-fx-background-color:#f3eaf8;");
 
-        // ── Botones ───────────────────────────────────────────────────────────
+        // botones
         javafx.scene.Node nodeOk     = dialog.getDialogPane().lookupButton(ButtonType.OK);
         javafx.scene.Node nodeCancel = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
         if (nodeOk     != null) nodeOk.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:8;");
@@ -72,21 +70,21 @@ public class VerificarClave {
         if (nodeOk instanceof Button) {
             Button okBtn = (Button) nodeOk;
 
-            // Deshabilitar OK mientras el campo esté vacío
+            // deshabilitar ok mientras este vacio
             okBtn.disableProperty().unbind();
             okBtn.disableProperty().bind(pfClave.textProperty().isEmpty());
 
-            // Enter en el PasswordField dispara OK
+            // enter dispara ok
             pfClave.setOnAction(e -> okBtn.fire());
 
-            // ── Interceptar clic en OK: verificar en hilo de fondo ────────────
+            // interceptar ok: verificar en hilo de fondo
             okBtn.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
-                event.consume(); // Evitar que el dialog se cierre solo
+                event.consume(); // evitar que se cierre solo
 
                 String clave = pfClave.getText().trim();
                 if (clave.isBlank()) return;
 
-                // Deshabilitar controles mientras verifica
+                // deshabilitar mientras verifica
                 okBtn.disableProperty().unbind();
                 okBtn.setDisable(true);
                 pfClave.setDisable(true);
@@ -100,7 +98,7 @@ public class VerificarClave {
                             verificado.set(true);
                             dialog.close(); // Cierra el dialog con éxito
                         } else {
-                            // Mostrar error y permitir reintento
+                            // mostrar error y permitir reintentar
                             pfClave.setDisable(false);
                             pfClave.clear();
                             pfClave.requestFocus();
@@ -119,7 +117,7 @@ public class VerificarClave {
         return verificado.get();
     }
 
-    // ── Verificacion en BD (corre en hilo de fondo) ───────────────────────────
+    // verificacion en bd (en hilo de fondo)
 
     private static boolean verificarEnDB(String clave) {
         conexion con = new conexion();

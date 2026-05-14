@@ -114,7 +114,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta formulario -->
+                    <!-- formulario -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12;                                  -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                  -fx-padding: 14 18 14 18;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="ORDEN DE PRODUCCIÓN">
@@ -122,7 +122,7 @@
                         </Label>
                         <Separator />
 
-                        <!-- Tipo de orden -->
+                        <!-- tipo de orden -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="120" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Orden" />
@@ -135,7 +135,7 @@
                                     <RadioButton fx:id="rbProduccion" style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Producción propia" />
                                 </HBox>
                             </VBox>
-                            <!-- Cliente (visible solo si es por pedido) -->
+                            <!-- cliente (solo si es por pedido) -->
                             <VBox fx:id="vboxCliente" minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Cliente" />
                                 <HBox spacing="6">
@@ -146,7 +146,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila: Fecha Orden · Fecha Inicio · Fecha Entrega -->
+                        <!-- fila: fecha orden, fecha inicio, fecha entrega -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Fecha de orden" />
@@ -162,7 +162,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila: Responsable · Estado · Prioridad -->
+                        <!-- fila: responsable, estado, prioridad -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Responsable" />
@@ -182,7 +182,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila: Categorías (checkboxes) · Materiales · Observaciones -->
+                        <!-- fila: categorias, materiales, observaciones -->
                         <HBox alignment="TOP_LEFT" spacing="14">
                             <VBox prefWidth="200" spacing="4">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Categoría" />

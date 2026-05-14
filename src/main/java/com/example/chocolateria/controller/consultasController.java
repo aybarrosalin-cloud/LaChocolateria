@@ -38,7 +38,7 @@ public class consultasController {
         aplicarPermisosConsultas();
     }
 
-    // ── Aplicar permisos a los botones de consulta ────────────────────────────
+    // permisos de los botones de consulta
     private void aplicarPermisosConsultas() {
         String rol = SesionManager.getInstancia().getRol();
 
@@ -50,7 +50,7 @@ public class consultasController {
         configurarBoton(btnPedidos,     rol, PEDIDOS);
         configurarBoton(btnMantenimiento, rol, MANTENIMIENTO);
 
-        // Ingresos y Mas Vendidos: acceso libre, con clave o bloqueado
+        // ingresos y mas vendidos: libre, con clave o bloqueado
         configurarBotonFinanciero(btnIngresos,    rol, INGRESOS);
         configurarBotonFinanciero(btnMasVendidos, rol, MAS_VENDIDOS);
     }
@@ -65,11 +65,11 @@ public class consultasController {
     private void configurarBotonFinanciero(Button btn, String rol, PermisoRol.Consulta consulta) {
         if (btn == null) return;
         if (PermisoRol.esRolFinanciero(rol)) {
-            // acceso libre
+            // libre
             btn.setVisible(true);
             btn.setManaged(true);
         } else if (PermisoRol.requiereClaveFinanciera(rol)) {
-            // visible pero marcado con candado
+            // visible pero con candado
             btn.setVisible(true);
             btn.setManaged(true);
             btn.setText(btn.getText() + "  🔐");
@@ -80,14 +80,14 @@ public class consultasController {
         }
     }
 
-    // ── Validar acceso financiero con contrasena gerencial ────────────────────
+    // validar acceso financiero con clave gerencial
     private boolean validarClaveGerencial() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Acceso restringido");
         dialog.setHeaderText("Esta consulta requiere autorización gerencial.");
         dialog.setContentText("Ingresa la contraseña de un Gerente o Administrador:");
 
-        // Ocultar el texto ingresado
+        // ocultar el texto
         PasswordField campoOculto = new PasswordField();
         campoOculto.setPromptText("Contraseña gerencial");
         dialog.getDialogPane().setContent(campoOculto);
@@ -98,7 +98,7 @@ public class consultasController {
         String claveIngresada = campoOculto.getText();
         if (claveIngresada == null || claveIngresada.isBlank()) return false;
 
-        // Verificar contra la BD: cualquier Administrador o Gerente activo
+        // verificar contra la bd: cualquier admin o gerente activo
         String sql = "SELECT COUNT(*) FROM tbl_usuario " +
                      "WHERE password=? AND estado='Activo' " +
                      "AND rol IN ('Administrador','Gerente General')";
@@ -115,7 +115,7 @@ public class consultasController {
         return false;
     }
 
-    // ── Consultas ─────────────────────────────────────────────────────────────
+    // consultas
 
     @FXML private void consultarClientes() {
         sqlActual    = "SELECT id_cliente AS ID, nombre AS Nombre, apellido AS Apellido, " +
@@ -242,7 +242,7 @@ public class consultasController {
         ejecutarConsulta(sqlActual, tituloActual);
     }
 
-    // ── Busqueda y motor generico ──────────────────────────────────────────────
+    // busqueda y motor generico
     @FXML private void ejecutarBusqueda() {
         String filtro = txtBuscarGeneral.getText().trim();
         if (sqlActual.isEmpty()) { mostrarAlerta("Selecciona una consulta primero."); return; }
@@ -331,7 +331,7 @@ public class consultasController {
                     }
                 }
 
-                // Actualiza la tabla desde el hilo de JavaFX
+                // actualizar tabla desde el hilo de javafx
                 Platform.runLater(() -> {
                     tablaResultados.getColumns().setAll(columnas);
                     tablaResultados.setItems(data);
@@ -353,7 +353,7 @@ public class consultasController {
         hilo.start();
     }
 
-    // ── Resaltar boton activo ─────────────────────────────────────────────────
+    // resaltar boton activo
     private void resaltarBoton(Button activo) {
         String normal  = "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;";
         String verde   = "-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;";
@@ -378,7 +378,7 @@ public class consultasController {
         a.setTitle("Aviso"); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
     }
 
-    // ── Navegacion ────────────────────────────────────────────────────────────
+    // navegacion
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -386,8 +386,8 @@ public class consultasController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }

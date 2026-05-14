@@ -10,8 +10,8 @@ import java.io.InputStream;
 public class CargarPerfil {
 
     private static final String CARPETA_CLASSPATH = "/com/example/chocolateria/";
-    // perfil.png = avatar genérico (sin usuario específico)
-    // perfilr.png = foto de Rosalin Aybar (solo se carga si la DB lo indica)
+    // perfil.png = avatar generico
+    // perfilr.png = foto de rosalin aybar (solo si la bd lo indica)
     private static final String FOTO_DEFAULT       = CARPETA_CLASSPATH + "perfil.png";
 
     public static void aplicar(Label lblUsuario, ImageView imgPerfil) {
@@ -24,7 +24,7 @@ public class CargarPerfil {
             Image img = (ruta != null && !ruta.isBlank()) ? cargarImagen(ruta) : cargarDefault();
             if (img != null) imgPerfil.setImage(img);
         } catch (Exception ignored) {
-            // En Scene Builder no hay sesion activa; se ignora para no romper la vista
+            // en scene builder no hay sesion, se ignora
         }
     }
 
@@ -42,6 +42,6 @@ public class CargarPerfil {
 
     private static Image cargarDefault() {
         InputStream is = CargarPerfil.class.getResourceAsStream(FOTO_DEFAULT);
-        return is != null ? new Image(is) : null; // null si no existe (p.ej. en Scene Builder)
+        return is != null ? new Image(is) : null; // null si no existe (scene builder)
     }
 }

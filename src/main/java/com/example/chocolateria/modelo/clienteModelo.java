@@ -14,7 +14,7 @@ public class clienteModelo {
     private final SimpleStringProperty  direccion;
     private final SimpleStringProperty  estado;
 
-    // ── Constructor ────────────────────────────────────────────────────────────
+    // constructor
     public clienteModelo(int idCliente, String nombre, String apellido, String cedula,
                          String email, String telefono, String direccion, String estado) {
         this.idCliente  = new SimpleIntegerProperty(idCliente);
@@ -27,7 +27,7 @@ public class clienteModelo {
         this.estado     = new SimpleStringProperty(estado);
     }
 
-    // ── Getters ────────────────────────────────────────────────────────────────
+    // getters
     public int    getIdCliente()  { return idCliente.get();  }
     public String getNombre()     { return nombre.get();     }
     public String getApellido()   { return apellido.get();   }
@@ -37,7 +37,7 @@ public class clienteModelo {
     public String getDireccion()  { return direccion.get();  }
     public String getEstado()     { return estado.get();     }
 
-    // ── Setters ────────────────────────────────────────────────────────────────
+    // setters
     public void setNombre(String v)    { nombre.set(v);    }
     public void setApellido(String v)  { apellido.set(v);  }
     public void setCedula(String v)    { cedula.set(v);    }
@@ -46,7 +46,7 @@ public class clienteModelo {
     public void setDireccion(String v) { direccion.set(v); }
     public void setEstado(String v)    { estado.set(v);    }
 
-    // ── Properties (para TableView binding) ───────────────────────────────────
+    // properties (para tableview binding)
     public SimpleIntegerProperty idClienteProperty()  { return idCliente;  }
     public SimpleStringProperty  nombreProperty()     { return nombre;     }
     public SimpleStringProperty  apellidoProperty()   { return apellido;   }

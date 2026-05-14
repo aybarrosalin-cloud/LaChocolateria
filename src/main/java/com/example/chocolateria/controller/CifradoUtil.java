@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-// sha256 + salt para las claves, las viejas se migran solas cuando el usuario entra
+// sha256 con salt, las viejas se migran solas al entrar
 public class CifradoUtil {
 
     private static final String SEPARADOR = ":SHA256:";
@@ -33,7 +33,7 @@ public class CifradoUtil {
     public static boolean verificarPassword(String passwordIngresado, String storedValue) {
         if (passwordIngresado == null || storedValue == null) return false;
 
-        // Si no tiene el separador es contraseña vieja sin hash, se compara directo
+        // si no tiene separador es clave vieja, comparacion directa
         if (!storedValue.contains(SEPARADOR)) {
             return passwordIngresado.equals(storedValue);
         }
@@ -47,7 +47,7 @@ public class CifradoUtil {
             md.update(salt);
             byte[] hashIngresado = md.digest(passwordIngresado.getBytes("UTF-8"));
 
-            // isEqual va byte por byte, así tarda lo mismo si falla al principio o al final
+            // isEqual compara byte por byte, mismo tiempo siempre
             return MessageDigest.isEqual(hashIngresado, hashAlmacenado);
 
         } catch (Exception e) {
@@ -55,7 +55,7 @@ public class CifradoUtil {
         }
     }
 
-    // si tiene el separador es hash, si no es texto plano todavía
+    // si tiene separador es hash, si no es texto plano
     public static boolean esHashSeguro(String storedValue) {
         return storedValue != null && storedValue.contains(SEPARADOR);
     }

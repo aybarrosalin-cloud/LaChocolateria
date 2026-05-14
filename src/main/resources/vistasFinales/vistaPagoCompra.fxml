@@ -116,7 +116,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta registro deuda -->
+                    <!-- registro deuda -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12;                                  -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                  -fx-padding: 14 18 14 18;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="REGISTRO DE PAGO POR COMPRA">
@@ -124,7 +124,7 @@
                         </Label>
                         <Separator />
 
-                        <!-- Fila 1: ID Deuda · ID Recepcion · RNC · Fecha -->
+                        <!-- fila 1: id deuda, id recepcion, rnc, fecha -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="110" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Deuda" />
@@ -148,7 +148,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 2: Monto Total · Pagado · Pendiente · Estado -->
+                        <!-- fila 2: monto total, pagado, pendiente, estado -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Monto total (RD$)" />
@@ -168,7 +168,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 3: Observaciones -->
+                        <!-- fila 3: observaciones -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Observaciones" />
@@ -187,7 +187,7 @@
                         </HBox>
                     </VBox>
 
-                    <!-- Tarjeta abono -->
+                    <!-- abono -->
                     <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12;                                  -fx-border-color:#C5A8E8; -fx-border-radius:12;                                  -fx-padding:12 16 12 16;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Registrar Abono" />
@@ -213,7 +213,7 @@
 
                     </VBox>
 
-                    <!-- Tabla de deudas -->
+                    <!-- tabla de deudas -->
                     <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:12 16 12 16; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);" VBox.vgrow="ALWAYS">
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Deudas registradas" />

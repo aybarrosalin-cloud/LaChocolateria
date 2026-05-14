@@ -16,10 +16,9 @@ import static com.example.chocolateria.controller.PermisoRol.Pantalla.*;
 
 public class inicioController {
 
-    // ── Sidebar: paneles colapsables ──────────────────────────────────────────
+    // sidebar: paneles colapsables
     @FXML private TitledPane paneVentas;
     @FXML private TitledPane paneProduccion;
-    @FXML private TitledPane paneInventario;
     @FXML private TitledPane paneCompras;
     @FXML private TitledPane paneRegistros;
     @FXML private TitledPane paneReportes;
@@ -27,15 +26,13 @@ public class inicioController {
     @FXML private TitledPane paneConsultas;
     @FXML private TitledPane paneAdministracion;
 
-    // ── Sidebar: botones del menu ─────────────────────────────────────────────
+    // sidebar: botones del menu
     @FXML private Button btnOrdenCliente;
     @FXML private Button btnPagoVenta;
     @FXML private Button btnGestionEnvios;
     @FXML private Button btnGestionReclamos;
     @FXML private Button btnSolicitudProduccion;
     @FXML private Button btnOrdenProduccion;
-    @FXML private Button btnSalidaMateriales;
-    @FXML private Button btnSalidaProductos;
     @FXML private Button btnOrdenProveedor;
     @FXML private Button btnPagoCompra;
     @FXML private Button btnRegProducto;
@@ -45,7 +42,7 @@ public class inicioController {
     @FXML private Button btnRegMaquinaria;
     @FXML private Button btnMantenimientoMaquinaria;
 
-    // ── Cards del dashboard ───────────────────────────────────────────────────
+    // cards del dashboard
     @FXML private Button cardVentas;
     @FXML private Button cardProduccion;
     @FXML private Button cardInventario;
@@ -53,7 +50,7 @@ public class inicioController {
     @FXML private Button cardRegistros;
     @FXML private Button cardReportes;
 
-    // ── Header ────────────────────────────────────────────────────────────────
+    // header
     @FXML private Label     lblFecha;
     @FXML private Label     lblUsuario;
     @FXML private ImageView imgFotoPerfil;
@@ -66,11 +63,11 @@ public class inicioController {
         aplicarPermisos();
     }
 
-    // ── Logica de permisos ────────────────────────────────────────────────────
+    // logica de permisos
     private void aplicarPermisos() {
         String rol = SesionManager.getInstancia().getRol();
 
-        // Ventas
+        // ventas
         ocultar(btnOrdenCliente,    !PermisoRol.tieneAcceso(rol, ORDEN_CLIENTE));
         ocultar(btnPagoVenta,       !PermisoRol.tieneAcceso(rol, PAGO_VENTA));
         ocultar(btnGestionEnvios,   !PermisoRol.tieneAcceso(rol, GESTION_ENVIOS));
@@ -78,23 +75,17 @@ public class inicioController {
         ocultarSiVacio(paneVentas,
             btnOrdenCliente, btnPagoVenta, btnGestionEnvios, btnGestionReclamos);
 
-        // Produccion
+        // produccion
         ocultar(btnSolicitudProduccion, !PermisoRol.tieneAcceso(rol, SOLICITUD_PRODUCCION));
         ocultar(btnOrdenProduccion,     !PermisoRol.tieneAcceso(rol, ORDEN_PRODUCCION));
         ocultarSiVacio(paneProduccion, btnSolicitudProduccion, btnOrdenProduccion);
 
-        // Inventario
-        boolean verRecepcion = PermisoRol.tieneAcceso(rol, RECEPCION);
-        ocultar(btnSalidaMateriales, !verRecepcion);
-        ocultar(btnSalidaProductos,  !verRecepcion);
-        ocultarSiVacio(paneInventario, btnSalidaMateriales, btnSalidaProductos);
-
-        // Compras
+        // compras
         ocultar(btnOrdenProveedor, !PermisoRol.tieneAcceso(rol, ORDEN_PROVEEDOR));
         ocultar(btnPagoCompra,     !PermisoRol.tieneAcceso(rol, PAGO_COMPRA));
         ocultarSiVacio(paneCompras, btnOrdenProveedor, btnPagoCompra);
 
-        // Registros
+        // registros
         ocultar(btnRegProducto,   !PermisoRol.tieneAcceso(rol, REG_PRODUCTO));
         ocultar(btnRegEmpleado,   !PermisoRol.tieneAcceso(rol, REG_EMPLEADO));
         ocultar(btnRegCliente,    !PermisoRol.tieneAcceso(rol, REG_CLIENTE));
@@ -103,20 +94,20 @@ public class inicioController {
         ocultarSiVacio(paneRegistros,
             btnRegProducto, btnRegEmpleado, btnRegCliente, btnRegSuplidor, btnRegMaquinaria);
 
-        // Reportes (todos van a consultas, se muestran si tiene acceso a consultas)
+        // reportes (van a consultas, se muestran si tiene acceso)
         ocultar(paneReportes, !PermisoRol.tieneAcceso(rol, CONSULTAS));
 
-        // Mantenimiento
+        // mantenimiento
         ocultar(btnMantenimientoMaquinaria, !PermisoRol.tieneAcceso(rol, MANTENIMIENTO));
         ocultarSiVacio(paneMantenimiento, btnMantenimientoMaquinaria);
 
-        // Consultas
+        // consultas
         ocultar(paneConsultas, !PermisoRol.tieneAcceso(rol, CONSULTAS));
 
-        // Administracion
+        // administracion
         ocultar(paneAdministracion, !PermisoRol.tieneAcceso(rol, GESTION_USUARIOS));
 
-        // Cards del dashboard
+        // cards del dashboard
         ocultar(cardVentas,    !tieneAlguno(rol, ORDEN_CLIENTE, PAGO_VENTA, GESTION_ENVIOS, GESTION_RECLAMOS));
         ocultar(cardProduccion,!tieneAlguno(rol, SOLICITUD_PRODUCCION, ORDEN_PRODUCCION));
         ocultar(cardInventario,!PermisoRol.tieneAcceso(rol, RECEPCION));
@@ -125,7 +116,7 @@ public class inicioController {
         ocultar(cardReportes,  !PermisoRol.tieneAcceso(rol, CONSULTAS));
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // helpers
 
     private void ocultar(Node nodo, boolean condicion) {
         if (nodo == null) return;
@@ -133,7 +124,7 @@ public class inicioController {
         nodo.setManaged(!condicion);
     }
 
-    /** Oculta el TitledPane si ninguno de sus botones es visible */
+    // oculta el pane si no hay botones visibles
     private void ocultarSiVacio(TitledPane pane, Button... botones) {
         if (pane == null) return;
         boolean alguno = false;
@@ -150,7 +141,7 @@ public class inicioController {
         return false;
     }
 
-    // ── Navegacion ────────────────────────────────────────────────────────────
+    // navegacion
     @FXML private void irAInicio(ActionEvent e) {}
 
     @FXML private void irAOrdenCliente(ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
@@ -161,8 +152,8 @@ public class inicioController {
     @FXML private void irASolicitudProduccion(ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
 
-    @FXML private void irASalidaMateriales(ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
 
     @FXML private void irAOrdenProveedor(ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }

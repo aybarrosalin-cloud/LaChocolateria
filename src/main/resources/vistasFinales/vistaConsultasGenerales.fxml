@@ -108,7 +108,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Titulo + buscador general -->
+                    <!-- titulo + buscador -->
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:16px; -fx-font-weight:bold;" text="CONSULTAS GENERALES" />
                         <Region HBox.hgrow="ALWAYS" />
@@ -117,7 +117,7 @@
                         <Button onAction="#limpiarBusqueda" prefHeight="28" prefWidth="80" style="-fx-background-color:#48295a; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="Limpiar" />
                     </HBox>
 
-                    <!-- Botones de consulta -->
+                    <!-- botones de consulta -->
                     <VBox spacing="6" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:14 18 14 18; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Selecciona una consulta" />
                         <Separator />
@@ -134,7 +134,7 @@
                         </HBox>
                     </VBox>
 
-                    <!-- Resultados -->
+                    <!-- resultados -->
                     <VBox spacing="6" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:14 18 14 18; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);" VBox.vgrow="ALWAYS">
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label fx:id="lblConsultaActiva" style="-fx-text-fill:#3B1A5C; -fx-font-size:13px; -fx-font-weight:bold;" text="Selecciona una consulta para comenzar" />

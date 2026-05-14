@@ -34,7 +34,7 @@ public class reportesController {
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
     }
 
-    // ── Reportes ──────────────────────────────────────────────────────────────
+    // reportes
 
     @FXML
     private void reporteFacturacion() {
@@ -113,7 +113,7 @@ public class reportesController {
         ejecutarConsulta(sqlActual, tituloActual);
     }
 
-    // ── Busqueda ──────────────────────────────────────────────────────────────
+    // busqueda
 
     @FXML
     private void ejecutarBusqueda() {
@@ -150,7 +150,7 @@ public class reportesController {
         if (!sqlActual.isEmpty()) ejecutarConsulta(sqlActual, tituloActual);
     }
 
-    // ── Motor generico ─────────────────────────────────────────────────────────
+    // motor generico
 
     private void ejecutarConsulta(String sql, String titulo) {
         tablaResultados.getColumns().clear();
@@ -193,7 +193,7 @@ public class reportesController {
         }
     }
 
-    // ── Resaltar boton activo ─────────────────────────────────────────────────
+    // resaltar boton activo
 
     private void resaltarBoton(Button activo) {
         String normal  = "-fx-background-color:#6d3c87; -fx-text-fill:white; " +
@@ -213,7 +213,7 @@ public class reportesController {
         a.setTitle("Aviso"); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
     }
 
-    // ── Navegacion ────────────────────────────────────────────────────────────
+    // navegacion
 
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
@@ -222,8 +222,8 @@ public class reportesController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }

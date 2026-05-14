@@ -1,25 +1,24 @@
 package com.example.chocolateria.controller;
 
 import com.example.chocolateria.baseDeDatos.conexion;
-import com.example.chocolateria.modelo.recepcionDetalleModelo;
-import com.example.chocolateria.modelo.recepcionModelo;
+import com.example.chocolateria.modelo.salidaProductosDetalleModelo;
+import com.example.chocolateria.modelo.salidaProductosModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.concurrent.Task;
 
 import java.sql.*;
 import java.time.LocalDate;
 
-public class recepcionController {
+public class salidaProductosController {
 
-    @FXML private TextField  txtIdRecepcion;
-    @FXML private TextField  txtNumeroOrden;
-    @FXML private DatePicker dpFechaRecepcion;
-    @FXML private TextField  txtRncProveedor;
-    @FXML private TextField  txtMontoTotal;
+    @FXML private TextField  txtIdSalida;
+    @FXML private TextField  txtIdOrdenCliente;
+    @FXML private DatePicker dpFechaSalida;
+    @FXML private TextField  txtCliente;
+    @FXML private TextField  txtResponsable;
     @FXML private TextArea   txtObservaciones;
 
     @FXML private TextField txtCodigoDetalle;
@@ -27,21 +26,20 @@ public class recepcionController {
     @FXML private TextField txtCantidadDetalle;
     @FXML private TextField txtPrecioDetalle;
 
-    @FXML private TableView<recepcionDetalleModelo>           tablaDetalle;
-    @FXML private TableColumn<recepcionDetalleModelo, String> colDetCodigo;
-    @FXML private TableColumn<recepcionDetalleModelo, String> colDetProducto;
-    @FXML private TableColumn<recepcionDetalleModelo, Number> colDetCantidad;
-    @FXML private TableColumn<recepcionDetalleModelo, Number> colDetPrecio;
-    @FXML private TableColumn<recepcionDetalleModelo, Number> colDetMonto;
+    @FXML private TableView<salidaProductosDetalleModelo>           tablaDetalle;
+    @FXML private TableColumn<salidaProductosDetalleModelo, String> colDetCodigo;
+    @FXML private TableColumn<salidaProductosDetalleModelo, String> colDetProducto;
+    @FXML private TableColumn<salidaProductosDetalleModelo, Number> colDetCantidad;
+    @FXML private TableColumn<salidaProductosDetalleModelo, Number> colDetPrecio;
+    @FXML private TableColumn<salidaProductosDetalleModelo, Number> colDetTotal;
 
-    private final ObservableList<recepcionDetalleModelo> listaDetalle = FXCollections.observableArrayList();
+    private final ObservableList<salidaProductosDetalleModelo> listaDetalle = FXCollections.observableArrayList();
     private final conexion con = new conexion();
     private String productoSeleccionado = "";
-    private recepcionModelo recepcionCargada = null;
+    private salidaProductosModelo salidaCargada = null;
 
     @FXML private Label lblUsuario;
     @FXML private ImageView imgFotoPerfil;
-
 
     @FXML private Button btnBuscar, btnLimpiar;
     @FXML private Button btnGuardar;
@@ -52,20 +50,13 @@ public class recepcionController {
         actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
 
-        colDetCodigo.setCellValueFactory(d    -> d.getValue().codigoProductoProperty());
-        colDetProducto.setCellValueFactory(d  -> d.getValue().productoProperty());
-        colDetCantidad.setCellValueFactory(d  -> d.getValue().cantidadRecibidaProperty());
-        colDetPrecio.setCellValueFactory(d    -> d.getValue().precioUnitarioProperty());
-        colDetMonto.setCellValueFactory(d     -> d.getValue().montoProductoProperty());
+        colDetCodigo.setCellValueFactory(d   -> d.getValue().codigoProductoProperty());
+        colDetProducto.setCellValueFactory(d -> d.getValue().productoProperty());
+        colDetCantidad.setCellValueFactory(d -> d.getValue().cantidadProperty());
+        colDetPrecio.setCellValueFactory(d   -> d.getValue().precioUnitarioProperty());
+        colDetTotal.setCellValueFactory(d    -> d.getValue().totalProperty());
         tablaDetalle.setItems(listaDetalle);
 
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-                return null;
-            }
-        };
-        new Thread(cargar).start();
         generarSiguienteId();
     }
 
@@ -73,7 +64,7 @@ public class recepcionController {
     private void buscarProductoDetalle() {
         String codigo = txtCodigoDetalle.getText().trim();
         if (codigo.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe el código del producto.");
+            mostrarAlerta(Alert.AlertType.WARNING, "atencion", "escribe el codigo del producto.");
             return;
         }
         try (Connection conn = con.establecerConexion();
@@ -90,50 +81,49 @@ public class recepcionController {
                 }
             } else {
                 productoSeleccionado = "";
-                lblNombreProducto.setText("No encontrado");
-                mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
-                        "No existe un producto con el código " + codigo + ".");
+                lblNombreProducto.setText("no encontrado");
+                mostrarAlerta(Alert.AlertType.WARNING, "no encontrado",
+                        "no existe un producto con el codigo " + codigo + ".");
             }
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
+            mostrarAlerta(Alert.AlertType.ERROR, "error", e.getMessage());
         }
     }
 
     @FXML
     private void cargarDesdeOrden() {
-        String numOrden = txtNumeroOrden.getText().trim();
-        if (numOrden.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe el número de orden.");
+        String idTexto = txtIdOrdenCliente.getText().trim();
+        if (idTexto.isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "atencion", "escribe el id de la orden de cliente.");
             return;
         }
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(
-                     "SELECT rnc_proveedor, producto, monto_total FROM tbl_orden_proveedor WHERE codigo = ?")) {
-            ps.setString(1, numOrden);
+                     "SELECT oc.id_orden, oc.cliente FROM tbl_orden_cliente oc WHERE oc.id_orden = ?")) {
+            ps.setString(1, idTexto);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                txtRncProveedor.setText(rs.getString("rnc_proveedor"));
-                txtMontoTotal.setText(String.format("%.2f", rs.getDouble("monto_total")));
-                dpFechaRecepcion.setValue(LocalDate.now());
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Orden cargada",
-                        "Datos cargados desde la orden. Agrega los productos recibidos en el detalle.");
+                txtCliente.setText(rs.getString("cliente") != null ? rs.getString("cliente") : "");
+                dpFechaSalida.setValue(LocalDate.now());
+                mostrarAlerta(Alert.AlertType.INFORMATION, "orden cargada",
+                        "orden #" + idTexto + " encontrada. agrega los productos en el detalle.");
             } else {
-                mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
-                        "No se encontró ninguna orden con ese número.");
+                mostrarAlerta(Alert.AlertType.WARNING, "no encontrado",
+                        "no se encontro ninguna orden con ese id.");
             }
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
+            mostrarAlerta(Alert.AlertType.ERROR, "error", e.getMessage());
         }
     }
 
     @FXML
     private void agregarProducto() {
         if (productoSeleccionado.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un producto por código antes de agregar.");
+            mostrarAlerta(Alert.AlertType.WARNING, "atencion", "busca un producto por codigo antes de agregar.");
             return;
         }
         if (txtCantidadDetalle.getText().trim().isEmpty() || txtPrecioDetalle.getText().trim().isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Ingresa cantidad y precio.");
+            mostrarAlerta(Alert.AlertType.WARNING, "atencion", "ingresa cantidad y precio.");
             return;
         }
         try {
@@ -141,22 +131,21 @@ public class recepcionController {
             double precio   = Double.parseDouble(txtPrecioDetalle.getText().trim());
 
             if (cantidad <= 0 || precio <= 0) {
-                mostrarAlerta(Alert.AlertType.WARNING, "Valores inválidos", "Cantidad y precio deben ser mayores a 0.");
+                mostrarAlerta(Alert.AlertType.WARNING, "valores invalidos", "cantidad y precio deben ser mayores a 0.");
                 return;
             }
 
             String codigo = txtCodigoDetalle.getText().trim();
-            double monto  = cantidad * precio;
+            double total  = cantidad * precio;
 
-            for (recepcionDetalleModelo d : listaDetalle) {
+            for (salidaProductosDetalleModelo d : listaDetalle) {
                 if (d.getCodigoProducto().equals(codigo)) {
-                    mostrarAlerta(Alert.AlertType.WARNING, "Duplicado",
-                            "Este producto ya está en la lista.");
+                    mostrarAlerta(Alert.AlertType.WARNING, "duplicado", "este producto ya esta en la lista.");
                     return;
                 }
             }
 
-            listaDetalle.add(new recepcionDetalleModelo(0, 0, codigo, productoSeleccionado, cantidad, precio, monto));
+            listaDetalle.add(new salidaProductosDetalleModelo(0, 0, codigo, productoSeleccionado, cantidad, precio, total));
             recalcularTotal();
 
             txtCodigoDetalle.clear();
@@ -166,121 +155,120 @@ public class recepcionController {
             productoSeleccionado = "";
 
         } catch (NumberFormatException ex) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Valores inválidos", "Cantidad debe ser entero y precio número válido.");
+            mostrarAlerta(Alert.AlertType.WARNING, "valores invalidos", "cantidad debe ser entero y precio numero valido.");
         }
     }
 
     @FXML
     private void quitarProducto() {
-        recepcionDetalleModelo sel = tablaDetalle.getSelectionModel().getSelectedItem();
+        salidaProductosDetalleModelo sel = tablaDetalle.getSelectionModel().getSelectedItem();
         if (sel == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona un producto para quitarlo.");
+            mostrarAlerta(Alert.AlertType.WARNING, "atencion", "selecciona un producto para quitarlo.");
             return;
         }
         listaDetalle.remove(sel);
         recalcularTotal();
     }
 
+    private Label lblTotal; // not used, but kept for pattern
+
+    private void recalcularTotal() {
+        // no total field in this screen, but kept for consistency
+    }
+
     @FXML
-    private void guardarRecepcion() {
+    private void guardarSalida() {
         if (estadoActual == 1) {
-            mostrarAlerta(Alert.AlertType.INFORMATION, "Acción no disponible", "Ya hay un registro cargado. Usa 'Editar' para modificarlo o 'Limpiar' para crear uno nuevo.");
+            mostrarAlerta(Alert.AlertType.INFORMATION, "accion no disponible",
+                    "ya hay un registro cargado. usa 'editar' para modificarlo o 'limpiar' para crear uno nuevo.");
             return;
         }
         if (!validarCampos()) return;
 
-        double montoTotal = listaDetalle.stream().mapToDouble(recepcionDetalleModelo::getMontoProducto).sum();
+        double totalGeneral = listaDetalle.stream().mapToDouble(salidaProductosDetalleModelo::getTotal).sum();
 
-        String sqlMaestro = "INSERT INTO tbl_recepcion (rnc_proveedor, numero_orden, fecha_recepcion, monto_total, observaciones, codigo_orden) " +
+        String sqlMaestro = "INSERT INTO tbl_salida_productos (id_orden_cliente, cliente, fecha_salida, responsable, observaciones, total) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sqlMaestro, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, txtRncProveedor.getText().trim());
-            ps.setString(2, txtNumeroOrden.getText().trim());
-            ps.setDate(3, Date.valueOf(dpFechaRecepcion.getValue()));
-            ps.setDouble(4, montoTotal);
+            String idOrd = txtIdOrdenCliente.getText().trim();
+            ps.setInt(1, idOrd.isEmpty() ? 0 : Integer.parseInt(idOrd));
+            ps.setString(2, txtCliente.getText().trim());
+            ps.setDate(3, Date.valueOf(dpFechaSalida.getValue()));
+            ps.setString(4, txtResponsable.getText().trim());
             ps.setString(5, txtObservaciones.getText().trim());
-            ps.setString(6, txtNumeroOrden.getText().trim());
+            ps.setDouble(6, totalGeneral);
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
-            if (!rs.next()) throw new SQLException("No se obtuvo el ID de la recepción.");
+            if (!rs.next()) throw new SQLException("no se obtuvo el id de la salida.");
             int nuevoId = rs.getInt(1);
 
-            String sqlDetalle = "INSERT INTO tbl_recepcion_detalle (id_recepcion, codigo_producto, producto, cantidad_recibida, precio_unitario, monto_producto) VALUES (?, ?, ?, ?, ?, ?)";
-            String sqlEntrada = "INSERT INTO tbl_entrada_de_almacen (id_producto, cantidad, fecha_entrada) VALUES (?, ?, ?)";
-            String sqlStock   = "UPDATE tbl_producto SET stock = stock + ? WHERE codigo = ?";
+            String sqlDetalle = "INSERT INTO tbl_salida_productos_detalle (id_salida, codigo_producto, producto, cantidad, precio_unitario, total) VALUES (?, ?, ?, ?, ?, ?)";
+            String sqlStock   = "UPDATE tbl_producto SET stock = stock - ? WHERE codigo = ?";
 
             try (PreparedStatement psDet   = conn.prepareStatement(sqlDetalle);
-                 PreparedStatement psEnt   = conn.prepareStatement(sqlEntrada);
                  PreparedStatement psStock = conn.prepareStatement(sqlStock)) {
 
-                for (recepcionDetalleModelo det : listaDetalle) {
+                for (salidaProductosDetalleModelo det : listaDetalle) {
                     psDet.setInt(1, nuevoId);
                     psDet.setString(2, det.getCodigoProducto());
                     psDet.setString(3, det.getProducto());
-                    psDet.setInt(4, det.getCantidadRecibida());
+                    psDet.setInt(4, det.getCantidad());
                     psDet.setDouble(5, det.getPrecioUnitario());
-                    psDet.setDouble(6, det.getMontoProducto());
+                    psDet.setDouble(6, det.getTotal());
                     psDet.addBatch();
 
-                    psEnt.setString(1, det.getCodigoProducto());
-                    psEnt.setInt(2, det.getCantidadRecibida());
-                    psEnt.setTimestamp(3, Timestamp.valueOf(dpFechaRecepcion.getValue().atStartOfDay()));
-                    psEnt.addBatch();
-
-                    psStock.setInt(1, det.getCantidadRecibida());
+                    psStock.setInt(1, det.getCantidad());
                     psStock.setString(2, det.getCodigoProducto());
                     psStock.addBatch();
                 }
 
                 psDet.executeBatch();
-                psEnt.executeBatch();
                 psStock.executeBatch();
             }
 
-            mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito",
-                    "Recepción guardada. Stock actualizado para " + listaDetalle.size() + " producto(s).");
+            mostrarAlerta(Alert.AlertType.INFORMATION, "exito",
+                    "salida guardada. stock actualizado para " + listaDetalle.size() + " producto(s).");
             limpiarCampos();
 
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al guardar", e.getMessage());
+            mostrarAlerta(Alert.AlertType.ERROR, "error al guardar", e.getMessage());
         }
     }
 
     @FXML
     private void fnEliminar() {
-        if (recepcionCargada == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una recepción por ID antes de eliminar.");
+        if (salidaCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "atencion", "busca una salida por id antes de eliminar.");
             return;
         }
-
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmar eliminación");
+        confirm.setTitle("confirmar eliminacion");
         confirm.setHeaderText(null);
-        confirm.setContentText("¿Eliminar la recepción #" + recepcionCargada.getIdRecepcion() + "?\nNota: el stock no se revertirá automáticamente.");
-
+        confirm.setContentText("¿eliminar la salida #" + salidaCargada.getIdSalida() +
+                "?\nnota: el stock no se revertira automaticamente.");
         confirm.showAndWait().ifPresent(resp -> {
             if (resp == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion()) {
                     try (PreparedStatement ps = conn.prepareStatement(
-                            "DELETE FROM tbl_recepcion_detalle WHERE id_recepcion=?")) {
-                        ps.setInt(1, recepcionCargada.getIdRecepcion());
+                            "DELETE FROM tbl_salida_productos_detalle WHERE id_salida=?")) {
+                        ps.setInt(1, salidaCargada.getIdSalida());
                         ps.executeUpdate();
                     }
                     try (PreparedStatement ps = conn.prepareStatement(
-                            "DELETE FROM tbl_recepcion WHERE id_recepcion=?")) {
-                        ps.setInt(1, recepcionCargada.getIdRecepcion());
+                            "DELETE FROM tbl_salida_productos WHERE id_salida=?")) {
+                        ps.setInt(1, salidaCargada.getIdSalida());
                         ps.executeUpdate();
                     }
                     listaDetalle.clear();
-                    recepcionCargada = null;
-                    mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Recepción eliminada correctamente.");
+                    salidaCargada = null;
+                    mostrarAlerta(Alert.AlertType.INFORMATION, "exito", "salida eliminada correctamente.");
                     limpiarCampos();
                 } catch (Exception e) {
-                    mostrarAlerta(Alert.AlertType.ERROR, "Error al eliminar", e.getMessage());
+                    mostrarAlerta(Alert.AlertType.ERROR, "error al eliminar", e.getMessage());
                 }
             }
         });
@@ -289,54 +277,54 @@ public class recepcionController {
     @FXML
     private void fnBuscar() {
         actualizarBotones(0);
-        String idTexto = txtIdRecepcion.getText().trim();
+        String idTexto = txtIdSalida.getText().trim();
         if (idTexto.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe un ID para buscar.");
+            mostrarAlerta(Alert.AlertType.WARNING, "atencion", "escribe un id para buscar.");
             return;
         }
         int idBuscar;
         try {
             idBuscar = Integer.parseInt(idTexto);
         } catch (NumberFormatException ex) {
-            mostrarAlerta(Alert.AlertType.WARNING, "ID inválido", "El ID debe ser un número entero.");
+            mostrarAlerta(Alert.AlertType.WARNING, "id invalido", "el id debe ser un numero entero.");
             return;
         }
 
-        String sql = "SELECT id_recepcion, rnc_proveedor, numero_orden, fecha_recepcion, monto_total, observaciones " +
-                "FROM tbl_recepcion WHERE id_recepcion=?";
+        String sql = "SELECT id_salida, id_orden_cliente, cliente, fecha_salida, responsable, observaciones " +
+                "FROM tbl_salida_productos WHERE id_salida=?";
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idBuscar);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                Date d = rs.getDate("fecha_recepcion");
-                recepcionCargada = new recepcionModelo(
-                        rs.getInt("id_recepcion"),
-                        rs.getString("rnc_proveedor"),
-                        rs.getString("numero_orden"),
-                        0,
+                Date d = rs.getDate("fecha_salida");
+                salidaCargada = new salidaProductosModelo(
+                        rs.getInt("id_salida"),
+                        rs.getInt("id_orden_cliente"),
+                        rs.getString("cliente") != null ? rs.getString("cliente") : "",
                         d != null ? d.toLocalDate() : null,
-                        rs.getDouble("monto_total"),
+                        rs.getString("responsable") != null ? rs.getString("responsable") : "",
                         rs.getString("observaciones") != null ? rs.getString("observaciones") : "");
-                cargarEnFormulario(recepcionCargada);
+                cargarEnFormulario(salidaCargada);
                 cargarDetalle(idBuscar);
             } else {
                 actualizarBotones(1);
-                mostrarAlerta(Alert.AlertType.WARNING, "No encontrado", "No existe una recepción con el ID " + idBuscar + ".");
+                mostrarAlerta(Alert.AlertType.WARNING, "no encontrado",
+                        "no existe una salida con el id " + idBuscar + ".");
             }
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error de búsqueda", e.getMessage());
+            mostrarAlerta(Alert.AlertType.ERROR, "error de busqueda", e.getMessage());
         }
     }
 
     @FXML
     private void limpiarCampos() {
         actualizarBotones(0);
-        txtIdRecepcion.clear();
-        txtNumeroOrden.clear();
-        dpFechaRecepcion.setValue(null);
-        txtRncProveedor.clear();
-        txtMontoTotal.clear();
+        txtIdSalida.clear();
+        txtIdOrdenCliente.clear();
+        dpFechaSalida.setValue(null);
+        txtCliente.clear();
+        txtResponsable.clear();
         txtObservaciones.clear();
         txtCodigoDetalle.clear();
         lblNombreProducto.setText("");
@@ -344,70 +332,61 @@ public class recepcionController {
         txtPrecioDetalle.clear();
         productoSeleccionado = "";
         listaDetalle.clear();
-        recepcionCargada = null;
+        salidaCargada = null;
         generarSiguienteId();
     }
 
-    private void cargarDetalle(int idRecepcion) {
+    private void cargarDetalle(int idSalida) {
         listaDetalle.clear();
-        String sql = "SELECT id_detalle, id_recepcion, codigo_producto, producto, cantidad_recibida, precio_unitario, monto_producto " +
-                "FROM tbl_recepcion_detalle WHERE id_recepcion = ?";
+        String sql = "SELECT id_detalle, id_salida, codigo_producto, producto, cantidad, precio_unitario, total " +
+                "FROM tbl_salida_productos_detalle WHERE id_salida = ?";
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idRecepcion);
+            ps.setInt(1, idSalida);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                listaDetalle.add(new recepcionDetalleModelo(
+                listaDetalle.add(new salidaProductosDetalleModelo(
                         rs.getInt("id_detalle"),
-                        rs.getInt("id_recepcion"),
+                        rs.getInt("id_salida"),
                         rs.getString("codigo_producto") != null ? rs.getString("codigo_producto") : "",
                         rs.getString("producto"),
-                        rs.getInt("cantidad_recibida"),
+                        rs.getInt("cantidad"),
                         rs.getDouble("precio_unitario"),
-                        rs.getDouble("monto_producto")
+                        rs.getDouble("total")
                 ));
             }
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar detalle", e.getMessage());
+            mostrarAlerta(Alert.AlertType.ERROR, "error al cargar detalle", e.getMessage());
         }
     }
 
-    private void recalcularTotal() {
-        double total = listaDetalle.stream().mapToDouble(recepcionDetalleModelo::getMontoProducto).sum();
-        txtMontoTotal.setText(String.format("%.2f", total));
-    }
-
-    private void cargarEnFormulario(recepcionModelo r) {
-        txtIdRecepcion.setText(String.valueOf(r.getIdRecepcion()));
-        txtNumeroOrden.setText(r.getNumeroOrden());
-        dpFechaRecepcion.setValue(r.getFechaRecepcion());
-        txtRncProveedor.setText(r.getRncProveedor());
-        txtMontoTotal.setText(String.format("%.2f", r.getMontoTotal()));
-        txtObservaciones.setText(r.getObservaciones());
+    private void cargarEnFormulario(salidaProductosModelo s) {
+        txtIdSalida.setText(String.valueOf(s.getIdSalida()));
+        txtIdOrdenCliente.setText(String.valueOf(s.getIdOrdenCliente()));
+        dpFechaSalida.setValue(s.getFechaSalida());
+        txtCliente.setText(s.getCliente());
+        txtResponsable.setText(s.getResponsable());
+        txtObservaciones.setText(s.getObservaciones());
     }
 
     private void generarSiguienteId() {
-        String sql = "SELECT ISNULL(MAX(id_recepcion), 0) + 1 AS siguiente FROM tbl_recepcion";
+        String sql = "SELECT ISNULL(MAX(id_salida), 0) + 1 AS siguiente FROM tbl_salida_productos";
         try (Connection conn = con.establecerConexion();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            if (rs.next()) txtIdRecepcion.setText(String.valueOf(rs.getInt("siguiente")));
+            if (rs.next()) txtIdSalida.setText(String.valueOf(rs.getInt("siguiente")));
         } catch (Exception e) {
-            txtIdRecepcion.setText("1");
+            txtIdSalida.setText("1");
         }
     }
 
     private boolean validarCampos() {
-        if (dpFechaRecepcion.getValue() == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Fecha requerida", "Selecciona la fecha de recepción.");
-            return false;
-        }
-        if (txtRncProveedor.getText().trim().isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "RNC requerido", "Ingresa el RNC del proveedor.");
+        if (dpFechaSalida.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "fecha requerida", "selecciona la fecha de salida.");
             return false;
         }
         if (listaDetalle.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Productos requeridos", "Agrega al menos un producto antes de guardar.");
+            mostrarAlerta(Alert.AlertType.WARNING, "productos requeridos", "agrega al menos un producto antes de guardar.");
             return false;
         }
         return true;
@@ -422,7 +401,6 @@ public class recepcionController {
     }
 
     // navegacion
-    @FXML private void irAConsultaRecepcion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaConsultaRecepcion.fxml", e); }
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -450,10 +428,8 @@ public class recepcionController {
     private int estadoActual = 0;
 
     // estado de botones
-    // estado: 0=libre/nuevo 1=encontrado 2=editando
     private void actualizarBotones(int estado) {
         this.estadoActual = estado;
-        // estado: 0=libre/nuevo 1=encontrado 2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);
@@ -465,5 +441,4 @@ public class recepcionController {
         btnEliminar.setDisable(false);
         btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#f5d0da; -fx-text-fill:#c47a8a; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
     }
-
 }

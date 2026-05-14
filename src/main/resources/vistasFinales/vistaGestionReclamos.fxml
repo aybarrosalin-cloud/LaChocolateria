@@ -113,7 +113,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta formulario -->
+                    <!-- formulario -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #C5A8E8; -fx-border-radius: 12; -fx-padding: 14 18 14 18; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="GESTION DE RECLAMOS">
@@ -121,7 +121,7 @@
                         </Label>
                         <Separator />
 
-                        <!-- Fila 1: ID · Cliente · Tipo reclamo · Estado -->
+                        <!-- fila 1: id, cliente, tipo reclamo, estado -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="100" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Reclamo" />
@@ -141,7 +141,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 2: Orden relacionada · Descripcion · Prioridad (radiobuttons) -->
+                        <!-- fila 2: orden relacionada, descripcion, prioridad -->
                         <HBox alignment="TOP_LEFT" spacing="14">
 
                             <VBox minHeight="52" prefHeight="116.0" prefWidth="162.0" spacing="3" HBox.hgrow="ALWAYS">
@@ -155,7 +155,7 @@
                                 <TextArea fx:id="txtDescripcion" prefHeight="80" style="-fx-background-color:white; -fx-text-fill:black; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
                             </VBox>
 
-                            <!-- Prioridad RadioButtons -->
+                            <!-- prioridad -->
                             <VBox prefWidth="160" spacing="6" style="-fx-background-color:#f8f3fc; -fx-background-radius:8; -fx-border-color:#C5A8E8; -fx-border-radius:8; -fx-padding:10 12 10 12;">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Prioridad" />
                                 <Separator />

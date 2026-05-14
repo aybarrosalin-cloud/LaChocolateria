@@ -39,7 +39,7 @@ public class envioController {
     private final conexion con = new conexion();
     private final Map<String, Integer> mapaClientes = new HashMap<>();
 
-    // Mapa provincias -> municipios RD
+    // provincias con sus municipios de rd
     private static final Map<String, String[]> PROVINCIAS = new LinkedHashMap<>();
     static {
         PROVINCIAS.put("Azua", new String[]{"Azua","Las Charcas","Las Yayas de Viajama","Padre Las Casas","Peralta","Sabana Yegua","Pueblo Viejo","Tábara Arriba","Villarpando","Guayabal","Estebanía"});
@@ -328,7 +328,7 @@ public class envioController {
         Alert a = new Alert(tipo); a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
     }
 
-    // -- Navegacion --
+    // navegacion
     private String sqlReporte() {
         return "SELECT e.id_envio AS ID, " +
                "ISNULL(o.cliente,'') AS Cliente, " +
@@ -347,7 +347,7 @@ public class envioController {
     }
     private String tituloReporte() { return "Reporte de Delivery y Entrega"; }
 
-    // ── Generar Reporte ───────────────────────────────────────────────────────
+    // generar reporte
 
     @FXML
     private void generarReporte() {
@@ -403,8 +403,8 @@ public class envioController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }
@@ -424,11 +424,11 @@ public class envioController {
 
     private int estadoActual = 0;
 
-    // ── Estado de botones ─────────────────────────────────────────────
-    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    // estado de botones
+    // 0=nuevo 1=viendo 2=editando
     private void actualizarBotones(int estado) {
         this.estadoActual = estado;
-        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        // 0=nuevo 1=viendo 2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);

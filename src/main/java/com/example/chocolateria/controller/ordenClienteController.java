@@ -29,7 +29,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 public class ordenClienteController {
 
-    // Formulario
+    // formulario
     @FXML private TextField        txtCodigo;
     @FXML private ComboBox<String> cmbCliente;
     @FXML private DatePicker       dpFecha;
@@ -38,13 +38,13 @@ public class ordenClienteController {
     @FXML private ChoiceBox<String> cbEstado;
     @FXML private TextArea         txtObservaciones;
 
-    // Agregar producto al detalle
+    // agregar producto al detalle
     @FXML private TextField txtIdProducto;
     @FXML private TextField txtNombreProducto;
     @FXML private TextField txtCantidad;
     @FXML private TextField txtPrecio;
 
-    // Tabla detalle (productos de la orden en curso)
+    // tabla detalle (productos de la orden actual)
     @FXML private TableView<ordenDetalleModelo>               tablaDetalle;
     @FXML private TableColumn<ordenDetalleModelo, String>     colDetCodigo;
     @FXML private TableColumn<ordenDetalleModelo, String>     colDetProducto;
@@ -506,7 +506,7 @@ public class ordenClienteController {
         String idOrden   = txtCodigo.getText().trim();
         double total     = listaDetalle.stream().mapToDouble(d -> d.getCantidad() * d.getPrecio()).sum();
 
-        // ── Encabezado ──────────────────────────────────────────────────────────
+        // encabezado
         VBox root = new VBox(14);
         root.setPadding(new Insets(24, 30, 24, 30));
         root.setStyle("-fx-background-color:#f9f5ff;");
@@ -519,7 +519,7 @@ public class ordenClienteController {
 
         javafx.scene.control.Separator sep1 = new javafx.scene.control.Separator();
 
-        // ── Datos de la orden ────────────────────────────────────────────────────
+        // datos de la orden
         javafx.scene.layout.GridPane grid = new javafx.scene.layout.GridPane();
         grid.setHgap(18);
         grid.setVgap(6);
@@ -540,7 +540,7 @@ public class ordenClienteController {
             grid.add(val, 1, i);
         }
 
-        // ── Tabla de productos ───────────────────────────────────────────────────
+        // tabla de productos
         TableView<ordenDetalleModelo> tabla = new TableView<>();
         tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tabla.setPrefHeight(200);
@@ -565,7 +565,7 @@ public class ordenClienteController {
         tabla.getColumns().addAll(cCod, cProd, cCant, cPrec, cSub);
         tabla.setItems(listaDetalle);
 
-        // ── Total ────────────────────────────────────────────────────────────────
+        // total
         HBox hTotal = new HBox(10);
         hTotal.setAlignment(Pos.CENTER_RIGHT);
         Label lblTituloTotal = new Label("TOTAL:");
@@ -576,7 +576,7 @@ public class ordenClienteController {
                 "-fx-border-color:#C5A8E8; -fx-border-radius:8;");
         hTotal.getChildren().addAll(lblTituloTotal, lblValorTotal);
 
-        // ── Nota ─────────────────────────────────────────────────────────────────
+        // nota
         Label nota = new Label("Esta cotización es válida por 30 días desde la fecha de registro.");
         nota.setStyle("-fx-font-size:10px; -fx-text-fill:#888; -fx-font-style:italic;");
 
@@ -590,7 +590,7 @@ public class ordenClienteController {
         stage.show();
     }
 
-    // -- Navegacion --
+    // navegacion
     @FXML private void irAConsultaOrdenCliente(javafx.event.ActionEvent e)  { Navegacion.irA("/vistasFinales/vistaConsultaOrdenCliente.fxml", e); }
     private String sqlReporte() {
         return "SELECT o.id_orden AS ID, " +
@@ -605,7 +605,7 @@ public class ordenClienteController {
     }
     private String tituloReporte() { return "Reporte de Pedidos"; }
 
-    // ── Generar Reporte ───────────────────────────────────────────────────────
+    // generar reporte
 
     @FXML
     private void generarReporte() {
@@ -661,8 +661,8 @@ public class ordenClienteController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }

@@ -17,7 +17,7 @@ public class EmailService {
     private static final String SMTP_HOST    = "smtp.gmail.com";
     private static final int    SMTP_PORT    = 587;
 
-    // Mapeo de tipo de reclamo departamento responsable
+    // mapeo de tipo de reclamo a departamento
     public static String departamentoPorTipo(String tipoReclamo) {
         if (tipoReclamo == null) return "Administración";
         return switch (tipoReclamo) {
@@ -56,7 +56,7 @@ public class EmailService {
         };
     }
 
-    // Busca el email del encargado del departamento responsable en tbl_usuario
+    // busca el email del encargado en tbl_usuario
     private static String emailEncargado(String rol) {
         String sql = "SELECT TOP 1 email FROM tbl_usuario WHERE rol = ? AND estado = 'Activo' AND email IS NOT NULL AND email <> ''";
         try (Connection c = new conexion().establecerConexion();
@@ -122,16 +122,16 @@ public class EmailService {
             "Ingresa al sistema para gestionar este reclamo.</p>" +
             "</div></div>";
 
-        // Enviar siempre al admin
+        // enviar siempre al admin
         enviarEnHiloSegundo(ADMIN_EMAIL, asunto, cuerpo);
-        // Enviar tambien al encargado del departamento si tiene email registrado
+        // enviar tambien al encargado si tiene email
         String emailDept = emailEncargado(rol);
         if (emailDept != null && !emailDept.equalsIgnoreCase(ADMIN_EMAIL)) {
             enviarEnHiloSegundo(emailDept, asunto, cuerpo);
         }
     }
 
-    // Sobrecarga para compatibilidad hacia atras
+    // sobrecarga para compatibilidad hacia atras
     public static void notificarNuevoReclamo(int idReclamo, String cliente,
                                              String tipo, String prioridad,
                                              String descripcion) {

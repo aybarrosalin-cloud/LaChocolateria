@@ -32,7 +32,7 @@ public class Conexion {
         return connection;
     }
 
-    // INSERT CON DATOS
+    // insert con datos
     public void insertarCliente(String nombre, String apellido, String email, String telefono) {
 
         String sql = "INSERT INTO tbl_cliente (nombre, apellido, email, telefono) VALUES (?,?,?,?)";

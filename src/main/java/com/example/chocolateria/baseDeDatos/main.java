@@ -4,7 +4,7 @@ public class main {
     public static void main(String[] args) {
         conexion objectoconexion = new conexion();
 
-        //probando la conexión
+        // probando la conexion
         objectoconexion.establecerConexion();
     }
 }

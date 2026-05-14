@@ -115,7 +115,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta formulario -->
+                    <!-- formulario -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12;                                              -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                              -fx-padding: 14 18 14 18;                                              -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="REGISTRO DE MAQUINARIA">
@@ -123,7 +123,7 @@
                         </Label>
                         <Separator />
 
-                        <!-- Fila 1: ID · Nombre · Tipo · Marca/Modelo -->
+                        <!-- fila 1: id, nombre, tipo, marca/modelo -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="110" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Maquinaria" />
@@ -143,7 +143,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 2: N° Serie · Fecha adquisición · Estado · Responsable -->
+                        <!-- fila 2: n serie, fecha adquisicion, estado, responsable -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Número de serie" />

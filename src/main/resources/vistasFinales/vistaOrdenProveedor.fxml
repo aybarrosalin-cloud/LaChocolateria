@@ -106,7 +106,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta formulario -->
+                    <!-- formulario -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #C5A8E8; -fx-border-radius: 12; -fx-padding: 14 18 14 18; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="ORDEN AL PROVEEDOR">
@@ -114,7 +114,7 @@
                         </Label>
                         <Separator />
 
-                        <!-- Fila 1: ID · RNC Proveedor · Fecha requerida · Prioridad · Estado pago -->
+                        <!-- fila 1: id, rnc proveedor, fecha requerida, prioridad, estado pago -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="100" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Orden" />
@@ -138,7 +138,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 2: Categoria checkboxes · Descripcion · Monto total -->
+                        <!-- fila 2: categoria checkboxes, descripcion, monto total -->
                         <HBox alignment="TOP_LEFT" spacing="14">
 
                             <VBox prefWidth="210" spacing="4" style="-fx-background-color:#f8f3fc; -fx-background-radius:8; -fx-border-color:#C5A8E8; -fx-border-radius:8; -fx-padding:10 12 10 12;">
@@ -178,7 +178,7 @@
                         </HBox>
                     </VBox>
 
-                    <!-- Tarjeta agregar producto -->
+                    <!-- agregar producto -->
                     <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12; -fx-border-color:#C5A8E8; -fx-border-radius:12; -fx-padding:12 16 12 16; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Productos de la orden" />

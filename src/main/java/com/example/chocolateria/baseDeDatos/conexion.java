@@ -20,7 +20,7 @@ public class conexion {
             connection = DriverManager.getConnection(cadena, usuario, contrase);
 
 
-            // imprime el error
+            // muestra el error
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "error en la conexion a la bd" + e.toString());
         }

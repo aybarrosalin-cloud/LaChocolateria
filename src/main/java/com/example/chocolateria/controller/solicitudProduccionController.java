@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class solicitudProduccionController {
 
-    // ── Datos generales ───────────────────────────────────────────────────────
+    // datos generales
     @FXML private TextField        txtIdSolicitud;
     @FXML private DatePicker       dpFechaSolicitud;
     @FXML private DatePicker       dpFechaProduccion;
@@ -31,7 +31,7 @@ public class solicitudProduccionController {
     @FXML private TextArea         txtObservaciones;
     @FXML private TextField        txtBuscarTabla;
 
-    // ── Detalle productos ─────────────────────────────────────────────────────
+    // detalle productos
     @FXML private TextField txtCodigoDetalle;
     @FXML private Label     lblProductoDetalle;
     @FXML private TextField txtCantidadDetalle;
@@ -41,7 +41,7 @@ public class solicitudProduccionController {
     @FXML private TableColumn<solicitudDetalleModelo, String>     colDetProducto;
     @FXML private TableColumn<solicitudDetalleModelo, Number>     colDetCantidad;
 
-    // ── Historial solicitudes ─────────────────────────────────────────────────
+    // historial solicitudes
     @FXML private TableView<solicitudProduccionModelo>                  tablaSolicitudes;
     @FXML private TableColumn<solicitudProduccionModelo, Number>        colId;
     @FXML private TableColumn<solicitudProduccionModelo, LocalDate>     colFechaSolicitud;
@@ -54,7 +54,7 @@ public class solicitudProduccionController {
     private final ObservableList<solicitudProduccionModelo> lista        = FXCollections.observableArrayList();
     private final ObservableList<solicitudDetalleModelo>    listaDetalle = FXCollections.observableArrayList();
     private final conexion con = new conexion();
-    // Cache de resúmenes de productos para evitar N+1 queries al renderizar la tabla
+    // cache de productos para evitar n+1 queries al renderizar
     private final Map<Integer, String> cacheProductos = new HashMap<>();
 
     private int    idResponsableSeleccionado = 0;
@@ -78,7 +78,7 @@ public class solicitudProduccionController {
         cbPrioridad.setItems(FXCollections.observableArrayList("Alta", "Media", "Baja"));
         cbEstado.setItems(FXCollections.observableArrayList("Pendiente", "En proceso", "Completada", "Cancelada"));
 
-        // Columnas historial (solo si la tabla existe en esta vista)
+        // columnas historial (solo si existe la tabla)
         if (tablaSolicitudes != null) {
             colId.setCellValueFactory(d              -> d.getValue().idProperty());
             colFechaSolicitud.setCellValueFactory(d  -> d.getValue().fechaSolicitudProperty());
@@ -86,18 +86,18 @@ public class solicitudProduccionController {
             colResponsable.setCellValueFactory(d     -> d.getValue().responsableProperty());
             colPrioridad.setCellValueFactory(d       -> d.getValue().prioridadProperty());
             colEstado.setCellValueFactory(d          -> d.getValue().estadoProperty());
-            // Usa el cache para no abrir una conexión nueva por cada fila renderizada
+            // usa el cache para no abrir conexion por cada fila
             colProductos.setCellValueFactory(d       -> new SimpleStringProperty(
                     cacheProductos.getOrDefault(d.getValue().getId(), "")));
         }
 
-        // Columnas detalle
+        // columnas detalle
         colDetCodigo.setCellValueFactory(d    -> d.getValue().codigoProductoProperty());
         colDetProducto.setCellValueFactory(d  -> d.getValue().productoProperty());
         colDetCantidad.setCellValueFactory(d  -> d.getValue().cantidadProperty());
         tablaDetalle.setItems(listaDetalle);
 
-        // Color por estado y filtro en historial (solo si existe)
+        // color por estado y filtro en historial (solo si existe)
         if (tablaSolicitudes != null) {
             tablaSolicitudes.setRowFactory(tv -> new TableRow<>() {
                 @Override
@@ -138,7 +138,7 @@ public class solicitudProduccionController {
             );
         }
 
-        // Carga los datos en un hilo secundario para no bloquear la interfaz
+        // carga los datos en un hilo secundario para no bloquear
         Task<Void> cargar = new Task<>() {
             @Override protected Void call() {
                 cargarSolicitudes();
@@ -149,7 +149,7 @@ public class solicitudProduccionController {
         generarSiguienteId();
     }
 
-    // ── Buscar responsable por ID ─────────────────────────────────────────────
+    // buscar responsable por id
     @FXML
     private void buscarResponsable() {
         String idTexto = txtIdResponsable.getText().trim();
@@ -179,7 +179,7 @@ public class solicitudProduccionController {
         }
     }
 
-    // ── Buscar producto para el detalle ───────────────────────────────────────
+    // buscar producto para el detalle
     @FXML
     private void buscarProductoDetalle() {
         String codigo = txtCodigoDetalle.getText().trim();
@@ -204,7 +204,7 @@ public class solicitudProduccionController {
         }
     }
 
-    // ── Agregar producto al detalle temporal ──────────────────────────────────
+    // agregar producto al detalle temporal
     @FXML
     private void agregarProducto() {
         if (productoDetalleSeleccionado.isEmpty()) {
@@ -223,7 +223,7 @@ public class solicitudProduccionController {
             }
             String codigo = txtCodigoDetalle.getText().trim();
 
-            // Verificar si ya existe ese producto en el detalle
+            // ver si ya existe el producto en el detalle
             for (solicitudDetalleModelo d : listaDetalle) {
                 if (d.getCodigoProducto().equals(codigo)) {
                     mostrarAlerta(Alert.AlertType.WARNING, "Duplicado",
@@ -245,7 +245,7 @@ public class solicitudProduccionController {
         }
     }
 
-    // ── Quitar producto seleccionado del detalle ──────────────────────────────
+    // quitar producto seleccionado del detalle
     @FXML
     private void quitarProducto() {
         solicitudDetalleModelo sel = tablaDetalle.getSelectionModel().getSelectedItem();
@@ -256,7 +256,7 @@ public class solicitudProduccionController {
         listaDetalle.remove(sel);
     }
 
-    // ── Guardar solicitud + detalle ───────────────────────────────────────────
+    // guardar solicitud + detalle
     @FXML
     private void guardar() {
         if (estadoActual == 1) {
@@ -284,7 +284,7 @@ public class solicitudProduccionController {
             if (!rs.next()) throw new SQLException("No se obtuvo el ID de la solicitud.");
             int nuevoId = rs.getInt(1);
 
-            // Insertar detalle
+            // insertar detalle
             String sqlDetalle = "INSERT INTO tbl_solicitud_detalle (id_solicitud, codigo_producto, producto, cantidad) VALUES (?, ?, ?, ?)";
             try (PreparedStatement psDet = conn.prepareStatement(sqlDetalle)) {
                 for (solicitudDetalleModelo det : listaDetalle) {
@@ -313,7 +313,7 @@ public class solicitudProduccionController {
         }
     }
 
-    // ── Editar solicitud (datos generales) ────────────────────────────────────
+    // editar solicitud (datos generales)
     @FXML
     private void fnEditar() {
         actualizarBotones(2);
@@ -339,7 +339,7 @@ public class solicitudProduccionController {
             ps.setInt(7, sel.getId());
             ps.executeUpdate();
 
-            // Reemplazar detalle: borrar el anterior e insertar el nuevo
+            // reemplazar detalle: borrar el anterior e insertar el nuevo
             try (PreparedStatement psDel = conn.prepareStatement(
                     "DELETE FROM tbl_solicitud_detalle WHERE id_solicitud=?")) {
                 psDel.setInt(1, sel.getId());
@@ -374,7 +374,7 @@ public class solicitudProduccionController {
         }
     }
 
-    // ── Eliminar solicitud + detalle ──────────────────────────────────────────
+    // eliminar solicitud + detalle
     @FXML
     private void fnEliminar() {
         solicitudProduccionModelo sel = (tablaSolicitudes != null)
@@ -416,7 +416,7 @@ public class solicitudProduccionController {
         });
     }
 
-    // ── Buscar por ID ─────────────────────────────────────────────────────────
+    // buscar por id
     @FXML
     private void fnBuscar() {
         actualizarBotones(0);
@@ -448,7 +448,7 @@ public class solicitudProduccionController {
         mostrarAlerta(Alert.AlertType.WARNING, "No encontrado", "No existe una solicitud con el ID " + idBuscar + ".");
     }
 
-    // ── Convertir a Orden de Producción ───────────────────────────────────────
+    // convertir a orden de produccion
     @FXML
     private void convertirAOrden() {
         solicitudProduccionModelo sel = (tablaSolicitudes != null)
@@ -466,7 +466,7 @@ public class solicitudProduccionController {
             return;
         }
 
-        // Construir resumen de productos para la categoría de la orden
+        // construir resumen de productos para la categoria
         StringBuilder productos = new StringBuilder();
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(
@@ -525,7 +525,7 @@ public class solicitudProduccionController {
         });
     }
 
-    // ── Limpiar ───────────────────────────────────────────────────────────────
+    // limpiar
     @FXML
     private void limpiar() {
         actualizarBotones(0);
@@ -547,13 +547,13 @@ public class solicitudProduccionController {
         generarSiguienteId();
     }
 
-    // ── Métodos de soporte ────────────────────────────────────────────────────
+    // metodos de soporte
 
     private void cargarSolicitudes() {
         ObservableList<solicitudProduccionModelo> temporal = FXCollections.observableArrayList();
         Map<Integer, String> tempCache = new HashMap<>();
 
-        // Un solo JOIN trae solicitudes y resumen de productos sin queries adicionales
+        // un solo join trae solicitudes y resumen sin queries extra
         String sql = "SELECT s.id_solicitud, s.fecha_solicitud, s.fecha_produccion, " +
                 "s.prioridad, s.estado, s.id_responsable, " +
                 "ISNULL(e.nombre + ' ' + e.apellido, '') AS responsable, " +
@@ -589,7 +589,7 @@ public class solicitudProduccionController {
                 mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar solicitudes", e.getMessage()));
             return;
         }
-        // Actualiza la UI desde el hilo de JavaFX
+        // actualiza la ui desde el hilo de javafx
         Platform.runLater(() -> {
             cacheProductos.clear();
             cacheProductos.putAll(tempCache);
@@ -686,7 +686,7 @@ public class solicitudProduccionController {
         alert.showAndWait();
     }
 
-    // -- Navegacion --
+    // navegacion
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -694,8 +694,8 @@ public class solicitudProduccionController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }
@@ -714,11 +714,11 @@ public class solicitudProduccionController {
 
     private int estadoActual = 0;
 
-    // ── Estado de botones ─────────────────────────────────────────────
-    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    // estado de botones
+    // estado: 0=libre/nuevo 1=encontrado 2=editando
     private void actualizarBotones(int estado) {
         this.estadoActual = estado;
-        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        // estado: 0=libre/nuevo 1=encontrado 2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);

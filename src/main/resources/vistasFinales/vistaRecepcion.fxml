@@ -116,7 +116,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta datos generales -->
+                    <!-- datos generales -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12;                                  -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                  -fx-padding: 14 18 14 18;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="RECEPCIÓN DE PRODUCTOS">
@@ -168,7 +168,7 @@
                         </HBox>
                     </VBox>
 
-                    <!-- Tarjeta detalle productos -->
+                    <!-- detalle productos -->
                     <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12;                                  -fx-border-color:#C5A8E8; -fx-border-radius:12;                                  -fx-padding:12 16 12 16;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Productos recibidos" />

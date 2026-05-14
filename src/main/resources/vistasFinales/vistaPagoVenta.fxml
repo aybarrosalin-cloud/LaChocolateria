@@ -115,7 +115,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta formulario venta -->
+                    <!-- formulario venta -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12;                                  -fx-border-color: #C5A8E8; -fx-border-radius: 12;                                  -fx-padding: 14 18 14 18;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="REGISTRO DE PAGO DE VENTA">
@@ -123,7 +123,7 @@
                         </Label>
                         <Separator />
 
-                        <!-- Fila 1: ID Venta · ID Orden · Cliente · Fecha -->
+                        <!-- fila 1: id venta, id orden, cliente, fecha -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="110" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Venta" />
@@ -143,7 +143,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 2: Empleado · Tipo pago · Método pago · NCF -->
+                        <!-- fila 2: empleado, tipo pago, metodo pago, ncf -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="ID Empleado" />
@@ -167,7 +167,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 3: Resumen financiero (solo lectura) -->
+                        <!-- fila 3: resumen financiero -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Subtotal (RD$)" />
@@ -187,7 +187,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 4: Monto pagado · Balance · Estado · NCF generado -->
+                        <!-- fila 4: monto pagado, balance, estado, ncf generado -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Monto pagado (RD$)" />
@@ -218,7 +218,7 @@
                         </HBox>
                     </VBox>
 
-                    <!-- Tarjeta abono pago -->
+                    <!-- abono pago -->
                     <VBox spacing="7" style="-fx-background-color:white; -fx-background-radius:12;                                  -fx-border-color:#C5A8E8; -fx-border-radius:12;                                  -fx-padding:12 16 12 16;                                  -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:12px; -fx-font-weight:bold;" text="Registrar Abono / Pago" />

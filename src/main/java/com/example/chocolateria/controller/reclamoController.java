@@ -30,7 +30,7 @@ public class reclamoController {
     @FXML private ComboBox<String> cbOrden;
     @FXML private TextArea         txtDescripcion;
 
-    // RadioButtons prioridad
+    // radiobuttons prioridad
     @FXML private RadioButton rbAlta;
     @FXML private RadioButton rbMedia;
     @FXML private RadioButton rbBaja;
@@ -183,7 +183,7 @@ public class reclamoController {
             int nuevoId = rs.next() ? rs.getInt(1) : 0;
             mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo #" + nuevoId + " registrado correctamente.");
 
-            // Notifica por correo al administrador y al encargado del departamento
+            // notifica por correo al admin y al encargado
             final int idFinal     = nuevoId;
             final String nomCliente = nombreCliente;
             final String tipo       = cbTipoReclamo.getValue();
@@ -331,7 +331,7 @@ public class reclamoController {
         Alert a = new Alert(tipo); a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
     }
 
-    // -- Navegacion --
+    // navegacion
     private String sqlReporte() {
         return "SELECT r.id_reclamo AS ID, " +
                "ISNULL(c.nombre + ' ' + c.apellido,'') AS Cliente, " +
@@ -347,7 +347,7 @@ public class reclamoController {
     }
     private String tituloReporte() { return "Reporte de Reclamaciones"; }
 
-    // ── Generar Reporte ───────────────────────────────────────────────────────
+    // generar reporte
 
     @FXML
     private void generarReporte() {
@@ -403,8 +403,8 @@ public class reclamoController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }
@@ -424,11 +424,11 @@ public class reclamoController {
 
     private int estadoActual = 0;
 
-    // ── Estado de botones ─────────────────────────────────────────────
-    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    // estado de botones
+    // estado: 0=libre/nuevo 1=encontrado 2=editando
     private void actualizarBotones(int estado) {
         this.estadoActual = estado;
-        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        // estado: 0=libre/nuevo 1=encontrado 2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);

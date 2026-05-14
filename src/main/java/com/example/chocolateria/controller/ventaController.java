@@ -92,10 +92,10 @@ public class ventaController {
         cbTipoNcf.setItems(FXCollections.observableArrayList("B01 - Crédito Fiscal", "B02 - Consumidor Final"));
         cbTipoNcf.setValue("B02 - Consumidor Final");
 
-        // Calcular ITBIS y total cuando cambia el descuento
+        // calcular itbis y total cuando cambia el descuento
         txtDescuento.textProperty().addListener((obs, o, n) -> calcularMontos());
 
-        // Columnas historial ventas (solo si la tabla existe en esta vista)
+        // columnas historial ventas (solo si existe la tabla)
         if (tablaVentas != null) {
             colId.setCellValueFactory(d       -> d.getValue().idVentaProperty());
             colCliente.setCellValueFactory(d  -> d.getValue().clienteProperty());
@@ -110,7 +110,7 @@ public class ventaController {
             colNcf.setCellValueFactory(d      -> d.getValue().ncfProperty());
         }
 
-        // Columnas pagos
+        // columnas pagos
         colPagoId.setCellValueFactory(d    -> d.getValue().idPagoProperty());
         colPagoFecha.setCellValueFactory(d -> d.getValue().fechaPagoProperty());
         colPagoMonto.setCellValueFactory(d -> d.getValue().montoPagadoProperty());
@@ -118,7 +118,7 @@ public class ventaController {
         colPagoRef.setCellValueFactory(d   -> d.getValue().numeroReferenciaProperty());
         tablaPagos.setItems(listaPagos);
 
-        // Color por estado y filtro (solo si la tabla existe)
+        // color por estado y filtro (solo si existe)
         if (tablaVentas != null) {
             tablaVentas.setRowFactory(tv -> new TableRow<>() {
                 @Override
@@ -178,7 +178,7 @@ public class ventaController {
         }
         try {
             int id = Integer.parseInt(idTexto);
-            // Primero trae los datos generales de la orden
+            // primero trae los datos generales de la orden
             String sqlOrden = "SELECT o.cliente, o.metodo_pago, " +
                     "ISNULL(SUM(d.precio * d.cantidad), 0) AS subtotal_calc, " +
                     "STUFF((SELECT ', ' + d2.producto FROM tbl_orden_detalle d2 " +
@@ -265,7 +265,7 @@ public class ventaController {
             double montoPagado = "Contado".equals(tipoPago) ? total : 0.0;
             double balance     = total - montoPagado;
 
-            // Generar NCF
+            // generar ncf
             String ncf = generarNcf(cbTipoNcf.getValue());
 
             String sql = "INSERT INTO tbl_venta (fecha_venta, monto_total, id_empleado, descuento, " +
@@ -296,7 +296,7 @@ public class ventaController {
                 txtIdVenta.setText(String.valueOf(nuevoId));
                 txtNcf.setText(ncf);
 
-                // Actualizar id_comprobante con el NCF
+                // actualizar id_comprobante con el ncf
                 try (PreparedStatement psNcf = conn.prepareStatement(
                         "UPDATE tbl_venta SET id_comprobante = ? WHERE id_venta = ?")) {
                     psNcf.setString(1, ncf);
@@ -363,7 +363,7 @@ public class ventaController {
                 ResultSet rs = ps.getGeneratedKeys();
                 int nuevoId = rs.next() ? rs.getInt(1) : 0;
 
-                // Actualizar monto_pagado y balance en tbl_venta
+                // actualizar monto_pagado y balance en tbl_venta
                 double nuevoPagado = Double.parseDouble(txtMontoPagado.getText().trim()) + montoAbono;
                 double total       = Double.parseDouble(txtTotal.getText().trim());
                 double nuevoBalance= total - nuevoPagado;
@@ -383,7 +383,7 @@ public class ventaController {
                         dpFechaPago.getValue(), montoAbono,
                         cbMetodoPagoAbono.getValue(), txtReferencia.getText().trim(), ""));
 
-                // Actualizar fila en tabla (si existe tablaVentas en esta vista)
+                // actualizar fila en tabla (si existe)
                 for (ventaModelo v : listaVentas) {
                     if (v.getIdVenta() == idVentaSeleccionada) {
                         v.setMontoPagado(nuevoPagado);
@@ -710,7 +710,7 @@ public class ventaController {
         alert.showAndWait();
     }
 
-    // -- Navegacion --
+    // navegacion
     private String sqlReporte() {
         return "SELECT v.id_venta AS [ID Factura], " +
                "ISNULL(o.cliente,'') AS Cliente, " +
@@ -730,7 +730,7 @@ public class ventaController {
     }
     private String tituloReporte() { return "Reporte de Facturacion"; }
 
-    // ── Generar Reporte ───────────────────────────────────────────────────────
+    // generar reporte
 
     @FXML
     private void generarReporte() {
@@ -786,8 +786,8 @@ public class ventaController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }
@@ -806,11 +806,11 @@ public class ventaController {
 
     private int estadoActual = 0;
 
-    // ── Estado de botones ─────────────────────────────────────────────
-    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    // estado de botones
+    // estado: 0=libre/nuevo 1=encontrado 2=editando
     private void actualizarBotones(int estado) {
         this.estadoActual = estado;
-        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        // estado: 0=libre/nuevo 1=encontrado 2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);

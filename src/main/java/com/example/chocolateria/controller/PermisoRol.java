@@ -10,7 +10,7 @@ public class PermisoRol {
     public enum Pantalla {
         ORDEN_CLIENTE, PAGO_VENTA, GESTION_ENVIOS, GESTION_RECLAMOS,
         SOLICITUD_PRODUCCION, ORDEN_PRODUCCION,
-        RECEPCION,
+        RECEPCION, SALIDA_MATERIALES, SALIDA_PRODUCTOS,
         ORDEN_PROVEEDOR, PAGO_COMPRA,
         REG_PRODUCTO, REG_EMPLEADO, REG_CLIENTE, REG_SUPLIDOR, REG_MAQUINARIA,
         MANTENIMIENTO,
@@ -18,20 +18,20 @@ public class PermisoRol {
         GESTION_USUARIOS
     }
 
-    // Consultas individuales dentro de la pantalla de Consultas
+    // consultas individuales dentro de la pantalla de consultas
     public enum Consulta {
         CLIENTES, VENTAS, COMPRAS, PRODUCCION, INVENTARIO, PEDIDOS,
-        INGRESOS,       // requiere contrasena gerencial si no tiene acceso libre
-        MAS_VENDIDOS,   // requiere contrasena gerencial si no tiene acceso libre
+        INGRESOS,       // requiere clave gerencial si no tiene acceso libre
+        MAS_VENDIDOS,   // requiere clave gerencial si no tiene acceso libre
         MANTENIMIENTO
     }
 
-    // Roles con acceso LIBRE a ingresos y mas vendidos (sin contrasena)
+    // roles con acceso libre a ingresos y mas vendidos (sin clave)
     private static final Set<String> ROLES_FINANCIEROS = Set.of(
         "Administrador", "Gerente General", "Auditor", "Encargado de Finanzas"
     );
 
-    // Roles que pueden ver ingresos/mas vendidos con contrasena gerencial
+    // roles que pueden ver ingresos/mas vendidos con clave gerencial
     private static final Set<String> ROLES_CON_CLAVE_FINANCIERA = Set.of(
         "Vendedor", "Encargado de Compras"
     );
@@ -40,14 +40,14 @@ public class PermisoRol {
     private static final Map<String, Set<Consulta>> PERMISOS_CONSULTA = new HashMap<>();
 
     static {
-        // ── Pantallas ──────────────────────────────────────────────────────────
+        // pantallas
 
-        // Administrador - todo
+        // administrador - todo
         Set<Pantalla> todasLasPantallas = new HashSet<>();
         for (Pantalla p : Pantalla.values()) todasLasPantallas.add(p);
         PERMISOS.put("Administrador", todasLasPantallas);
 
-        // Gerente General - todo excepto gestion usuarios
+        // gerente general - todo menos gestion usuarios
         PERMISOS.put("Gerente General", pantallas(
             Pantalla.ORDEN_CLIENTE, Pantalla.PAGO_VENTA, Pantalla.GESTION_ENVIOS, Pantalla.GESTION_RECLAMOS,
             Pantalla.SOLICITUD_PRODUCCION, Pantalla.ORDEN_PRODUCCION,
@@ -58,60 +58,62 @@ public class PermisoRol {
             Pantalla.MANTENIMIENTO, Pantalla.CONSULTAS
         ));
 
-        // Auditor - solo consultas
+        // auditor - solo consultas
         PERMISOS.put("Auditor", pantallas(Pantalla.CONSULTAS));
 
-        // Encargado de Finanzas
+        // encargado de finanzas
         PERMISOS.put("Encargado de Finanzas", pantallas(
             Pantalla.PAGO_VENTA, Pantalla.PAGO_COMPRA, Pantalla.CONSULTAS
         ));
 
-        // Encargado de RRHH
+        // encargado de rrhh
         PERMISOS.put("Encargado de RRHH", pantallas(Pantalla.REG_EMPLEADO));
 
-        // Vendedor
+        // vendedor
         PERMISOS.put("Vendedor", pantallas(
             Pantalla.ORDEN_CLIENTE, Pantalla.PAGO_VENTA, Pantalla.GESTION_RECLAMOS,
+            Pantalla.SALIDA_PRODUCTOS,
             Pantalla.SOLICITUD_PRODUCCION, Pantalla.REG_CLIENTE, Pantalla.CONSULTAS
         ));
 
-        // Encargado de Produccion
+        // encargado de produccion
         PERMISOS.put("Encargado de Producción", pantallas(
             Pantalla.SOLICITUD_PRODUCCION, Pantalla.ORDEN_PRODUCCION,
+            Pantalla.SALIDA_MATERIALES,
             Pantalla.REG_MAQUINARIA, Pantalla.MANTENIMIENTO, Pantalla.CONSULTAS
         ));
 
-        // Operario de Empaque - solo ver orden de produccion
+        // operario de empaque - solo ver orden de produccion
         PERMISOS.put("Operario de Empaque", pantallas(Pantalla.ORDEN_PRODUCCION));
 
-        // Inspector de Calidad
+        // inspector de calidad
         PERMISOS.put("Inspector de Calidad", pantallas(
             Pantalla.GESTION_RECLAMOS, Pantalla.ORDEN_PRODUCCION,
             Pantalla.MANTENIMIENTO, Pantalla.CONSULTAS
         ));
 
-        // Encargado de Almacen
+        // encargado de almacen
         PERMISOS.put("Encargado de Almacén", pantallas(
             Pantalla.RECEPCION, Pantalla.REG_PRODUCTO, Pantalla.CONSULTAS
         ));
 
-        // Encargado de Compras
+        // encargado de compras
         PERMISOS.put("Encargado de Compras", pantallas(
             Pantalla.ORDEN_PROVEEDOR, Pantalla.PAGO_COMPRA,
             Pantalla.REG_PRODUCTO, Pantalla.REG_SUPLIDOR, Pantalla.CONSULTAS
         ));
 
-        // Encargado de Logistica
+        // encargado de logistica
         PERMISOS.put("Encargado de Logística", pantallas(
             Pantalla.GESTION_ENVIOS, Pantalla.CONSULTAS
         ));
 
-        // Tecnico de Mantenimiento
+        // tecnico de mantenimiento
         PERMISOS.put("Técnico de Mantenimiento", pantallas(
             Pantalla.REG_MAQUINARIA, Pantalla.MANTENIMIENTO, Pantalla.CONSULTAS
         ));
 
-        // ── Consultas individuales ─────────────────────────────────────────────
+        // consultas individuales
 
         Set<Consulta> todasLasConsultas = new HashSet<>();
         for (Consulta c : Consulta.values()) todasLasConsultas.add(c);
@@ -160,7 +162,7 @@ public class PermisoRol {
         ));
     }
 
-    // ── API publica ────────────────────────────────────────────────────────────
+    // api publica
 
     public static boolean tieneAcceso(String rol, Pantalla pantalla) {
         if (rol == null || rol.isBlank()) return false;
@@ -174,17 +176,17 @@ public class PermisoRol {
         return permisos != null && permisos.contains(consulta);
     }
 
-    /** true = puede ver Ingresos/MasVendidos pero debe ingresar contrasena gerencial */
+    // true = puede ver ingresos/masvendidos pero pide clave gerencial
     public static boolean requiereClaveFinanciera(String rol) {
         return ROLES_CON_CLAVE_FINANCIERA.contains(rol);
     }
 
-    /** true = tiene acceso libre a datos financieros (sin clave extra) */
+    // true = acceso libre a datos financieros (sin clave extra)
     public static boolean esRolFinanciero(String rol) {
         return ROLES_FINANCIEROS.contains(rol);
     }
 
-    // ── Helpers privados ───────────────────────────────────────────────────────
+    // helpers privados
 
     private static Set<Pantalla> pantallas(Pantalla... ps) {
         Set<Pantalla> set = new HashSet<>();

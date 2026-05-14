@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 public class pagoCompraController {
 
-    // Datos generales deuda
+    // datos generales de la deuda
     @FXML private TextField    txtIdDeuda;
     @FXML private TextField    txtIdRecepcion;
     @FXML private Label        lblInfoRecepcion;
@@ -28,13 +28,13 @@ public class pagoCompraController {
     @FXML private TextArea     txtObservaciones;
     @FXML private TextField    txtBuscarTabla;
 
-    // Abono
+    // abono
     @FXML private DatePicker       dpFechaAbono;
     @FXML private TextField        txtMontoAbono;
     @FXML private ComboBox<String> cbMetodoPago;
     @FXML private TextField        txtNumeroReferencia;
 
-    // Tabla abonos
+    // tabla abonos
     @FXML private TableView<abonoCompraModelo>                tablaAbonos;
     @FXML private TableColumn<abonoCompraModelo, Number>      colAbonoId;
     @FXML private TableColumn<abonoCompraModelo, LocalDate>   colAbonoFecha;
@@ -42,7 +42,7 @@ public class pagoCompraController {
     @FXML private TableColumn<abonoCompraModelo, String>      colAbonoMetodo;
     @FXML private TableColumn<abonoCompraModelo, String>      colAbonoRef;
 
-    // Tabla deudas
+    // tabla deudas
     @FXML private TableView<deudaCompraModelo>                tablaDeudas;
     @FXML private TableColumn<deudaCompraModelo, Number>      colId;
     @FXML private TableColumn<deudaCompraModelo, String>      colOrden;
@@ -74,7 +74,7 @@ public class pagoCompraController {
         cbMetodoPago.setItems(FXCollections.observableArrayList(
                 "Efectivo", "Transferencia", "Cheque", "Tarjeta de crédito", "Tarjeta de débito"));
 
-        // Columnas deudas (solo si la tabla existe en esta vista)
+        // columnas deudas (solo si existe la tabla)
         if (tablaDeudas != null) {
             colId.setCellValueFactory(d        -> d.getValue().idDeudaProperty());
             colOrden.setCellValueFactory(d     -> d.getValue().numeroOrdenProperty());
@@ -86,7 +86,7 @@ public class pagoCompraController {
             colEstado.setCellValueFactory(d    -> d.getValue().estadoProperty());
         }
 
-        // Columnas abonos
+        // columnas abonos
         colAbonoId.setCellValueFactory(d    -> d.getValue().idAbonoProperty());
         colAbonoFecha.setCellValueFactory(d -> d.getValue().fechaAbonoProperty());
         colAbonoMonto.setCellValueFactory(d -> d.getValue().montoAbonoProperty());
@@ -94,7 +94,7 @@ public class pagoCompraController {
         colAbonoRef.setCellValueFactory(d   -> d.getValue().numeroReferenciaProperty());
         tablaAbonos.setItems(listaAbonos);
 
-        // Color por estado y filtro en tabla deudas (solo si existe)
+        // color por estado y filtro en tabla deudas
         if (tablaDeudas != null) {
             tablaDeudas.setRowFactory(tv -> new TableRow<>() {
                 @Override
@@ -139,7 +139,7 @@ public class pagoCompraController {
         generarSiguienteId();
     }
 
-    // Cargar datos desde recepcion
+    // cargar datos desde recepcion
     @FXML
     private void cargarDesdeRecepcion() {
         String idTexto = txtIdRecepcion.getText().trim();
@@ -172,7 +172,7 @@ public class pagoCompraController {
         }
     }
 
-    // Registrar deuda nueva
+    // registrar deuda nueva
     @FXML
     private void registrarDeuda() {
         if (estadoActual == 1) {
@@ -216,7 +216,7 @@ public class pagoCompraController {
         }
     }
 
-    // Registrar abono a la deuda seleccionada
+    // registrar abono a la deuda seleccionada
     @FXML
     private void registrarAbono() {
         if (idDeudaSeleccionada == 0) {
@@ -229,7 +229,7 @@ public class pagoCompraController {
         try {
             double montoAbono = Double.parseDouble(txtMontoAbono.getText().trim());
 
-            // Verificar que el abono no exceda el pendiente
+            // verificar que el abono no supere el pendiente
             double pendiente = Double.parseDouble(txtMontoPendiente.getText().trim());
             if (montoAbono > pendiente) {
                 mostrarAlerta(Alert.AlertType.WARNING, "Monto excedido",
@@ -253,7 +253,7 @@ public class pagoCompraController {
                 ResultSet rs = ps.getGeneratedKeys();
                 int nuevoAbonoId = rs.next() ? rs.getInt(1) : 0;
 
-                // Actualizar monto_pagado en tbl_deuda_compra
+                // actualizar monto_pagado en la tabla
                 double nuevoPagado = Double.parseDouble(txtMontoPagado.getText().trim()) + montoAbono;
                 double total       = Double.parseDouble(txtMontoTotal.getText().trim());
                 String nuevoEstado = nuevoPagado >= total ? "Saldado"
@@ -268,7 +268,7 @@ public class pagoCompraController {
                     psUpd.executeUpdate();
                 }
 
-                // Actualizar UI
+                // actualizar ui
                 listaAbonos.add(new abonoCompraModelo(nuevoAbonoId, idDeudaSeleccionada,
                         dpFechaAbono.getValue(), montoAbono, cbMetodoPago.getValue(),
                         txtNumeroReferencia.getText().trim(), ""));
@@ -277,7 +277,7 @@ public class pagoCompraController {
                 txtEstado.setText(nuevoEstado);
                 colorearEstado(nuevoEstado);
 
-                // Actualizar la fila en la tabla principal
+                // actualizar fila en tabla principal
                 for (deudaCompraModelo d : listaDeudas) {
                     if (d.getIdDeuda() == idDeudaSeleccionada) {
                         d.setMontoPagado(nuevoPagado);
@@ -539,7 +539,7 @@ public class pagoCompraController {
         alert.showAndWait();
     }
 
-    // -- Navegacion --
+    // navegacion
     @FXML private void irAInicio(javafx.event.ActionEvent e)              { Navegacion.irA("/vistasFinales/vistaInicio.fxml", e); }
     @FXML private void irAOrdenCliente(javafx.event.ActionEvent e)        { Navegacion.irA("/vistasFinales/vistaOrdenCliente.fxml", e); }
     @FXML private void irAPagoVenta(javafx.event.ActionEvent e)           { Navegacion.irA("/vistasFinales/vistaPagoVenta.fxml", e); }
@@ -547,8 +547,8 @@ public class pagoCompraController {
     @FXML private void irAGestionReclamos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaGestionReclamos.fxml", e); }
     @FXML private void irASolicitudProduccion(javafx.event.ActionEvent e) { Navegacion.irA("/vistasFinales/vistaSolicitudDeProduccion.fxml", e); }
     @FXML private void irAOrdenProduccion(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaOrdenProduccion.fxml", e); }
-    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
-    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaRecepcion.fxml", e); }
+    @FXML private void irASalidaMateriales(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaSalidaMateriales.fxml", e); }
+    @FXML private void irASalidaProductos(javafx.event.ActionEvent e)     { Navegacion.irA("/vistasFinales/vistaSalidaProductos.fxml", e); }
     @FXML private void irAOrdenProveedor(javafx.event.ActionEvent e)      { Navegacion.irA("/vistasFinales/vistaOrdenProveedor.fxml", e); }
     @FXML private void irAPagoCompra(javafx.event.ActionEvent e)          { Navegacion.irA("/vistasFinales/vistaPagoCompra.fxml", e); }
     @FXML private void irARegistroProducto(javafx.event.ActionEvent e)    { Navegacion.irA("/vistasFinales/vistaRegistroProducto.fxml", e); }
@@ -567,11 +567,11 @@ public class pagoCompraController {
 
     private int estadoActual = 0;
 
-    // ── Estado de botones ─────────────────────────────────────────────
-    // estado: 0=libre(nuevo)  1=encontrado(viendo)  2=editando
+    // estado de botones
+    // 0=nuevo 1=viendo 2=editando
     private void actualizarBotones(int estado) {
         this.estadoActual = estado;
-        // estado: 0=libre/nuevo  1=encontrado  2=editando
+        // 0=nuevo 1=viendo 2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);

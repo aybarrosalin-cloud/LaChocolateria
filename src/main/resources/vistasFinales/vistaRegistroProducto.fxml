@@ -107,7 +107,7 @@
 
                 <VBox spacing="10" style="-fx-padding: 4 20 0 20;">
 
-                    <!-- Tarjeta formulario -->
+                    <!-- formulario -->
                     <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #C5A8E8; -fx-border-radius: 12; -fx-padding: 14 18 14 18; -fx-effect: dropshadow(gaussian,rgba(75,41,90,0.10),8,0,0,2);">
 
                         <Label style="-fx-text-fill:#3B1A5C; -fx-font-size:14px; -fx-font-weight:bold;" text="REGISTRO DE PRODUCTO">
@@ -115,7 +115,7 @@
                         </Label>
                         <Separator />
 
-                        <!-- Fila 1: Codigo · Nombre · Precio Unit · Precio Mayor -->
+                        <!-- fila 1: codigo, nombre, precio unit, precio mayor -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" prefWidth="140" spacing="3">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Código (auto)" />
@@ -135,7 +135,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 2: Descripcion · Unidad medida -->
+                        <!-- fila 2: descripcion, unidad medida -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Descripción" />
@@ -147,7 +147,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- Fila 3: Checkboxes categoria y tipo -->
+                        <!-- fila 3: checkboxes categoria y tipo -->
                         <HBox alignment="TOP_LEFT" spacing="30">
 
                             <VBox prefWidth="220" spacing="4" style="-fx-background-color:#f8f3fc; -fx-background-radius:8; -fx-border-color:#C5A8E8; -fx-border-radius:8; -fx-padding:10 12 10 12;">

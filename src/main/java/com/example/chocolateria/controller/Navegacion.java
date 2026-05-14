@@ -10,11 +10,15 @@ import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Navegacion {
 
-    // ── Mapa FXML → permiso requerido ────────────────────────────────────────
+    // mapa fxml -> permiso requerido
     private static final Map<String, PermisoRol.Pantalla> PERMISOS_FXML = new HashMap<>();
+
+    // permisos alternativos (cualquiera del set basta)
+    private static final Map<String, Set<PermisoRol.Pantalla>> EXT_PERMISOS_FXML = new HashMap<>();
 
     static {
         PERMISOS_FXML.put("/vistasFinales/vistaOrdenCliente.fxml",             PermisoRol.Pantalla.ORDEN_CLIENTE);
@@ -33,7 +37,7 @@ public class Navegacion {
         PERMISOS_FXML.put("/vistasFinales/vistaRegistroMaquinaria.fxml",       PermisoRol.Pantalla.REG_MAQUINARIA);
         PERMISOS_FXML.put("/vistasFinales/vistaMantenimientoMaquinaria.fxml",  PermisoRol.Pantalla.MANTENIMIENTO);
         PERMISOS_FXML.put("/vistasFinales/vistaGestionUsuarios.fxml",          PermisoRol.Pantalla.GESTION_USUARIOS);
-        // Todas las vistas de consulta requieren permiso CONSULTAS
+        // todas las vistas de consulta necesitan permiso consultas
         PERMISOS_FXML.put("/vistasFinales/vistaConsultasGenerales.fxml",       PermisoRol.Pantalla.CONSULTAS);
         PERMISOS_FXML.put("/vistasFinales/vistaReportes.fxml",                    PermisoRol.Pantalla.CONSULTAS);
         PERMISOS_FXML.put("/vistasFinales/vistaConsultaClientes.fxml",         PermisoRol.Pantalla.CONSULTAS);
@@ -52,17 +56,23 @@ public class Navegacion {
         PERMISOS_FXML.put("/vistasFinales/vistaConsultaSolicitudesProduccion.fxml", PermisoRol.Pantalla.CONSULTAS);
         PERMISOS_FXML.put("/vistasFinales/vistaConsultaMantenimientoMaquinaria.fxml", PermisoRol.Pantalla.CONSULTAS);
         PERMISOS_FXML.put("/vistasFinales/vistaConsultaUsuarios.fxml",         PermisoRol.Pantalla.GESTION_USUARIOS);
-        // vistaInicio y vistaPrincipal no requieren permiso (null = libre)
+        PERMISOS_FXML.put("/vistasFinales/vistaSalidaMateriales.fxml",         PermisoRol.Pantalla.SALIDA_MATERIALES);
+        PERMISOS_FXML.put("/vistasFinales/vistaSalidaProductos.fxml",          PermisoRol.Pantalla.SALIDA_PRODUCTOS);
+        // inicio y principal no necesitan permiso (null = libre)
+
+        // permisos alternativos: acceso desde varios roles
+        EXT_PERMISOS_FXML.put("/vistasFinales/vistaRecepcion.fxml",
+            Set.of(PermisoRol.Pantalla.SALIDA_MATERIALES, PermisoRol.Pantalla.SALIDA_PRODUCTOS));
     }
 
-    // ── Navegacion principal ─────────────────────────────────────────────────
+    // navegacion principal
 
     public static void irA(String fxmlPath, ActionEvent event) {
         irA(fxmlPath, event, 1020, 720);
     }
 
     public static void irA(String fxmlPath, ActionEvent event, double w, double h) {
-        // 1. Verificar permiso de rol
+        // 1. verificar permiso del rol
         if (!tienePermiso(fxmlPath)) {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
             alerta.setTitle("Acceso denegado");
@@ -73,7 +83,7 @@ public class Navegacion {
             return;
         }
 
-        // 2. Para vistas de consulta, exigir clave de administrador
+        // 2. vistas de consulta piden clave admin
         if (esVistaConsulta(fxmlPath)) {
             if (!VerificarClave.pedirClaveAdmin()) {
                 Alert alerta = new Alert(Alert.AlertType.WARNING);
@@ -116,21 +126,28 @@ public class Navegacion {
         }
     }
 
-    // ── Verificacion de permisos ─────────────────────────────────────────────
+    // verificacion de permisos
 
     private static boolean tienePermiso(String fxmlPath) {
-        PermisoRol.Pantalla pantallaRequerida = PERMISOS_FXML.get(fxmlPath);
-        // Si la pantalla no está en el mapa, es libre (inicio, principal, etc.)
-        if (pantallaRequerida == null) return true;
         String rol = SesionManager.getInstancia().getRol();
-        return PermisoRol.tieneAcceso(rol, pantallaRequerida);
+
+        // permiso principal
+        PermisoRol.Pantalla pantallaRequerida = PERMISOS_FXML.get(fxmlPath);
+        if (pantallaRequerida != null && PermisoRol.tieneAcceso(rol, pantallaRequerida)) return true;
+
+        // permisos alternativos
+        Set<PermisoRol.Pantalla> alternativas = EXT_PERMISOS_FXML.get(fxmlPath);
+        if (alternativas != null) {
+            for (PermisoRol.Pantalla p : alternativas) {
+                if (PermisoRol.tieneAcceso(rol, p)) return true;
+            }
+        }
+
+        // si no esta en ningun mapa, acceso libre
+        return pantallaRequerida == null && alternativas == null;
     }
 
-    /**
-     * Devuelve true si el FXML es una vista de consulta histórica individual (protegida con clave).
-     * Excluye vistaConsultasGenerales.fxml (hub general) para no pedir clave en cada "Volver".
-     * Solo aplica a las vistas específicas: vistaConsultaClientes, vistaConsultaEmpleados, etc.
-     */
+    // true si es vista de consulta individual (protegida con clave), excluye el hub general
     private static boolean esVistaConsulta(String fxmlPath) {
         String nombre = fxmlPath.toLowerCase();
         return nombre.contains("/vistaconsulta") && !nombre.contains("consultasgenerales");
