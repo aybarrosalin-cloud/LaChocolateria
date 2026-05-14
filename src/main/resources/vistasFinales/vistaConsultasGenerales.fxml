@@ -58,8 +58,8 @@
 
                     <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Inventario">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
-                            <Button maxWidth="Infinity" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Salida de materiales" wrapText="true" />
-                            <Button maxWidth="Infinity" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Salida de productos" wrapText="true" />
+                            <Button maxWidth="Infinity" onAction="#irASalidaMateriales" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Salida de materiales para producción" wrapText="true" />
+                            <Button maxWidth="Infinity" onAction="#irASalidaProductos" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Salida de productos por ventas" wrapText="true" />
                         </VBox>
                     </TitledPane>
 
@@ -131,6 +131,10 @@
                             <Button fx:id="btnInventario" onAction="#consultarInventario" prefHeight="34" prefWidth="155" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="📦 Inventario"><font><Font size="11" /></font></Button>
                             <Button fx:id="btnPedidos" onAction="#consultarPedidos" prefHeight="34" prefWidth="155" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="📋 Pedidos"><font><Font size="11" /></font></Button>
                             <Button fx:id="btnMantenimiento" onAction="#consultarMantenimiento" prefHeight="34" prefWidth="155" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="🔧 Mantenimiento"><font><Font size="11" /></font></Button>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Button fx:id="btnSalidaMateriales" onAction="#consultarSalidaMateriales" prefHeight="34" prefWidth="210" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="📤 Salida de Materiales"><font><Font size="11" /></font></Button>
+                            <Button fx:id="btnSalidaProductos" onAction="#consultarSalidaProductos" prefHeight="34" prefWidth="210" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="📤 Salida de Productos"><font><Font size="11" /></font></Button>
                         </HBox>
                     </VBox>
 

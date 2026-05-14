@@ -332,67 +332,22 @@ public class reclamoController {
     }
 
     // navegacion
-    private String sqlReporte() {
-        return "SELECT r.id_reclamo AS ID, " +
-               "ISNULL(c.nombre + ' ' + c.apellido,'') AS Cliente, " +
-               "r.tipo_reclamo AS [Tipo Reclamo], " +
-               "r.descripcion AS Descripcion, " +
-               "r.fecha_reclamo AS [Fecha Reclamo], " +
-               "r.estado AS Estado, " +
-               "ISNULL(r.resolucion,'') AS Resolucion, " +
-               "ISNULL(CONVERT(VARCHAR,r.fecha_resolucion,23),'Pendiente') AS [Fecha Resolucion] " +
-               "FROM tbl_reclamo r " +
-               "LEFT JOIN tbl_cliente c ON r.id_cliente = c.id_cliente " +
-               "ORDER BY r.fecha_reclamo DESC";
-    }
-    private String tituloReporte() { return "Reporte de Reclamaciones"; }
-
-    // generar reporte
+    // generar reporte Jasper
 
     @FXML
     private void generarReporte() {
-        mostrarReporte(sqlReporte(), tituloReporte());
-    }
-
-    private void mostrarReporte(String sql, String titulo) {
-        try (java.sql.Connection conn = new conexion().establecerConexion();
-             java.sql.Statement  st   = conn.createStatement();
-             java.sql.ResultSet  rs   = st.executeQuery(sql)) {
-
-            TableView<ObservableList<String>> tabla = new TableView<>();
-            java.sql.ResultSetMetaData meta = rs.getMetaData();
-            int cols = meta.getColumnCount();
-            for (int i = 1; i <= cols; i++) {
-                final int idx = i - 1;
-                TableColumn<ObservableList<String>, String> col =
-                        new TableColumn<>(meta.getColumnLabel(i));
-                col.setCellValueFactory(data -> new SimpleStringProperty(
-                        data.getValue().size() > idx ? data.getValue().get(idx) : ""));
-                col.setMinWidth(100);
-                col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white;" +
-                             "-fx-font-weight:bold; -fx-alignment:CENTER;");
-                tabla.getColumns().add(col);
-            }
-            ObservableList<ObservableList<String>> data =
-                    javafx.collections.FXCollections.observableArrayList();
-            while (rs.next()) {
-                ObservableList<String> fila =
-                        javafx.collections.FXCollections.observableArrayList();
-                for (int i = 1; i <= cols; i++)
-                    fila.add(rs.getString(i) != null ? rs.getString(i) : "");
-                data.add(fila);
-            }
-            tabla.setItems(data);
-            tabla.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-
-            Stage stage = new Stage();
-            stage.setTitle(titulo + "  —  " + data.size() + " registros");
-            stage.setScene(new Scene(new BorderPane(tabla), 950, 520));
-            stage.show();
-
+        String idReclamo = txtId.getText().trim();
+        if (idReclamo.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Atención", "Carga un reclamo en el formulario antes de generar el reporte.").showAndWait();
+            return;
+        }
+        java.util.Map<String, Object> params = new java.util.HashMap<>();
+        params.put("ID_RECLAMO", Integer.parseInt(idReclamo));
+        params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
+        try (java.sql.Connection conn = new conexion().establecerConexion()) {
+            JasperReportUtil.mostrarReporte("/reportes/lachoco_reclamo.jrxml", params, conn);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR,
-                      "Error al generar reporte: " + e.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Error al generar reporte: " + e.getMessage()).showAndWait();
         }
     }
 

@@ -25,6 +25,8 @@ public class consultasController {
     @FXML private Button btnClientes, btnVentas, btnCompras, btnProduccion;
     @FXML private Button btnInventario, btnPedidos, btnIngresos, btnMasVendidos;
     @FXML private Button btnMantenimiento;
+    @FXML private Button btnSalidaMateriales;
+    @FXML private Button btnSalidaProductos;
     @FXML private Label     lblUsuario;
     @FXML private ImageView imgFotoPerfil;
 
@@ -32,10 +34,24 @@ public class consultasController {
     private String sqlActual   = "";
     private String tituloActual = "";
 
+    private static String consultaPendiente = null;
+
+    public static void setConsultaPendiente(String consulta) {
+        consultaPendiente = consulta;
+    }
+
     @FXML
     public void initialize() {
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
         aplicarPermisosConsultas();
+        if (consultaPendiente != null) {
+            String cp = consultaPendiente;
+            consultaPendiente = null;
+            switch (cp) {
+                case "salidaMateriales" -> consultarSalidaMateriales();
+                case "salidaProductos"  -> consultarSalidaProductos();
+            }
+        }
     }
 
     // permisos de los botones de consulta
@@ -49,6 +65,8 @@ public class consultasController {
         configurarBoton(btnInventario,  rol, INVENTARIO);
         configurarBoton(btnPedidos,     rol, PEDIDOS);
         configurarBoton(btnMantenimiento, rol, MANTENIMIENTO);
+        configurarBoton(btnSalidaMateriales, rol, INVENTARIO);
+        configurarBoton(btnSalidaProductos, rol, INVENTARIO);
 
         // ingresos y mas vendidos: libre, con clave o bloqueado
         configurarBotonFinanciero(btnIngresos,    rol, INGRESOS);
@@ -228,6 +246,32 @@ public class consultasController {
         ejecutarConsulta(sqlActual, tituloActual);
     }
 
+    @FXML private void consultarSalidaMateriales() {
+        sqlActual    = "SELECT sm.id_salida AS ID, sm.id_solicitud AS [ID Solicitud], " +
+                       "CONVERT(VARCHAR, sm.fecha_salida, 103) AS Fecha, " +
+                       "ISNULL(sm.responsable,'') AS Responsable, " +
+                       "CAST((SELECT COUNT(*) FROM tbl_salida_materiales_detalle d WHERE d.id_salida=sm.id_salida) AS VARCHAR) AS Items, " +
+                       "ISNULL(sm.observaciones,'') AS Observaciones " +
+                       "FROM tbl_salida_materiales sm ORDER BY sm.fecha_salida DESC";
+        tituloActual = "Consulta de Salida de Materiales";
+        resaltarBoton(btnSalidaMateriales);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
+    @FXML private void consultarSalidaProductos() {
+        sqlActual    = "SELECT sp.id_salida AS ID, sp.id_orden_cliente AS [ID Orden], " +
+                       "ISNULL(sp.cliente,'') AS Cliente, " +
+                       "CONVERT(VARCHAR, sp.fecha_salida, 103) AS Fecha, " +
+                       "ISNULL(sp.responsable,'') AS Responsable, " +
+                       "CAST((SELECT COUNT(*) FROM tbl_salida_productos_detalle d WHERE d.id_salida=sp.id_salida) AS VARCHAR) AS Items, " +
+                       "CAST(ISNULL(sp.total,0) AS VARCHAR) AS Total, " +
+                       "ISNULL(sp.observaciones,'') AS Observaciones " +
+                       "FROM tbl_salida_productos sp ORDER BY sp.fecha_salida DESC";
+        tituloActual = "Consulta de Salida de Productos";
+        resaltarBoton(btnSalidaProductos);
+        ejecutarConsulta(sqlActual, tituloActual);
+    }
+
     @FXML private void consultarMantenimiento() {
         sqlActual    = "SELECT m.id_mantenimiento AS ID, maq.nombre AS Maquinaria, " +
                        "m.tipo_mantenimiento AS Tipo, m.fecha_mantenimiento AS Fecha, " +
@@ -369,6 +413,8 @@ public class consultasController {
         if (btnIngresos    != null) btnIngresos.setStyle(verde);
         if (btnMasVendidos != null) btnMasVendidos.setStyle(verde);
         if (btnMantenimiento != null) btnMantenimiento.setStyle(oscuro);
+        if (btnSalidaMateriales != null) btnSalidaMateriales.setStyle(normal);
+        if (btnSalidaProductos != null) btnSalidaProductos.setStyle(normal);
 
         if (activo != null) activo.setStyle(activos);
     }

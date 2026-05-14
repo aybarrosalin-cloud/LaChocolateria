@@ -711,71 +711,22 @@ public class ventaController {
     }
 
     // navegacion
-    private String sqlReporte() {
-        return "SELECT v.id_venta AS [ID Factura], " +
-               "ISNULL(o.cliente,'') AS Cliente, " +
-               "v.fecha_venta AS [Fecha], " +
-               "v.subtotal AS Subtotal, " +
-               "v.descuento AS Descuento, " +
-               "v.itbis AS ITBIS, " +
-               "v.monto_total AS [Total], " +
-               "v.monto_pagado AS Pagado, " +
-               "v.balance_pendiente AS [Balance Pendiente], " +
-               "v.estado_pago AS [Estado Pago], " +
-               "v.tipo_pago AS [Tipo Pago], " +
-               "ISNULL(CAST(v.id_comprobante AS VARCHAR),'') AS NCF " +
-               "FROM tbl_venta v " +
-               "LEFT JOIN tbl_orden_cliente o ON v.id_orden = o.id_orden " +
-               "ORDER BY v.fecha_venta DESC";
-    }
-    private String tituloReporte() { return "Reporte de Facturacion"; }
-
-    // generar reporte
+    // generar reporte Jasper
 
     @FXML
     private void generarReporte() {
-        mostrarReporte(sqlReporte(), tituloReporte());
-    }
-
-    private void mostrarReporte(String sql, String titulo) {
-        try (java.sql.Connection conn = new conexion().establecerConexion();
-             java.sql.Statement  st   = conn.createStatement();
-             java.sql.ResultSet  rs   = st.executeQuery(sql)) {
-
-            TableView<ObservableList<String>> tabla = new TableView<>();
-            java.sql.ResultSetMetaData meta = rs.getMetaData();
-            int cols = meta.getColumnCount();
-            for (int i = 1; i <= cols; i++) {
-                final int idx = i - 1;
-                TableColumn<ObservableList<String>, String> col =
-                        new TableColumn<>(meta.getColumnLabel(i));
-                col.setCellValueFactory(data -> new SimpleStringProperty(
-                        data.getValue().size() > idx ? data.getValue().get(idx) : ""));
-                col.setMinWidth(100);
-                col.setStyle("-fx-background-color:#48295a; -fx-text-fill:white;" +
-                             "-fx-font-weight:bold; -fx-alignment:CENTER;");
-                tabla.getColumns().add(col);
-            }
-            ObservableList<ObservableList<String>> data =
-                    javafx.collections.FXCollections.observableArrayList();
-            while (rs.next()) {
-                ObservableList<String> fila =
-                        javafx.collections.FXCollections.observableArrayList();
-                for (int i = 1; i <= cols; i++)
-                    fila.add(rs.getString(i) != null ? rs.getString(i) : "");
-                data.add(fila);
-            }
-            tabla.setItems(data);
-            tabla.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-
-            Stage stage = new Stage();
-            stage.setTitle(titulo + "  —  " + data.size() + " registros");
-            stage.setScene(new Scene(new BorderPane(tabla), 950, 520));
-            stage.show();
-
+        String numFactura = txtNcf.getText().trim();
+        if (numFactura.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Atención", "Selecciona una venta de la tabla antes de generar el reporte.").showAndWait();
+            return;
+        }
+        java.util.Map<String, Object> params = new java.util.HashMap<>();
+        params.put("NUMERO_FACTURA", numFactura);
+        params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
+        try (java.sql.Connection conn = new conexion().establecerConexion()) {
+            JasperReportUtil.mostrarReporte("/reportes/facturalachoco.jrxml", params, conn);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR,
-                      "Error al generar reporte: " + e.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Error al generar reporte: " + e.getMessage()).showAndWait();
         }
     }
 
