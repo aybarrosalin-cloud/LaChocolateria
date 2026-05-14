@@ -5,10 +5,14 @@ import com.example.chocolateria.modelo.clienteModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class consultaClientesController {
 
@@ -64,21 +68,29 @@ public class consultaClientesController {
             }));
         tablaClientes.setItems(listaFiltrada);
 
-        cargarClientes();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarClientes();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarClientes() {
-        lista.clear();
+        List<clienteModelo> tmp = new ArrayList<>();
         String sql = "SELECT id_cliente, nombre, apellido, cedula, email, telefono, direccion, estado FROM tbl_cliente ORDER BY id_cliente";
         try (Connection c = con.establecerConexion();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) lista.add(new clienteModelo(
+            while (rs.next()) tmp.add(new clienteModelo(
                 rs.getInt("id_cliente"), rs.getString("nombre"),
                 rs.getString("apellido"), rs.getString("cedula"),
                 rs.getString("email"), rs.getString("telefono"),
                 rs.getString("direccion"), rs.getString("estado")));
-        } catch (SQLException e) {
+        Platform.runLater(() -> lista.setAll(tmp));
+    } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar clientes: " + e.getMessage()).showAndWait();
         }
     }

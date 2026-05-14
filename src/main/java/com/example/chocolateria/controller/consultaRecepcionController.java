@@ -5,10 +5,14 @@ import com.example.chocolateria.modelo.recepcionModelo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 
 public class consultaRecepcionController {
@@ -49,11 +53,18 @@ public class consultaRecepcionController {
             }));
         tablaRecepciones.setItems(listaFiltrada);
 
-        cargarRecepciones();
+        Task<Void> cargar = new Task<>() {
+            @Override protected Void call() throws Exception {
+                cargarRecepciones();
+                return null;
+            }
+        };
+        new Thread(cargar).start();
+    
     }
 
     private void cargarRecepciones() {
-        lista.clear();
+        List<recepcionModelo> tmp = new ArrayList<>();
         String sql = "SELECT id_recepcion, rnc_proveedor, numero_orden, fecha_recepcion, monto_total, observaciones, codigo_orden " +
                      "FROM tbl_recepcion ORDER BY id_recepcion DESC";
         try (Connection c = con.establecerConexion();
@@ -61,7 +72,7 @@ public class consultaRecepcionController {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 Date d = rs.getDate("fecha_recepcion");
-                lista.add(new recepcionModelo(
+                tmp.add(new recepcionModelo(
                     rs.getInt("id_recepcion"),
                     rs.getString("rnc_proveedor") != null ? rs.getString("rnc_proveedor") : "",
                     rs.getString("numero_orden")  != null ? rs.getString("numero_orden")  : "",
@@ -69,7 +80,8 @@ public class consultaRecepcionController {
                     d != null ? d.toLocalDate() : null,
                     rs.getDouble("monto_total"),
                     rs.getString("observaciones") != null ? rs.getString("observaciones") : ""));
-            }
+        Platform.runLater(() -> lista.setAll(tmp));
+    }
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Error al cargar recepciones: " + e.getMessage()).showAndWait();
         }

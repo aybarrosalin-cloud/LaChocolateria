@@ -50,7 +50,7 @@
                     <TitledPane animated="true" expanded="false" style="-fx-base:#3d1055; -fx-background-color:#3d1055; -fx-text-fill:white; -fx-font-weight:bold; -fx-font-size:11px;" text="Compras">
                         <VBox spacing="1" style="-fx-background-color:#2a0a3a; -fx-padding:4 0 4 0;">
                             <Button maxWidth="Infinity" onAction="#irAOrdenProveedor" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Orden a proveedor" />
-                            <Button maxWidth="Infinity" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" onAction="#irASalidaMateriales" text="• Recepción de productos" wrapText="true" />
+                            <Button maxWidth="Infinity" onAction="#irASalidaMateriales" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Recepción de productos" wrapText="true" />
                             <Button maxWidth="Infinity" onAction="#irAPagoCompra" style="-fx-background-color:transparent; -fx-text-fill:#e8d5f5; -fx-font-size:10px; -fx-alignment:CENTER_LEFT; -fx-padding:4 8 4 16; -fx-border-color:transparent;" text="• Registro de pagos por compras" wrapText="true" />
                         </VBox>
                     </TitledPane>
@@ -180,12 +180,12 @@
                         <Separator />
 
                         <HBox alignment="CENTER" spacing="10">
-                            <Button mnemonicParsing="false" fx:id="btnGuardar"  onAction="#guardar"       prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" fx:id="btnEditar"   onAction="#fnEditar"      prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" fx:id="btnEliminar" onAction="#fnEliminar"    prefHeight="30" prefWidth="100" text="Eliminar"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" fx:id="btnBuscar"   onAction="#fnBuscar"      prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" fx:id="btnLimpiar"  onAction="#limpiar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
-                            <Button mnemonicParsing="false" onAction="#irAConsultaProductos" prefHeight="30" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="📋 Ver Consulta"><font><Font size="11.0" /></font></Button>
+                            <Button fx:id="btnGuardar" mnemonicParsing="false" onAction="#guardar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Guardar"><font><Font size="11.0" /></font></Button>
+                            <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#fnEditar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Editar"><font><Font size="11.0" /></font></Button>
+                            <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#fnEliminar" prefHeight="30" prefWidth="100" text="Eliminar"><font><Font size="11.0" /></font></Button>
+                            <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#fnBuscar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Buscar"><font><Font size="11.0" /></font></Button>
+                            <Button fx:id="btnLimpiar" mnemonicParsing="false" onAction="#limpiar" prefHeight="30" prefWidth="100" style="-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" text="Limpiar"><font><Font size="11.0" /></font></Button>
+                            <Button mnemonicParsing="false" onAction="#irAConsultaProductos" prefHeight="30" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10;" text="Ver Consulta"><font><Font size="11.0" /></font></Button>
                         </HBox>
 
                     </VBox>
@@ -196,5 +196,3 @@
     </center>
 
 </BorderPane>
-
-                   
