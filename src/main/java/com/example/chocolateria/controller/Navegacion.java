@@ -147,9 +147,8 @@ public class Navegacion {
         return pantallaRequerida == null && alternativas == null;
     }
 
-    // true si es vista de consulta individual (protegida con clave), excluye el hub general
     private static boolean esVistaConsulta(String fxmlPath) {
         String nombre = fxmlPath.toLowerCase();
-        return nombre.contains("/vistaconsulta") && !nombre.contains("consultasgenerales");
+        return nombre.contains("/vistaconsulta") || nombre.contains("consultasgenerales");
     }
 }
