@@ -66,8 +66,6 @@ public class PermisoRol {
             Pantalla.PAGO_VENTA, Pantalla.PAGO_COMPRA, Pantalla.CONSULTAS
         ));
 
-        // encargado de rrhh
-        PERMISOS.put("Encargado de RRHH", pantallas(Pantalla.REG_EMPLEADO));
 
         // vendedor
         PERMISOS.put("Vendedor", pantallas(
@@ -127,7 +125,6 @@ public class PermisoRol {
             Consulta.INGRESOS, Consulta.MAS_VENDIDOS, Consulta.PEDIDOS
         ));
 
-        PERMISOS_CONSULTA.put("Encargado de RRHH", consultas()); // sin consultas utiles
 
         PERMISOS_CONSULTA.put("Vendedor", consultas(
             Consulta.CLIENTES, Consulta.VENTAS, Consulta.PEDIDOS

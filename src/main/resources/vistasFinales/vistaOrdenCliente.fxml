@@ -130,8 +130,11 @@
                                 <TextField fx:id="txtCodigo" editable="true" prefHeight="28" promptText="Buscar…" style="-fx-background-color:#f0eaf8; -fx-text-fill:#555;                                                   -fx-border-color:purple; -fx-border-radius:6;                                                   -fx-background-radius:6;" />
                             </VBox>
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Cliente" />
-                                <ComboBox fx:id="cmbCliente" maxWidth="Infinity" prefHeight="28" style="-fx-background-color:white; -fx-border-color:purple;                                                  -fx-border-radius:6; -fx-background-radius:6;" />
+                                <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Cliente (ID)" />
+                                <HBox spacing="4" alignment="CENTER_LEFT">
+                                    <TextField fx:id="txtIdCliente" prefHeight="28" prefWidth="55" promptText="ID" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
+                                    <TextField fx:id="txtNombreCliente" editable="false" prefHeight="28" promptText="Nombre cliente" style="-fx-background-color:#f0eaf8; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" HBox.hgrow="ALWAYS" />
+                                </HBox>
                             </VBox>
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Fecha de registro" />
@@ -139,7 +142,7 @@
                             </VBox>
                         </HBox>
 
-                        <!-- fila 2: fecha entrega, metodo pago, estado -->
+                        <!-- fila 2: fecha entrega, metodo pago, estado, cajero -->
                         <HBox alignment="CENTER_LEFT" spacing="14">
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Fecha de entrega" />
@@ -152,6 +155,13 @@
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Estado" />
                                 <ChoiceBox fx:id="cbEstado" maxWidth="Infinity" prefHeight="28" style="-fx-background-color:white; -fx-border-color:purple;                                                   -fx-border-radius:6; -fx-background-radius:6;" />
+                            </VBox>
+                            <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
+                                <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Atendido por (ID)" />
+                                <HBox spacing="4" alignment="CENTER_LEFT">
+                                    <TextField fx:id="txtIdCajero" prefHeight="28" prefWidth="55" promptText="ID" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
+                                    <TextField fx:id="txtCajero" editable="false" prefHeight="28" promptText="Nombre empleado" style="-fx-background-color:#f0eaf8; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" HBox.hgrow="ALWAYS" />
+                                </HBox>
                             </VBox>
                         </HBox>
 
@@ -183,7 +193,8 @@
                                 <font><Font size="11.0" /></font>
                             </Button>
                             <Button onAction="#irAConsultaOrdenCliente" prefHeight="30" prefWidth="140" style="-fx-background-color:#2e7d32; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:10; -fx-cursor:hand; -fx-font-size:11px;" text="Ver Consulta" />
-                            <Button onAction="#generarReporte" prefHeight="30" prefWidth="155" style="-fx-background-color:#3d1055; -fx-text-fill:#ffd6ff; -fx-font-weight:bold; -fx-background-radius:12; -fx-font-size:11px;" text="Generar Reporte"><font><Font size="11.0" /></font></Button>
+                            <Button onAction="#generarReporte" prefHeight="30" prefWidth="140" style="-fx-background-color:#3d1055; -fx-text-fill:#ffd6ff; -fx-font-weight:bold; -fx-background-radius:12; -fx-font-size:11px;" text="Generar Reporte"><font><Font size="11.0" /></font></Button>
+                            <Button onAction="#exportarPDF" prefHeight="30" prefWidth="130" style="-fx-background-color:#8B0000; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12; -fx-font-size:11px;" text="Exportar PDF"><font><Font size="11.0" /></font></Button>
                         </HBox>
                     </VBox>
 

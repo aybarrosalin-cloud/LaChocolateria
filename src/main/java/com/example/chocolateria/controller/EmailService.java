@@ -68,7 +68,7 @@ public class EmailService {
         } catch (Exception ignored) {}
         return null;
     }
-
+//INICIA CORREO
     public static void notificarNuevoReclamo(int idReclamo, String cliente,
                                              String tipo, String prioridad,
                                              String descripcion, String empleado) {

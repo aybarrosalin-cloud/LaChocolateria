@@ -101,7 +101,8 @@ public class consultaReclamosController {
                     rs.getString("estado") != null ? rs.getString("estado") : "",
                     rs.getString("prioridad") != null ? rs.getString("prioridad") : "",
                     rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
-                    d != null ? d.toLocalDate() : null));
+                    d != null ? d.toLocalDate() : null,
+                    0));
         Platform.runLater(() -> lista.setAll(tmp));
     }
         } catch (Exception e) {

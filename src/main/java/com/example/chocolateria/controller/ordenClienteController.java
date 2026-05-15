@@ -8,12 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 
 import javafx.beans.property.SimpleDoubleProperty;
@@ -31,12 +27,15 @@ public class ordenClienteController {
 
     // formulario
     @FXML private TextField        txtCodigo;
-    @FXML private ComboBox<String> cmbCliente;
+    @FXML private TextField        txtIdCliente;
+    @FXML private TextField        txtNombreCliente;
     @FXML private DatePicker       dpFecha;
     @FXML private DatePicker       dpFecha1;
     @FXML private ChoiceBox<String> cbMetodoPago;
     @FXML private ChoiceBox<String> cbEstado;
     @FXML private TextArea         txtObservaciones;
+    @FXML private TextField        txtIdCajero;
+    @FXML private TextField        txtCajero;
 
     // agregar producto al detalle
     @FXML private TextField txtIdProducto;
@@ -78,6 +77,15 @@ public class ordenClienteController {
         cbEstado.setItems(FXCollections.observableArrayList(
             "Pendiente", "En proceso", "Completada", "Cancelada", "Entregada"));
 
+        txtIdCliente.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) buscarNombreCliente();
+        });
+        txtIdCliente.setOnAction(e -> buscarNombreCliente());
+
+        txtIdCajero.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) buscarNombreEmpleado();
+        });
+        txtIdCajero.setOnAction(e -> buscarNombreEmpleado());
 
         colDetCodigo.setCellValueFactory(d   -> d.getValue().codigoProperty());
         colDetProducto.setCellValueFactory(d -> d.getValue().productoProperty());
@@ -88,30 +96,33 @@ public class ordenClienteController {
         tablaDetalle.setItems(listaDetalle);
         listaDetalle.addListener((javafx.collections.ListChangeListener<ordenDetalleModelo>) c -> recalcularTotal());
 
-
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-            cargarClientes();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
         generarSiguienteId();
     }
 
-    private void cargarClientes() {
-        List<String> tmp = new ArrayList<>();
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(
-                 "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente ORDER BY nombre")) {
-            while (rs.next()) tmp.add(rs.getString("nombre_completo"));
+    @FXML
+    private void buscarNombreCliente() {
+        String idTexto = txtIdCliente.getText().trim();
+        if (idTexto.isEmpty()) { txtNombreCliente.clear(); return; }
+        try {
+            int id = Integer.parseInt(idTexto);
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(
+                     "SELECT nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente WHERE id_cliente = ?")) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    txtNombreCliente.setText(rs.getString("nombre_completo"));
+                } else {
+                    txtNombreCliente.clear();
+                    mostrarAlerta(Alert.AlertType.WARNING, "Cliente no encontrado",
+                        "No existe un cliente con ID " + id + ".");
+                }
+            }
+        } catch (NumberFormatException e) {
+            txtNombreCliente.clear();
         } catch (Exception e) {
-            String msg = e.getMessage();
-            Platform.runLater(() -> mostrarAlerta(Alert.AlertType.ERROR, "Error", msg));
-            return;
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
-        Platform.runLater(() -> cmbCliente.getItems().addAll(tmp));
     }
 
     @FXML
@@ -197,16 +208,18 @@ public class ordenClienteController {
             mostrarAlerta(Alert.AlertType.INFORMATION, "Acción no disponible", "Ya hay un registro cargado. Usa 'Editar' para modificarlo o 'Limpiar' para crear uno nuevo.");
             return;
         }
+        if (!txtIdCliente.getText().trim().isEmpty()) buscarNombreCliente();
+        if (!txtIdCajero.getText().trim().isEmpty())  buscarNombreEmpleado();
         if (!validarCampos()) return;
 
-        String sql = "INSERT INTO tbl_orden_cliente (id_cliente, cliente, fecha_registro, fecha_entrega, metodo_pago, estado, observaciones) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO tbl_orden_cliente (id_cliente, cliente, fecha_registro, fecha_entrega, metodo_pago, estado, observaciones, cajero) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            String clienteNombre = cmbCliente.getValue();
-            int idCliente = buscarIdCliente(conn, clienteNombre);
+            int idCliente = Integer.parseInt(txtIdCliente.getText().trim());
+            String clienteNombre = txtNombreCliente.getText().trim();
 
             ps.setInt(1, idCliente);
             ps.setString(2, clienteNombre);
@@ -215,6 +228,7 @@ public class ordenClienteController {
             ps.setString(5, cbMetodoPago.getValue());
             ps.setString(6, cbEstado.getValue());
             ps.setString(7, txtObservaciones.getText().trim());
+            ps.setString(8, txtCajero.getText().trim());
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
@@ -251,21 +265,23 @@ public class ordenClienteController {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una orden por ID antes de editar.");
             return;
         }
+        if (!txtIdCajero.getText().trim().isEmpty()) buscarNombreEmpleado();
         if (!validarCampos()) return;
 
         String sql = "UPDATE tbl_orden_cliente SET cliente=?, fecha_registro=?, fecha_entrega=?, " +
-                     "metodo_pago=?, estado=?, observaciones=? WHERE id_orden=?";
+                     "metodo_pago=?, estado=?, observaciones=?, cajero=? WHERE id_orden=?";
 
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, cmbCliente.getValue());
+            ps.setString(1, txtNombreCliente.getText().trim());
             ps.setDate(2, Date.valueOf(dpFecha.getValue()));
             ps.setObject(3, dpFecha1.getValue() != null ? Date.valueOf(dpFecha1.getValue()) : null);
             ps.setString(4, cbMetodoPago.getValue());
             ps.setString(5, cbEstado.getValue());
             ps.setString(6, txtObservaciones.getText().trim());
-            ps.setInt(7, ordenCargada.getIdOrden());
+            ps.setString(7, txtCajero.getText().trim());
+            ps.setInt(8, ordenCargada.getIdOrden());
             ps.executeUpdate();
 
             try (PreparedStatement psDel = conn.prepareStatement(
@@ -347,7 +363,7 @@ public class ordenClienteController {
             return;
         }
 
-        String sql = "SELECT id_orden, id_cliente, cliente, fecha_registro, fecha_entrega, metodo_pago, estado, observaciones " +
+        String sql = "SELECT id_orden, id_cliente, cliente, fecha_registro, fecha_entrega, metodo_pago, estado, observaciones, cajero " +
                      "FROM tbl_orden_cliente WHERE id_orden=?";
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -364,11 +380,12 @@ public class ordenClienteController {
                     dEnt != null ? dEnt.toLocalDate() : null,
                     rs.getString("metodo_pago"),
                     rs.getString("estado"),
-                    rs.getString("observaciones") != null ? rs.getString("observaciones") : "");
+                    rs.getString("observaciones") != null ? rs.getString("observaciones") : "",
+                    rs.getString("cajero") != null ? rs.getString("cajero") : "");
+                actualizarBotones(1);
                 cargarEnFormulario(ordenCargada);
                 cargarDetalle(idBuscar);
             } else {
-                actualizarBotones(1);
                 mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
                     "No existe una orden con el ID " + idBuscar + ".");
             }
@@ -378,15 +395,44 @@ public class ordenClienteController {
     }
 
     @FXML
+    private void buscarNombreEmpleado() {
+        String idTexto = txtIdCajero.getText().trim();
+        if (idTexto.isEmpty()) { txtCajero.clear(); return; }
+        try {
+            int id = Integer.parseInt(idTexto);
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(
+                     "SELECT nombre + ' ' + apellido AS nombre_completo FROM tbl_empleado WHERE id_empleado = ?")) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    txtCajero.setText(rs.getString("nombre_completo"));
+                } else {
+                    txtCajero.clear();
+                    mostrarAlerta(Alert.AlertType.WARNING, "Empleado no encontrado",
+                        "No existe un empleado con ID " + id + ".");
+                }
+            }
+        } catch (NumberFormatException e) {
+            txtCajero.clear();
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
+        }
+    }
+
+    @FXML
     private void limpiarCampos() {
         actualizarBotones(0);
         txtCodigo.clear();
-        cmbCliente.setValue(null);
+        txtIdCliente.clear();
+        txtNombreCliente.clear();
         dpFecha.setValue(null);
         dpFecha1.setValue(null);
         cbMetodoPago.setValue(null);
         cbEstado.setValue(null);
         txtObservaciones.clear();
+        txtIdCajero.clear();
+        txtCajero.clear();
         txtIdProducto.clear();
         txtNombreProducto.clear();
         txtCantidad.clear();
@@ -420,24 +466,41 @@ public class ordenClienteController {
         }
     }
 
-    private int buscarIdCliente(Connection conn, String nombreCompleto) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement(
-             "SELECT id_cliente FROM tbl_cliente WHERE nombre + ' ' + apellido = ?")) {
-            ps.setString(1, nombreCompleto);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("id_cliente");
+    @FXML
+    private void exportarPDF() {
+        if (ordenCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca y carga una orden antes de exportar.");
+            return;
         }
-        return 0;
+        javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
+        fc.setTitle("Guardar Factura PDF");
+        fc.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
+        fc.setInitialFileName("Factura_" + ordenCargada.getIdOrden() + ".pdf");
+        java.io.File archivo = fc.showSaveDialog(null);
+        if (archivo == null) return;
+        try (Connection conn = new conexion().establecerConexion()) {
+            java.util.Map<String, Object> params = new java.util.HashMap<>();
+            params.put("ID_VENTA", ordenCargada.getIdOrden());
+            params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
+            JasperReportUtil.exportarPDF("/reportes/facturalachoco.jrxml", params, conn, archivo.getAbsolutePath());
+            mostrarAlerta(Alert.AlertType.INFORMATION, "PDF exportado",
+                "Guardado en:\n" + archivo.getAbsolutePath());
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al exportar PDF", e.getMessage());
+        }
     }
 
     private void cargarEnFormulario(ordenClienteModelo o) {
         txtCodigo.setText(String.valueOf(o.getIdOrden()));
-        cmbCliente.setValue(o.getCliente());
+        txtIdCliente.setText(String.valueOf(o.getIdCliente()));
+        txtNombreCliente.setText(o.getCliente());
         dpFecha.setValue(o.getFechaRegistro());
         dpFecha1.setValue(o.getFechaEntrega());
         cbMetodoPago.setValue(o.getMetodoPago());
         cbEstado.setValue(o.getEstado());
         txtObservaciones.setText(o.getObservaciones());
+        txtIdCajero.clear();
+        txtCajero.setText(o.getCajero());
     }
 
     private void generarSiguienteId() {
@@ -452,8 +515,8 @@ public class ordenClienteController {
     }
 
     private boolean validarCampos() {
-        if (cmbCliente.getValue() == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Campo requerido", "Selecciona un cliente.");
+        if (txtNombreCliente.getText().trim().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Campo requerido", "Ingresa el ID del cliente.");
             return false;
         }
         if (dpFecha.getValue() == null) {
@@ -498,13 +561,15 @@ public class ordenClienteController {
             return;
         }
 
-        String cliente   = cmbCliente.getValue() != null ? cmbCliente.getValue() : "—";
+        String cliente   = !txtNombreCliente.getText().trim().isEmpty() ? txtNombreCliente.getText().trim() : "—";
         String metodo    = cbMetodoPago.getValue() != null ? cbMetodoPago.getValue() : "—";
         String estado    = cbEstado.getValue() != null ? cbEstado.getValue() : "—";
         String fechaReg  = dpFecha.getValue() != null ? dpFecha.getValue().toString() : "—";
         String fechaEnt  = dpFecha1.getValue() != null ? dpFecha1.getValue().toString() : "—";
         String idOrden   = txtCodigo.getText().trim();
-        double total     = listaDetalle.stream().mapToDouble(d -> d.getCantidad() * d.getPrecio()).sum();
+        double subtotal  = listaDetalle.stream().mapToDouble(d -> d.getCantidad() * d.getPrecio()).sum();
+        double itbis     = subtotal * 0.18;
+        double total     = subtotal + itbis;
 
         // encabezado
         VBox root = new VBox(14);
@@ -565,28 +630,79 @@ public class ordenClienteController {
         tabla.getColumns().addAll(cCod, cProd, cCant, cPrec, cSub);
         tabla.setItems(listaDetalle);
 
-        // total
+        // subtotal / ITBIS / total
+        String styleEtiq = "-fx-font-size:12px; -fx-font-weight:bold; -fx-text-fill:#48295a;";
+        String styleVal  = "-fx-font-size:12px; -fx-text-fill:#333;";
+        String styleTot  = "-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#48295a; " +
+                           "-fx-background-color:#e8d5f0; -fx-background-radius:8; " +
+                           "-fx-padding:4 16 4 16; -fx-border-color:#C5A8E8; -fx-border-radius:8;";
+
+        VBox vTotales = new VBox(6);
+        vTotales.setAlignment(Pos.CENTER_RIGHT);
+
+        HBox hSub = new HBox(12);
+        hSub.setAlignment(Pos.CENTER_RIGHT);
+        Label lSub = new Label("Subtotal:"); lSub.setStyle(styleEtiq);
+        Label vSub = new Label(String.format("RD$ %,.2f", subtotal)); vSub.setStyle(styleVal);
+        hSub.getChildren().addAll(lSub, vSub);
+
+        HBox hItbis = new HBox(12);
+        hItbis.setAlignment(Pos.CENTER_RIGHT);
+        Label lItbis = new Label("ITBIS (18%):"); lItbis.setStyle(styleEtiq);
+        Label vItbis = new Label(String.format("RD$ %,.2f", itbis)); vItbis.setStyle(styleVal);
+        hItbis.getChildren().addAll(lItbis, vItbis);
+
         HBox hTotal = new HBox(10);
         hTotal.setAlignment(Pos.CENTER_RIGHT);
         Label lblTituloTotal = new Label("TOTAL:");
         lblTituloTotal.setStyle("-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#48295a;");
         Label lblValorTotal = new Label(String.format("RD$ %,.2f", total));
-        lblValorTotal.setStyle("-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#48295a; " +
-                "-fx-background-color:#e8d5f0; -fx-background-radius:8; -fx-padding:4 16 4 16; " +
-                "-fx-border-color:#C5A8E8; -fx-border-radius:8;");
+        lblValorTotal.setStyle(styleTot);
         hTotal.getChildren().addAll(lblTituloTotal, lblValorTotal);
 
-        // nota
+        vTotales.getChildren().addAll(hSub, hItbis, new javafx.scene.control.Separator(), hTotal);
+
+        // nota + botón exportar
         Label nota = new Label("Esta cotización es válida por 30 días desde la fecha de registro.");
         nota.setStyle("-fx-font-size:10px; -fx-text-fill:#888; -fx-font-style:italic;");
 
+        javafx.scene.control.Button btnPDF = new javafx.scene.control.Button("Exportar PDF");
+        btnPDF.setStyle("-fx-background-color:#8B0000; -fx-text-fill:white; -fx-font-weight:bold; " +
+                        "-fx-background-radius:10; -fx-font-size:12px;");
+        btnPDF.setOnAction(ev -> {
+            if (ordenCargada == null) {
+                mostrarAlerta(Alert.AlertType.WARNING, "Orden no guardada",
+                    "Guarda la orden primero para poder exportar el PDF.");
+                return;
+            }
+            javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
+            fc.setTitle("Guardar Cotización PDF");
+            fc.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
+            fc.setInitialFileName("Cotizacion_" + ordenCargada.getIdOrden() + ".pdf");
+            java.io.File archivo = fc.showSaveDialog(null);
+            if (archivo == null) return;
+            try (Connection connPDF = new conexion().establecerConexion()) {
+                java.util.Map<String, Object> params = new java.util.HashMap<>();
+                params.put("ID_VENTA", ordenCargada.getIdOrden());
+                params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
+                JasperReportUtil.exportarPDF("/reportes/facturalachoco.jrxml", params, connPDF, archivo.getAbsolutePath());
+                mostrarAlerta(Alert.AlertType.INFORMATION, "PDF exportado",
+                    "Guardado en:\n" + archivo.getAbsolutePath());
+            } catch (Exception ex) {
+                mostrarAlerta(Alert.AlertType.ERROR, "Error al exportar PDF", ex.getMessage());
+            }
+        });
+
+        HBox hBotones = new HBox(btnPDF);
+        hBotones.setAlignment(Pos.CENTER_RIGHT);
+
         root.getChildren().addAll(titulo, empresa, sep1, grid,
-                new javafx.scene.control.Separator(), tabla, hTotal, nota);
+                new javafx.scene.control.Separator(), tabla, vTotales, nota, hBotones);
 
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle("Cotización — " + cliente);
-        stage.setScene(new Scene(root, 740, 560));
+        stage.setScene(new Scene(root, 740, 620));
         stage.show();
     }
 
@@ -596,18 +712,17 @@ public class ordenClienteController {
 
     @FXML
     private void generarReporte() {
-        String idPedido = txtCodigo.getText().trim();
-        if (idPedido.isEmpty()) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Carga una orden en el formulario antes de generar el reporte.");
+        if (ordenCargada == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca y carga una orden antes de generar la factura.");
             return;
         }
-        java.util.Map<String, Object> params = new java.util.HashMap<>();
-        params.put("ID_PEDIDO", Integer.parseInt(idPedido));
-        params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
         try (java.sql.Connection conn = new conexion().establecerConexion()) {
-            JasperReportUtil.mostrarReporte("/reportes/reporte_pedido.jrxml", params, conn);
+            java.util.Map<String, Object> params = new java.util.HashMap<>();
+            params.put("ID_VENTA", ordenCargada.getIdOrden());
+            params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
+            JasperReportUtil.mostrarReporte("/reportes/facturalachoco.jrxml", params, conn);
         } catch (Exception e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error al generar reporte", e.getMessage());
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al generar factura", e.getMessage());
         }
     }
 

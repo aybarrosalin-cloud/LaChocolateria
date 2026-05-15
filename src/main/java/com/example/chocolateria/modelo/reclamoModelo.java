@@ -14,10 +14,12 @@ public class reclamoModelo {
     private final SimpleStringProperty             prioridad;
     private final SimpleStringProperty             descripcion;
     private final SimpleObjectProperty<LocalDate>  fechaReclamo;
+    private final SimpleIntegerProperty            idEmpleado;
 
     public reclamoModelo(int idReclamo, int idCliente, String cliente,
                          int idOrden, String tipoReclamo, String estado,
-                         String prioridad, String descripcion, LocalDate fechaReclamo) {
+                         String prioridad, String descripcion, LocalDate fechaReclamo,
+                         int idEmpleado) {
         this.idReclamo   = new SimpleIntegerProperty(idReclamo);
         this.idCliente   = new SimpleIntegerProperty(idCliente);
         this.cliente     = new SimpleStringProperty(cliente);
@@ -27,6 +29,7 @@ public class reclamoModelo {
         this.prioridad   = new SimpleStringProperty(prioridad);
         this.descripcion = new SimpleStringProperty(descripcion);
         this.fechaReclamo= new SimpleObjectProperty<>(fechaReclamo);
+        this.idEmpleado  = new SimpleIntegerProperty(idEmpleado);
     }
 
     public int       getIdReclamo()   { return idReclamo.get(); }
@@ -38,6 +41,7 @@ public class reclamoModelo {
     public String    getPrioridad()   { return prioridad.get(); }
     public String    getDescripcion() { return descripcion.get(); }
     public LocalDate getFechaReclamo(){ return fechaReclamo.get(); }
+    public int       getIdEmpleado()  { return idEmpleado.get(); }
 
     public void setCliente(String v)     { cliente.set(v); }
     public void setIdOrden(int v)        { idOrden.set(v); }
@@ -45,6 +49,7 @@ public class reclamoModelo {
     public void setEstado(String v)      { estado.set(v); }
     public void setPrioridad(String v)   { prioridad.set(v); }
     public void setDescripcion(String v) { descripcion.set(v); }
+    public void setIdEmpleado(int v)     { idEmpleado.set(v); }
 
     public SimpleIntegerProperty            idReclamoProperty()   { return idReclamo; }
     public SimpleIntegerProperty            idClienteProperty()   { return idCliente; }
@@ -55,4 +60,5 @@ public class reclamoModelo {
     public SimpleStringProperty             prioridadProperty()   { return prioridad; }
     public SimpleStringProperty             descripcionProperty() { return descripcion; }
     public SimpleObjectProperty<LocalDate>  fechaReclamoProperty(){ return fechaReclamo; }
+    public SimpleIntegerProperty            idEmpleadoProperty()  { return idEmpleado; }
 }
