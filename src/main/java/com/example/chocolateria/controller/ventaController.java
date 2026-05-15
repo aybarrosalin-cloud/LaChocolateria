@@ -715,18 +715,17 @@ public class ventaController {
 
     @FXML
     private void generarReporte() {
-        String numFactura = txtNcf.getText().trim();
-        if (numFactura.isEmpty()) {
-            new Alert(Alert.AlertType.WARNING, "Atención", "Selecciona una venta de la tabla antes de generar el reporte.").showAndWait();
+        if (idVentaSeleccionada == 0) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Selecciona una venta de la tabla antes de generar el reporte.");
             return;
         }
         java.util.Map<String, Object> params = new java.util.HashMap<>();
-        params.put("NUMERO_FACTURA", numFactura);
+        params.put("ID_VENTA", idVentaSeleccionada);
         params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
         try (java.sql.Connection conn = new conexion().establecerConexion()) {
             JasperReportUtil.mostrarReporte("/reportes/facturalachoco.jrxml", params, conn);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error al generar reporte: " + e.getMessage()).showAndWait();
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al generar reporte", e.getMessage());
         }
     }
 

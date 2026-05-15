@@ -333,18 +333,17 @@ public class envioController {
 
     @FXML
     private void generarReporte() {
-        String idOrden = txtId.getText().trim();
-        if (idOrden.isEmpty()) {
-            new Alert(Alert.AlertType.WARNING, "Atención", "Carga un envio en el formulario antes de generar el reporte.").showAndWait();
+        if (envioCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un envio por ID primero para generar el reporte.");
             return;
         }
         java.util.Map<String, Object> params = new java.util.HashMap<>();
-        params.put("ID_ORDEN", Integer.parseInt(idOrden));
+        params.put("ID_ENVIO", envioCargado.getIdEnvio());
         params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
-        try (java.sql.Connection conn = new conexion().establecerConexion()) {
+        try (Connection conn = con.establecerConexion()) {
             JasperReportUtil.mostrarReporte("/reportes/entregalachoco.jrxml", params, conn);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error al generar reporte: " + e.getMessage()).showAndWait();
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al generar reporte", e.getMessage());
         }
     }
 

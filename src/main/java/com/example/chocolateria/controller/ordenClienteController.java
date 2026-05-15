@@ -598,7 +598,7 @@ public class ordenClienteController {
     private void generarReporte() {
         String idPedido = txtCodigo.getText().trim();
         if (idPedido.isEmpty()) {
-            new Alert(Alert.AlertType.WARNING, "Atención", "Carga una orden en el formulario antes de generar el reporte.").showAndWait();
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Carga una orden en el formulario antes de generar el reporte.");
             return;
         }
         java.util.Map<String, Object> params = new java.util.HashMap<>();
@@ -607,7 +607,7 @@ public class ordenClienteController {
         try (java.sql.Connection conn = new conexion().establecerConexion()) {
             JasperReportUtil.mostrarReporte("/reportes/reporte_pedido.jrxml", params, conn);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error al generar reporte: " + e.getMessage()).showAndWait();
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al generar reporte", e.getMessage());
         }
     }
 

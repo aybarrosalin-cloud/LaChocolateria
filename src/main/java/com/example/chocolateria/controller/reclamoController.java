@@ -336,18 +336,17 @@ public class reclamoController {
 
     @FXML
     private void generarReporte() {
-        String idReclamo = txtId.getText().trim();
-        if (idReclamo.isEmpty()) {
-            new Alert(Alert.AlertType.WARNING, "Atención", "Carga un reclamo en el formulario antes de generar el reporte.").showAndWait();
+        if (reclamoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca un reclamo por ID primero para generar el reporte.");
             return;
         }
         java.util.Map<String, Object> params = new java.util.HashMap<>();
-        params.put("ID_RECLAMO", Integer.parseInt(idReclamo));
+        params.put("ID_RECLAMO", reclamoCargado.getIdReclamo());
         params.put("LOGO", getClass().getResourceAsStream("/com/example/chocolateria/logo.png"));
         try (java.sql.Connection conn = new conexion().establecerConexion()) {
             JasperReportUtil.mostrarReporte("/reportes/lachoco_reclamo.jrxml", params, conn);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error al generar reporte: " + e.getMessage()).showAndWait();
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al generar reporte", e.getMessage());
         }
     }
 

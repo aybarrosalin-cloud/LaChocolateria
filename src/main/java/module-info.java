@@ -4,6 +4,7 @@ module com.example.chocolateria {
     requires java.sql;
     requires java.desktop;
     requires jakarta.mail;
+    requires jasperreports;
 
     opens com.example.chocolateria to javafx.fxml;
     opens com.example.chocolateria.controller to javafx.fxml;

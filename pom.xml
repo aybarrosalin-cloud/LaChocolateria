@@ -151,6 +151,10 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <compilerArgs>
+                        <arg>--add-reads</arg>
+                        <arg>com.example.chocolateria=ALL-UNNAMED</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -166,9 +170,33 @@
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
+                            <jvmArgs>
+                                <arg>--add-reads</arg>
+                                <arg>com.example.chocolateria=ALL-UNNAMED</arg>
+                            </jvmArgs>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>compile-reports</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.chocolateria.application.CompileReports</mainClass>
+                            <arguments>
+                                <argument>${project.build.outputDirectory}/reportes</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
