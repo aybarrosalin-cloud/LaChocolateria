@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Delivery_LaChoco" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="prueba 1"/>
-	<style name="EmpresaNombre" forecolor="#FFFFFF" fontName="Arial" fontSize="22.0" isBold="true"/>
-	<style name="EmpresaInfo" forecolor="#E8D5F5" fontName="Arial" fontSize="8.0"/>
-	<style name="ColHeader" forecolor="#FFFFFF" fontName="Arial" fontSize="9.0" isBold="true"/>
-	<style name="DetalleTxt" forecolor="#333333" fontName="Arial" fontSize="8.5"/>
-	<style name="TotalLabel" forecolor="#4A1A6B" fontName="Arial" fontSize="9.5" isBold="true"/>
-	<parameter name="ID_ENVIO" class="java.lang.Integer">
-		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
-	</parameter>
-	<parameter name="LOGO" class="java.io.InputStream"/>
-	<queryString><![CDATA[
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="Delivery_LaChoco" language="java"
+              pageWidth="842" pageHeight="595" orientation="Landscape"
+              columnWidth="802" leftMargin="20" rightMargin="20"
+              topMargin="15" bottomMargin="15"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="40000000-0000-0000-0000-000000000000">
+
+    <style name="Default" forecolor="#212121" fontName="Arial" fontSize="9"/>
+
+    <parameter name="ID_ENVIO" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LOGO" class="java.io.InputStream"/>
+
+    <queryString language="SQL"><![CDATA[
         SELECT
             ISNULL(oc.id_orden, 0)                                        AS id_orden,
             oc.fecha_registro,
@@ -29,11 +36,11 @@
             ISNULL(od.cantidad, 0)                                        AS cantidad,
             ISNULL(od.precio, 0)                                          AS precio,
             ISNULL(od.cantidad, 0) * ISNULL(od.precio, 0)                AS subtotal,
-            ISNULL(e.numero_guia, '-- Sin gu&iacute;a --')               AS numero_guia,
+            ISNULL(e.numero_guia, '-- Sin guia --')                       AS numero_guia,
             ISNULL(e.transportista, '-- Sin transportista --')            AS transportista,
             ISNULL(e.provincia, '')                                       AS provincia,
             ISNULL(e.ciudad, '')                                          AS ciudad,
-            ISNULL(e.direccion, ISNULL(c.direccion, ''))                 AS dir_envio,
+            ISNULL(e.direccion, ISNULL(c.direccion, ''))                  AS dir_envio,
             e.fecha_envio,
             e.fecha_entrega                                               AS fecha_entrega_real,
             ISNULL(e.estado, '')                                          AS estado_envio,
@@ -50,265 +57,551 @@
         LEFT JOIN tbl_orden_detalle od ON od.id_orden = oc.id_orden
         ORDER BY od.id_detalle
     ]]></queryString>
-	<field name="id_orden" class="java.lang.Integer"/>
-	<field name="fecha_registro" class="java.sql.Date"/>
-	<field name="fecha_entrega" class="java.sql.Date"/>
-	<field name="metodo_pago" class="java.lang.String"/>
-	<field name="estado_orden" class="java.lang.String"/>
-	<field name="observaciones" class="java.lang.String"/>
-	<field name="nombre_cliente" class="java.lang.String"/>
-	<field name="cedula_cliente" class="java.lang.String"/>
-	<field name="tel_cliente" class="java.lang.String"/>
-	<field name="email_cliente" class="java.lang.String"/>
-	<field name="dir_cliente" class="java.lang.String"/>
-	<field name="codigo" class="java.lang.String"/>
-	<field name="producto" class="java.lang.String"/>
-	<field name="categoria" class="java.lang.String"/>
-	<field name="cantidad" class="java.lang.Integer"/>
-	<field name="precio" class="java.math.BigDecimal"/>
-	<field name="subtotal" class="java.math.BigDecimal"/>
-	<field name="numero_guia" class="java.lang.String"/>
-	<field name="transportista" class="java.lang.String"/>
-	<field name="provincia" class="java.lang.String"/>
-	<field name="ciudad" class="java.lang.String"/>
-	<field name="dir_envio" class="java.lang.String"/>
-	<field name="fecha_envio" class="java.sql.Date"/>
-	<field name="fecha_entrega_real" class="java.sql.Date"/>
-	<field name="estado_envio" class="java.lang.String"/>
-	<field name="temperatura" class="java.lang.String"/>
-	<variable name="V_TOTAL" calculation="Sum" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{subtotal}]]></variableExpression>
-	</variable>
-	<variable name="V_ITEMS" calculation="Sum" class="java.lang.Integer">
-		<variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
-	</variable>
-	<background>
-		<band height="565">
-			<frame uuid="d0000000-0000-0000-0000-000000000001" mode="Opaque" x="-20" y="0" width="7" height="565" forecolor="#3D1A5C" backcolor="#3D1A5C">
-				<box>
-					<pen lineWidth="0.0"/>
-				</box>
-			</frame>
-		</band>
-	</background>
-	<title>
-		<band height="235" splitType="Stretch">
-		<frame uuid="d0000000-0000-0000-0000-000000000002" mode="Opaque" x="0" y="7" width="802" height="120" forecolor="#4A1A6B" backcolor="#4A1A6B">
-			<image uuid="d0000000-0000-0000-0000-000000000003" x="-80" y="-20" width="280" height="160" scaleImage="RetainShape" onErrorType="Blank" hImageAlign="Center" vImageAlign="Middle">
-				<expression><![CDATA[$P{LOGO}]]></expression>
-			</image>
-			<staticText uuid="d0000000-0000-0000-0000-000000000007" x="110" y="90" width="220" height="13" forecolor="#E8D5F5" fontName="Georgia" fontSize="8.0">
-				<text><![CDATA[Email: lachocory@gmail.com]]></text>
-			</staticText>
-			<staticText uuid="d0000000-0000-0000-0000-000000000006" x="110" y="70" width="220" height="13" forecolor="#E8D5F5" fontName="Georgia" fontSize="8.0">
-				<text><![CDATA[WhatsApp: +63 939 248 6519]]></text>
-			</staticText>
-			<staticText uuid="d0000000-0000-0000-0000-000000000005" x="110" y="50" width="220" height="13" forecolor="#C8A8E9" fontName="Georgia" fontSize="8.5" isItalic="true">
-				<text><![CDATA[Chocolater&iacute;a Bean to Bar]]></text>
-			</staticText>
-			<staticText uuid="d0000000-0000-0000-0000-000000000004" x="109" y="22" width="220" height="32" forecolor="#FFFFFF" fontName="Georgia" fontSize="22.0" isBold="true">
-				<text><![CDATA[LACHOCO]]></text>
-			</staticText>
-			<staticText uuid="d0000000-0000-0000-0000-000000000010" x="569" y="17" width="105" height="13" forecolor="#C8A8E9" fontName="Georgia&#xd;&#xa;" fontSize="8.0" isBold="true">
-				<text><![CDATA[N&deg; Orden:]]></text>
-			</staticText>
-			<staticText uuid="d0000000-0000-0000-0000-000000000014" x="568" y="70" width="105" height="13" forecolor="#C8A8E9" fontName="Georgia" fontSize="8.0" isBold="true">
-				<text><![CDATA[F. Entrega:]]></text>
-			</staticText>
-			<textField uuid="d0000000-0000-0000-0000-000000000011" x="672" y="17" width="124" height="13" forecolor="#FFFFFF" fontName="Arial" fontSize="8.0" blankWhenNull="true" isBold="true">
-				<expression><![CDATA[$F{id_orden}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000013" x="673" y="47" width="124" height="13" forecolor="#FFFFFF" fontName="Arial" fontSize="8.0" pattern="dd/MM/yyyy" blankWhenNull="true">
-				<expression><![CDATA[$F{fecha_registro}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000015" x="672" y="70" width="124" height="13" forecolor="#FFFFFF" fontName="Arial" fontSize="8.0" pattern="dd/MM/yyyy" blankWhenNull="true">
-				<expression><![CDATA[$F{fecha_entrega}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000017" x="674" y="101" width="124" height="13" forecolor="#FFFFFF" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-				<expression><![CDATA[$F{estado_orden}]]></expression>
-			</textField>
-			<staticText uuid="cd480c3a-d434-4d47-831b-f5f1692cc39e" x="567" y="47" width="105" height="13" forecolor="#C8A8E9" fontName="Georgia&#xd;&#xa;" fontSize="8.0" isBold="true">
-				<text><![CDATA[F. Registro:]]></text>
-			</staticText>
-			<staticText uuid="d0000000-0000-0000-0000-000000000016" x="568" y="100" width="105" height="13" forecolor="#C8A8E9" fontName="Georgia" fontSize="8.0" isBold="true">
-				<text><![CDATA[Estado:]]></text>
-			</staticText>
-			<box>
-				<pen lineWidth="0.0"/>
-			</box>
-		</frame>
-		<frame uuid="d0000000-0000-0000-0000-000000000008" mode="Opaque" x="290" y="34" width="232" height="52" forecolor="#C8A8E9" backcolor="#C8A8E9">
-			<box>
-				<pen lineWidth="0.0"/>
-			</box>
-		</frame>
-		<staticText uuid="d0000000-0000-0000-0000-000000000009" x="290" y="37" width="232" height="46" forecolor="#4A1A6B" fontName="Georgia" fontSize="18.0" isBold="true" hTextAlign="Center" vTextAlign="Middle">
-			<text><![CDATA[NOTA DE ENTREGA]]></text>
-		</staticText>
-		<frame uuid="d0000000-0000-0000-0000-000000000018" mode="Opaque" x="0" y="126" width="393" height="18" forecolor="#6B2D8B" backcolor="#6B2D8B">
-			<box>
-				<pen lineWidth="0.0"/>
-			</box>
-		</frame>
-		<staticText uuid="d0000000-0000-0000-0000-000000000019" x="5" y="128" width="383" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true">
-			<text><![CDATA[ENTREGAR A:]]></text>
-		</staticText>
-		<frame uuid="d0000000-0000-0000-0000-000000000020" mode="Opaque" x="0" y="144" width="393" height="88" forecolor="#F5EEF8" backcolor="#F5EEF8">
-			<box>
-				<pen lineWidth="0.8" lineColor="#C8A8E9"/>
-			</box>
-		</frame>
-		<textField uuid="d0000000-0000-0000-0000-000000000021" x="5" y="148" width="383" height="15" forecolor="#333333" fontName="Arial" fontSize="9.0" blankWhenNull="true" isBold="true">
-			<expression><![CDATA[$F{nombre_cliente}]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000022" x="5" y="165" width="383" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["C&eacute;dula: " + $F{cedula_cliente} + "    Tel: " + $F{tel_cliente}]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000023" x="5" y="180" width="383" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["Email: " + $F{email_cliente}]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000024" x="5" y="195" width="383" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["Direcci&oacute;n: " + $F{dir_cliente}]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000025" x="5" y="210" width="383" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["M&eacute;todo de pago: " + ($F{metodo_pago} != null ? $F{metodo_pago} : "&mdash;")]]></expression>
-		</textField>
-		<frame uuid="d0000000-0000-0000-0000-000000000026" mode="Opaque" x="401" y="126" width="401" height="18" forecolor="#6B2D8B" backcolor="#6B2D8B">
-			<box>
-				<pen lineWidth="0.0"/>
-			</box>
-		</frame>
-		<staticText uuid="d0000000-0000-0000-0000-000000000027" x="406" y="128" width="391" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true">
-			<text><![CDATA[DATOS DE ENV&Iacute;O:]]></text>
-		</staticText>
-		<frame uuid="d0000000-0000-0000-0000-000000000028" mode="Opaque" x="401" y="144" width="401" height="88" forecolor="#F5EEF8" backcolor="#F5EEF8">
-			<box>
-				<pen lineWidth="0.8" lineColor="#C8A8E9"/>
-			</box>
-		</frame>
-		<textField uuid="d0000000-0000-0000-0000-000000000029" x="406" y="148" width="391" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["N&deg; Gu&iacute;a: " + $F{numero_guia} + "    Estado: " + $F{estado_envio}]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000030" x="406" y="163" width="391" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["Transportista: " + $F{transportista}]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000031" x="406" y="178" width="391" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA[$F{fecha_envio} != null ? "Fecha Env&iacute;o: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_envio}) + "    F. Entrega: " + ($F{fecha_entrega_real} != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_entrega_real}) : "&mdash;") : "Fecha Env&iacute;o: &mdash;"]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000032" x="406" y="193" width="391" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["Ciudad: " + $F{ciudad} + ($F{provincia} != null && !$F{provincia}.isEmpty() ? "  /  Provincia: " + $F{provincia} : "")]]></expression>
-		</textField>
-		<textField uuid="d0000000-0000-0000-0000-000000000033" x="406" y="208" width="391" height="13" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA["Direcci&oacute;n entrega: " + $F{dir_envio} + ($F{temperatura} != null && !$F{temperatura}.isEmpty() ? "    Temp.: " + $F{temperatura} : "")]]></expression>
-		</textField>
-		</band>
-	</title>
-	<columnHeader>
-		<band height="22" splitType="Stretch">
-		<frame uuid="d0000000-0000-0000-0000-000000000034" mode="Opaque" x="0" y="0" width="802" height="22" forecolor="#6B2D8B" backcolor="#6B2D8B">
-			<box>
-				<pen lineWidth="0.0"/>
-			</box>
-		</frame>
-		<staticText uuid="d0000000-0000-0000-0000-000000000035" x="3" y="4" width="75" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true">
-			<text><![CDATA[C&oacute;digo]]></text>
-		</staticText>
-		<staticText uuid="d0000000-0000-0000-0000-000000000036" x="83" y="4" width="280" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true">
-			<text><![CDATA[Producto]]></text>
-		</staticText>
-		<staticText uuid="d0000000-0000-0000-0000-000000000037" x="368" y="4" width="150" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true">
-			<text><![CDATA[Categor&iacute;a]]></text>
-		</staticText>
-		<staticText uuid="d0000000-0000-0000-0000-000000000038" x="523" y="4" width="70" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true" hTextAlign="Center">
-			<text><![CDATA[Cantidad]]></text>
-		</staticText>
-		<staticText uuid="d0000000-0000-0000-0000-000000000039" x="598" y="4" width="100" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true" hTextAlign="Right">
-			<text><![CDATA[Precio Unit.]]></text>
-		</staticText>
-		<staticText uuid="d0000000-0000-0000-0000-000000000040" x="703" y="4" width="96" height="14" forecolor="#FFFFFF" fontName="Georgia" fontSize="8.5" isBold="true" hTextAlign="Right">
-			<text><![CDATA[Subtotal]]></text>
-		</staticText>
-		</band>
-	</columnHeader>
-	<detail>
-		<band height="20">
-			<frame uuid="d0000000-0000-0000-0000-000000000041" mode="Opaque" x="0" y="0" width="802" height="20" forecolor="#F5EEF8" backcolor="#F5EEF8">
-				<box>
-					<bottomPen lineWidth="0.5" lineColor="#C8A8E9"/>
-				</box>
-			</frame>
-			<textField uuid="d0000000-0000-0000-0000-000000000042" x="3" y="3" width="75" height="14" forecolor="#555555" fontName="Arial" fontSize="8.5" blankWhenNull="true">
-				<expression><![CDATA[$F{codigo}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000043" x="83" y="3" width="280" height="14" forecolor="#333333" fontName="Arial" fontSize="8.5" blankWhenNull="true" isBold="true">
-				<expression><![CDATA[$F{producto}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000044" x="368" y="3" width="150" height="14" forecolor="#555555" fontName="Arial" fontSize="8.5" blankWhenNull="true">
-				<expression><![CDATA[$F{categoria}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000045" x="523" y="3" width="70" height="14" forecolor="#333333" fontName="Arial" fontSize="8.5" blankWhenNull="true" hTextAlign="Center">
-				<expression><![CDATA[$F{cantidad}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000046" x="598" y="3" width="100" height="14" forecolor="#333333" fontName="Arial" fontSize="8.5" pattern="RD$ #,##0.00" blankWhenNull="true" hTextAlign="Right">
-				<expression><![CDATA[$F{precio}]]></expression>
-			</textField>
-			<textField uuid="d0000000-0000-0000-0000-000000000047" x="703" y="3" width="96" height="14" forecolor="#333333" fontName="Arial" fontSize="8.5" pattern="RD$ #,##0.00" blankWhenNull="true" hTextAlign="Right">
-				<expression><![CDATA[$F{subtotal}]]></expression>
-			</textField>
-		</band>
-	</detail>
-	<summary>
-		<band height="170" splitType="Stretch">
-		<line uuid="d0000000-0000-0000-0000-000000000048" x="0" y="0" width="802" height="1" forecolor="#6B2D8B">
-			<pen lineWidth="1.5"/>
-		</line>
-		<staticText uuid="d0000000-0000-0000-0000-000000000049" x="523" y="8" width="175" height="14" forecolor="#4A1A6B" fontName="Georgia" fontSize="9.0" isBold="true" hTextAlign="Right">
-			<text><![CDATA[Total Unidades:]]></text>
-		</staticText>
-		<textField uuid="d0000000-0000-0000-0000-000000000050" x="703" y="8" width="96" height="14" forecolor="#333333" fontName="Arial" fontSize="9.0" blankWhenNull="true" isBold="true" hTextAlign="Right">
-			<expression><![CDATA[$V{V_ITEMS}]]></expression>
-		</textField>
-		<frame uuid="d0000000-0000-0000-0000-000000000051" mode="Opaque" x="523" y="26" width="279" height="24" forecolor="#4A1A6B" backcolor="#4A1A6B">
-			<box>
-				<pen lineWidth="0.0"/>
-			</box>
-		</frame>
-		<staticText uuid="d0000000-0000-0000-0000-000000000052" x="528" y="29" width="168" height="18" forecolor="#FFFFFF" fontName="Georgia" fontSize="11.0" isBold="true" hTextAlign="Right">
-			<text><![CDATA[TOTAL:]]></text>
-		</staticText>
-		<textField uuid="d0000000-0000-0000-0000-000000000053" x="700" y="29" width="98" height="18" forecolor="#FFFFFF" fontName="Arial" fontSize="11.0" pattern="RD$ #,##0.00" blankWhenNull="true" isBold="true" hTextAlign="Right">
-			<expression><![CDATA[$V{V_TOTAL}]]></expression>
-		</textField>
-		<staticText uuid="d0000000-0000-0000-0000-000000000054" x="0" y="8" width="510" height="13" forecolor="#4A1A6B" fontName="Georgia" fontSize="8.5" isBold="true">
-			<text><![CDATA[OBSERVACIONES:]]></text>
-		</staticText>
-		<textField uuid="d0000000-0000-0000-0000-000000000055" x="0" y="23" width="510" height="35" forecolor="#555555" fontName="Arial" fontSize="8.0" blankWhenNull="true">
-			<expression><![CDATA[$F{observaciones}]]></expression>
-		</textField>
-		<line uuid="d0000000-0000-0000-0000-000000000056" x="0" y="80" width="802" height="1" forecolor="#C8A8E9">
-			<pen lineWidth="0.8"/>
-		</line>
-		<staticText uuid="d0000000-0000-0000-0000-000000000057" x="30" y="86" width="250" height="13" forecolor="#4A1A6B" fontName="Georgia" fontSize="8.0" isBold="true" hTextAlign="Center">
-			<text><![CDATA[FIRMA DEL TRANSPORTISTA]]></text>
-		</staticText>
-		<line uuid="d0000000-0000-0000-0000-000000000058" x="30" y="138" width="250" height="1" forecolor="#4A1A6B">
-			<pen lineWidth="0.8"/>
-		</line>
-		<staticText uuid="d0000000-0000-0000-0000-000000000059" x="30" y="142" width="250" height="12" forecolor="#888888" fontName="Georgia" fontSize="7.5" hTextAlign="Center">
-			<text><![CDATA[Nombre y firma]]></text>
-		</staticText>
-		<staticText uuid="d0000000-0000-0000-0000-000000000060" x="522" y="86" width="250" height="13" forecolor="#4A1A6B" fontName="Georgia" fontSize="8.0" isBold="true" hTextAlign="Center">
-			<text><![CDATA[FIRMA DEL CLIENTE / RECEPTOR]]></text>
-		</staticText>
-		<line uuid="d0000000-0000-0000-0000-000000000061" x="522" y="138" width="250" height="1" forecolor="#4A1A6B">
-			<pen lineWidth="0.8"/>
-		</line>
-		<staticText uuid="d0000000-0000-0000-0000-000000000062" x="522" y="142" width="250" height="12" forecolor="#888888" fontName="Georgia" fontSize="7.5" hTextAlign="Center">
-			<text><![CDATA[Nombre, firma y c&eacute;dula]]></text>
-		</staticText>
-		<staticText uuid="d0000000-0000-0000-0000-000000000063" x="0" y="157" width="802" height="12" forecolor="#C8A8E9" fontName="Georgia" fontSize="7.5" hTextAlign="Center">
-			<text><![CDATA[LACHOCO | Chocolater&iacute;a Bean to Bar | lachocory@gmail.com | WhatsApp: +63 939 248 6519]]></text>
-		</staticText>
-		</band>
-	</summary>
+
+    <field name="id_orden"          class="java.lang.Integer"/>
+    <field name="fecha_registro"    class="java.sql.Date"/>
+    <field name="fecha_entrega"     class="java.sql.Date"/>
+    <field name="metodo_pago"       class="java.lang.String"/>
+    <field name="estado_orden"      class="java.lang.String"/>
+    <field name="observaciones"     class="java.lang.String"/>
+    <field name="nombre_cliente"    class="java.lang.String"/>
+    <field name="cedula_cliente"    class="java.lang.String"/>
+    <field name="tel_cliente"       class="java.lang.String"/>
+    <field name="email_cliente"     class="java.lang.String"/>
+    <field name="dir_cliente"       class="java.lang.String"/>
+    <field name="codigo"            class="java.lang.String"/>
+    <field name="producto"          class="java.lang.String"/>
+    <field name="categoria"         class="java.lang.String"/>
+    <field name="cantidad"          class="java.lang.Integer"/>
+    <field name="precio"            class="java.math.BigDecimal"/>
+    <field name="subtotal"          class="java.math.BigDecimal"/>
+    <field name="numero_guia"       class="java.lang.String"/>
+    <field name="transportista"     class="java.lang.String"/>
+    <field name="provincia"         class="java.lang.String"/>
+    <field name="ciudad"            class="java.lang.String"/>
+    <field name="dir_envio"         class="java.lang.String"/>
+    <field name="fecha_envio"       class="java.sql.Date"/>
+    <field name="fecha_entrega_real" class="java.sql.Date"/>
+    <field name="estado_envio"      class="java.lang.String"/>
+    <field name="temperatura"       class="java.lang.String"/>
+
+    <variable name="V_TOTAL" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{subtotal}]]></variableExpression>
+    </variable>
+    <variable name="V_ITEMS" class="java.lang.Integer" calculation="Sum">
+        <variableExpression><![CDATA[$F{cantidad}]]></variableExpression>
+    </variable>
+
+    <background/>
+
+    <!-- ═══════════════════  ENCABEZADO  ═══════════════════ -->
+    <title>
+        <band height="235" splitType="Stretch">
+
+            <!-- Barra morada superior -->
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="7" width="802" height="120"
+                               forecolor="#4A1A6B" backcolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000001"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+
+            <!-- Logo -->
+            <image>
+                <reportElement x="10" y="12" width="90" height="90"
+                               uuid="40000000-0000-0000-0000-000000000002"/>
+                <imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
+            </image>
+
+            <!-- Nombre empresa -->
+            <staticText>
+                <reportElement x="115" y="29" width="200" height="32"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000003"/>
+                <textElement><font fontName="Georgia" size="22" isBold="true"/></textElement>
+                <text><![CDATA[LACHOCO]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="115" y="57" width="220" height="13"
+                               forecolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000004"/>
+                <textElement><font fontName="Georgia" size="8" isItalic="true"/></textElement>
+                <text><![CDATA[Chocolatería Bean to Bar]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="115" y="77" width="220" height="13"
+                               forecolor="#E8D5F5"
+                               uuid="40000000-0000-0000-0000-000000000005"/>
+                <textElement><font fontName="Georgia" size="8"/></textElement>
+                <text><![CDATA[WhatsApp: +63 939 248 6519]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="115" y="97" width="220" height="13"
+                               forecolor="#E8D5F5"
+                               uuid="40000000-0000-0000-0000-000000000006"/>
+                <textElement><font fontName="Georgia" size="8"/></textElement>
+                <text><![CDATA[Email: lachocory@gmail.com]]></text>
+            </staticText>
+
+            <!-- NOTA DE ENTREGA box -->
+            <rectangle>
+                <reportElement mode="Opaque" x="290" y="34" width="232" height="52"
+                               forecolor="#C8A8E9" backcolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000007"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="290" y="37" width="232" height="46"
+                               forecolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000008"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Georgia" size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[NOTA DE ENTREGA]]></text>
+            </staticText>
+
+            <!-- Info orden (derecha dentro de la barra) -->
+            <staticText>
+                <reportElement x="569" y="24" width="105" height="13"
+                               forecolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000009"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[N° Orden:]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="672" y="24" width="124" height="13"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000010"/>
+                <textElement><font fontName="Arial" size="8" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{id_orden}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="567" y="54" width="105" height="13"
+                               forecolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000011"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[F. Registro:]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true" pattern="dd/MM/yyyy">
+                <reportElement x="673" y="54" width="124" height="13"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000012"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{fecha_registro}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="568" y="77" width="105" height="13"
+                               forecolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000013"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[F. Entrega:]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true" pattern="dd/MM/yyyy">
+                <reportElement x="672" y="77" width="124" height="13"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000014"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{fecha_entrega}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="568" y="107" width="105" height="13"
+                               forecolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000015"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[Estado:]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="674" y="108" width="124" height="13"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000016"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{estado_orden}]]></textFieldExpression>
+            </textField>
+
+            <!-- ── ENTREGAR A ── -->
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="127" width="393" height="18"
+                               forecolor="#6B2D8B" backcolor="#6B2D8B"
+                               uuid="40000000-0000-0000-0000-000000000017"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="5" y="130" width="383" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000018"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[ENTREGAR A:]]></text>
+            </staticText>
+
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="145" width="393" height="88"
+                               forecolor="#C8A8E9" backcolor="#F5EEF8"
+                               uuid="40000000-0000-0000-0000-000000000019"/>
+                <graphicElement><pen lineWidth="0.8" lineColor="#C8A8E9"/></graphicElement>
+            </rectangle>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="148" width="383" height="15"
+                               forecolor="#333333"
+                               uuid="40000000-0000-0000-0000-000000000020"/>
+                <textElement><font fontName="Arial" size="9" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{nombre_cliente}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="165" width="383" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000021"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["Cédula: " + $F{cedula_cliente} + "    Tel: " + $F{tel_cliente}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="180" width="383" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000022"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["Email: " + $F{email_cliente}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="195" width="383" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000023"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["Dirección: " + $F{dir_cliente}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="210" width="383" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000024"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["Método de pago: " + ($F{metodo_pago} != null ? $F{metodo_pago} : "-")]]></textFieldExpression>
+            </textField>
+
+            <!-- ── DATOS DE ENVÍO ── -->
+            <rectangle>
+                <reportElement mode="Opaque" x="401" y="127" width="401" height="18"
+                               forecolor="#6B2D8B" backcolor="#6B2D8B"
+                               uuid="40000000-0000-0000-0000-000000000025"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="406" y="130" width="391" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000026"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[DATOS DE ENVÍO:]]></text>
+            </staticText>
+
+            <rectangle>
+                <reportElement mode="Opaque" x="401" y="145" width="401" height="88"
+                               forecolor="#C8A8E9" backcolor="#F5EEF8"
+                               uuid="40000000-0000-0000-0000-000000000027"/>
+                <graphicElement><pen lineWidth="0.8" lineColor="#C8A8E9"/></graphicElement>
+            </rectangle>
+            <textField isBlankWhenNull="true">
+                <reportElement x="406" y="148" width="391" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000028"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["N° Guía: " + $F{numero_guia} + "    Estado: " + $F{estado_envio}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="406" y="163" width="391" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000029"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["Transportista: " + $F{transportista}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="406" y="178" width="391" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000030"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{fecha_envio} != null ? "Fecha Envío: " + new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_envio}) + "    F. Entrega: " + ($F{fecha_entrega_real} != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_entrega_real}) : "-") : "Fecha Envío: -"]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="406" y="193" width="391" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000031"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["Ciudad: " + $F{ciudad} + ($F{provincia} != null && !$F{provincia}.isEmpty() ? "  /  Provincia: " + $F{provincia} : "")]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="406" y="208" width="391" height="13"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000032"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA["Dirección entrega: " + $F{dir_envio} + ($F{temperatura} != null && !$F{temperatura}.isEmpty() ? "    Temp.: " + $F{temperatura} : "")]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- ═══════════════════  ENCABEZADO COLUMNA  ═══════════════════ -->
+    <columnHeader>
+        <band height="22" splitType="Stretch">
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="0" width="802" height="22"
+                               forecolor="#6B2D8B" backcolor="#6B2D8B"
+                               uuid="40000000-0000-0000-0000-000000000040"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="3" y="4" width="75" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000041"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[Código]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="83" y="4" width="280" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000042"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[Producto]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="368" y="4" width="150" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000043"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[Categoría]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="523" y="4" width="70" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000044"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Georgia" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cantidad]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="598" y="4" width="100" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000045"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Georgia" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Precio Unit.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="703" y="4" width="96" height="14"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000046"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Georgia" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Subtotal]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- ═══════════════════  DETALLE  ═══════════════════ -->
+    <detail>
+        <band height="20">
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="0" width="802" height="20"
+                               forecolor="#C8A8E9" backcolor="#F5EEF8"
+                               uuid="40000000-0000-0000-0000-000000000050"/>
+                <graphicElement>
+                    <pen lineWidth="0.5" lineColor="#C8A8E9"/>
+                </graphicElement>
+            </rectangle>
+            <textField isBlankWhenNull="true">
+                <reportElement x="3" y="3" width="75" height="14"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000051"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="83" y="3" width="280" height="14"
+                               forecolor="#333333"
+                               uuid="40000000-0000-0000-0000-000000000052"/>
+                <textElement><font fontName="Arial" size="8" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="368" y="3" width="150" height="14"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000053"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{categoria}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="523" y="3" width="70" height="14"
+                               forecolor="#333333"
+                               uuid="40000000-0000-0000-0000-000000000054"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Arial" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true" pattern="RD$ #,##0.00">
+                <reportElement x="598" y="3" width="100" height="14"
+                               forecolor="#333333"
+                               uuid="40000000-0000-0000-0000-000000000055"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Arial" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true" pattern="RD$ #,##0.00">
+                <reportElement x="703" y="3" width="96" height="14"
+                               forecolor="#333333"
+                               uuid="40000000-0000-0000-0000-000000000056"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Arial" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- ═══════════════════  TOTALES + FIRMAS  ═══════════════════ -->
+    <summary>
+        <band height="170" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="0" width="802" height="1"
+                               forecolor="#6B2D8B"
+                               uuid="40000000-0000-0000-0000-000000000060"/>
+                <graphicElement><pen lineWidth="1.5" lineColor="#6B2D8B"/></graphicElement>
+            </line>
+
+            <!-- Total unidades -->
+            <staticText>
+                <reportElement x="523" y="8" width="175" height="14"
+                               forecolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000061"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Georgia" size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total Unidades:]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="703" y="8" width="96" height="14"
+                               forecolor="#333333"
+                               uuid="40000000-0000-0000-0000-000000000062"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Arial" size="9" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{V_ITEMS}]]></textFieldExpression>
+            </textField>
+
+            <!-- Caja TOTAL -->
+            <rectangle>
+                <reportElement mode="Opaque" x="523" y="26" width="279" height="24"
+                               forecolor="#4A1A6B" backcolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000063"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="528" y="29" width="168" height="18"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000064"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Georgia" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL:]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true" pattern="RD$ #,##0.00">
+                <reportElement x="700" y="29" width="98" height="18"
+                               forecolor="#FFFFFF"
+                               uuid="40000000-0000-0000-0000-000000000065"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Arial" size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{V_TOTAL}]]></textFieldExpression>
+            </textField>
+
+            <!-- Observaciones -->
+            <staticText>
+                <reportElement x="0" y="8" width="510" height="13"
+                               forecolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000066"/>
+                <textElement><font fontName="Georgia" size="8" isBold="true"/></textElement>
+                <text><![CDATA[OBSERVACIONES:]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="23" width="510" height="35"
+                               forecolor="#555555"
+                               uuid="40000000-0000-0000-0000-000000000067"/>
+                <textElement><font fontName="Arial" size="8"/></textElement>
+                <textFieldExpression><![CDATA[$F{observaciones}]]></textFieldExpression>
+            </textField>
+
+            <!-- Separador firmas -->
+            <line>
+                <reportElement x="0" y="80" width="802" height="1"
+                               forecolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000068"/>
+                <graphicElement><pen lineWidth="0.8" lineColor="#C8A8E9"/></graphicElement>
+            </line>
+
+            <!-- Firma transportista -->
+            <staticText>
+                <reportElement x="30" y="86" width="250" height="13"
+                               forecolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000069"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Georgia" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[FIRMA DEL TRANSPORTISTA]]></text>
+            </staticText>
+            <line>
+                <reportElement x="30" y="138" width="250" height="1"
+                               forecolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000070"/>
+                <graphicElement><pen lineWidth="0.8" lineColor="#4A1A6B"/></graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="30" y="142" width="250" height="12"
+                               forecolor="#888888"
+                               uuid="40000000-0000-0000-0000-000000000071"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Georgia" size="7"/>
+                </textElement>
+                <text><![CDATA[Nombre y firma]]></text>
+            </staticText>
+
+            <!-- Firma cliente -->
+            <staticText>
+                <reportElement x="522" y="86" width="250" height="13"
+                               forecolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000072"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Georgia" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[FIRMA DEL CLIENTE / RECEPTOR]]></text>
+            </staticText>
+            <line>
+                <reportElement x="522" y="138" width="250" height="1"
+                               forecolor="#4A1A6B"
+                               uuid="40000000-0000-0000-0000-000000000073"/>
+                <graphicElement><pen lineWidth="0.8" lineColor="#4A1A6B"/></graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="522" y="142" width="250" height="12"
+                               forecolor="#888888"
+                               uuid="40000000-0000-0000-0000-000000000074"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Georgia" size="7"/>
+                </textElement>
+                <text><![CDATA[Nombre, firma y cédula]]></text>
+            </staticText>
+
+            <!-- Pie -->
+            <staticText>
+                <reportElement x="0" y="157" width="802" height="12"
+                               forecolor="#C8A8E9"
+                               uuid="40000000-0000-0000-0000-000000000075"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Georgia" size="7"/>
+                </textElement>
+                <text><![CDATA[LACHOCO | Chocolatería Bean to Bar | lachocory@gmail.com | WhatsApp: +63 939 248 6519]]></text>
+            </staticText>
+        </band>
+    </summary>
+
 </jasperReport>

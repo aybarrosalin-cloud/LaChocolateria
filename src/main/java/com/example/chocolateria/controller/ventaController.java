@@ -79,6 +79,7 @@ public class ventaController {
 
     @FXML private Button btnBuscar, btnLimpiar;
     @FXML private Button btnRegistrar;
+    @FXML private Button btnEditar;
     @FXML private Button btnEliminar;
     @FXML private Button btnAbono;
 
@@ -304,6 +305,21 @@ public class ventaController {
                     psNcf.executeUpdate();
                 }
 
+                // para ventas de contado registrar el pago automaticamente
+                if ("Contado".equals(tipoPago) && cbMetodoPago.getValue() != null) {
+                    try (PreparedStatement psPago = conn.prepareStatement(
+                            "INSERT INTO tbl_pago_venta (id_venta, fecha_pago, monto_pagado, metodo_pago, numero_referencia) VALUES (?, ?, ?, ?, ?)")) {
+                        psPago.setInt(1, nuevoId);
+                        psPago.setDate(2, Date.valueOf(dpFechaVenta.getValue()));
+                        psPago.setDouble(3, total);
+                        psPago.setString(4, cbMetodoPago.getValue());
+                        psPago.setString(5, ncf);
+                        psPago.executeUpdate();
+                    }
+                    listaPagos.add(new pagoVentaModelo(0, nuevoId, dpFechaVenta.getValue(),
+                            total, cbMetodoPago.getValue(), ncf, "Pago contado"));
+                }
+
                 String cliente = lblInfoOrden.getText().contains("-")
                         ? lblInfoOrden.getText().split("-")[0].trim() : lblInfoOrden.getText();
 
@@ -347,7 +363,7 @@ public class ventaController {
                 return;
             }
 
-            String sql = "INSERT INTO tbl_pago_venta (id_venta, fecha_pago, monto_pagado, metodo_pagado, numero_referencia) " +
+            String sql = "INSERT INTO tbl_pago_venta (id_venta, fecha_pago, monto_pagado, metodo_pago, numero_referencia) " +
                     "VALUES (?, ?, ?, ?, ?)";
 
             try (Connection conn = con.establecerConexion();
@@ -409,7 +425,6 @@ public class ventaController {
 
     @FXML
     private void fnBuscar() {
-        actualizarBotones(0);
         String idTexto = txtIdVenta.getText().trim();
         if (idTexto.isEmpty()) {
             mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Escribe un ID para buscar.");
@@ -422,19 +437,101 @@ public class ventaController {
             mostrarAlerta(Alert.AlertType.WARNING, "ID inválido", "El ID debe ser un número entero.");
             return;
         }
-        for (ventaModelo v : listaVentas) {
-            if (v.getIdVenta() == idBuscar) {
-                if (tablaVentas != null) {
-                    tablaVentas.getSelectionModel().select(v);
-                    tablaVentas.scrollTo(v);
-                }
+        String sql = "SELECT v.id_venta, v.id_orden, v.fecha_venta, " +
+                "ISNULL(o.cliente, '') AS cliente, " +
+                "v.subtotal, v.descuento, v.itbis, v.monto_total, " +
+                "v.monto_pagado, v.balance_pendiente, v.tipo_pago, " +
+                "v.estado_pago, " +
+                "ISNULL(CAST(v.id_comprobante AS VARCHAR), '') AS ncf, " +
+                "v.id_empleado, " +
+                "ISNULL(e.nombre + ' ' + e.apellido, '') AS empleado " +
+                "FROM tbl_venta v " +
+                "LEFT JOIN tbl_orden_cliente o ON v.id_orden = o.id_orden " +
+                "LEFT JOIN tbl_empleado e ON v.id_empleado = e.id_empleado " +
+                "WHERE v.id_venta = ?";
+        try (Connection conn = con.establecerConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idBuscar);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Date d = rs.getDate("fecha_venta");
+                ventaModelo v = new ventaModelo(
+                        rs.getInt("id_venta"), rs.getInt("id_orden"),
+                        d != null ? d.toLocalDate() : null,
+                        rs.getString("cliente"),
+                        rs.getDouble("subtotal"), rs.getDouble("descuento"),
+                        rs.getDouble("itbis"), rs.getDouble("monto_total"),
+                        rs.getDouble("monto_pagado"), rs.getDouble("balance_pendiente"),
+                        rs.getString("tipo_pago"), rs.getString("estado_pago"),
+                        "", rs.getString("ncf"),
+                        rs.getInt("id_empleado"), rs.getString("empleado"));
                 cargarEnFormulario(v);
                 cargarPagos(v.getIdVenta());
+                if (tablaVentas != null) {
+                    for (ventaModelo tv : listaVentas) {
+                        if (tv.getIdVenta() == idBuscar) {
+                            tablaVentas.getSelectionModel().select(tv);
+                            tablaVentas.scrollTo(tv);
+                            break;
+                        }
+                    }
+                }
                 actualizarBotones(1);
-                return;
+            } else {
+                mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
+                        "No existe una venta con el ID " + idBuscar + ".");
             }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al buscar", e.getMessage());
         }
-        mostrarAlerta(Alert.AlertType.WARNING, "No encontrado", "No existe una venta con el ID " + idBuscar + ".");
+    }
+
+    @FXML
+    private void fnEditar() {
+        if (estadoActual != 1) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atención", "Busca una venta primero para poder editarla.");
+            return;
+        }
+        if (dpFechaVenta.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Fecha requerida", "Selecciona la fecha de venta.");
+            return;
+        }
+        if (cbTipoPago.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Tipo pago requerido", "Selecciona el tipo de pago.");
+            return;
+        }
+        try {
+            double descuento = txtDescuento.getText().trim().isEmpty() ? 0.0
+                    : Double.parseDouble(txtDescuento.getText().trim());
+            double subtotal  = Double.parseDouble(txtSubtotal.getText().trim());
+            double itbis     = (subtotal - descuento) * ITBIS_PORCENTAJE;
+            double total     = (subtotal - descuento) + itbis;
+
+            String sql = "UPDATE tbl_venta SET fecha_venta=?, tipo_pago=?, descuento=?, itbis=?, monto_total=?, id_empleado=? WHERE id_venta=?";
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setDate(1, Date.valueOf(dpFechaVenta.getValue()));
+                ps.setString(2, cbTipoPago.getValue());
+                ps.setDouble(3, descuento);
+                ps.setDouble(4, itbis);
+                ps.setDouble(5, total);
+                ps.setInt(6, idEmpleadoSeleccionado);
+                ps.setInt(7, idVentaSeleccionada);
+                ps.executeUpdate();
+            }
+            for (ventaModelo v : listaVentas) {
+                if (v.getIdVenta() == idVentaSeleccionada) {
+                    listaVentas.remove(v);
+                    break;
+                }
+            }
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Venta actualizada correctamente.");
+            limpiar();
+        } catch (NumberFormatException e) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Error", "Verifica los montos ingresados.");
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al editar venta", e.getMessage());
+        }
     }
 
     @FXML
@@ -597,7 +694,7 @@ public class ventaController {
     private void cargarPagos(int idVenta) {
         listaPagos.clear();
         idVentaSeleccionada = idVenta;
-        String sql = "SELECT id_pago, id_venta, fecha_pago, monto_pagado, metodo_pagado, " +
+        String sql = "SELECT id_pago, id_venta, fecha_pago, monto_pagado, metodo_pago, " +
                 "numero_referencia, observaciones FROM tbl_pago_venta WHERE id_venta = ?";
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -610,11 +707,13 @@ public class ventaController {
                         rs.getInt("id_venta"),
                         d != null ? d.toLocalDate() : null,
                         rs.getDouble("monto_pagado"),
-                        rs.getString("metodo_pagado"),
+                        rs.getString("metodo_pago"),
                         rs.getString("numero_referencia") != null ? rs.getString("numero_referencia") : "",
                         rs.getString("observaciones") != null ? rs.getString("observaciones") : ""
                 ));
             }
+            if (!listaPagos.isEmpty())
+                cbMetodoPago.setValue(listaPagos.get(0).getMetodoPago());
         } catch (Exception e) {
             mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar pagos", e.getMessage());
         }
@@ -768,6 +867,9 @@ public class ventaController {
         boolean actRegistrar = (estado == 0);
         btnRegistrar.setDisable(false);
         btnRegistrar.setStyle(actRegistrar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#e8d5f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
+        boolean actEditar = (estado != 0);
+        btnEditar.setDisable(false);
+        btnEditar.setStyle(actEditar ? "-fx-background-color:#5a2d82; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#d9c8f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
         boolean actEliminar = (estado != 0);
         btnEliminar.setDisable(false);
         btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#f5d0da; -fx-text-fill:#c47a8a; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");

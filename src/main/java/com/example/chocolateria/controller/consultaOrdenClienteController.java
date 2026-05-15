@@ -114,7 +114,8 @@ public class consultaOrdenClienteController {
                     dE != null ? dE.toLocalDate() : null,
                     rs.getString("metodo_pago"),
                     rs.getString("estado"),
-                    rs.getString("observaciones")));
+                    rs.getString("observaciones"),
+                    ""));
         Platform.runLater(() -> lista.setAll(tmp));
     }
         } catch (Exception e) {

@@ -128,8 +128,11 @@
                                 <TextField fx:id="txtId" editable="true" prefHeight="28" style="-fx-background-color:#f0eaf8; -fx-text-fill:#555; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
                             </VBox>
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
-                                <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Cliente" />
-                                <ComboBox fx:id="cbCliente" maxWidth="Infinity" prefHeight="28" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
+                                <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Cliente (ID)" />
+                                <HBox spacing="4" alignment="CENTER_LEFT">
+                                    <TextField fx:id="txtIdCliente" prefHeight="28" prefWidth="55" promptText="ID" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
+                                    <TextField fx:id="txtNombreCliente" editable="false" prefHeight="28" promptText="Nombre cliente" style="-fx-background-color:#f0eaf8; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" HBox.hgrow="ALWAYS" />
+                                </HBox>
                             </VBox>
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Tipo de reclamo" />
@@ -138,6 +141,13 @@
                             <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
                                 <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Estado" />
                                 <ComboBox fx:id="cbEstado" maxWidth="Infinity" prefHeight="28" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
+                            </VBox>
+                            <VBox minHeight="52" spacing="3" HBox.hgrow="ALWAYS">
+                                <Label style="-fx-font-weight:bold; -fx-font-size:11px; -fx-text-fill:#3B1A5C;" text="Atendido por (ID)" />
+                                <HBox spacing="4" alignment="CENTER_LEFT">
+                                    <TextField fx:id="txtIdEmpleado" prefHeight="28" prefWidth="55" promptText="ID" style="-fx-background-color:white; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" />
+                                    <TextField fx:id="txtNombreEmpleado" editable="false" prefHeight="28" promptText="Nombre empleado" style="-fx-background-color:#f0eaf8; -fx-border-color:purple; -fx-border-radius:6; -fx-background-radius:6;" HBox.hgrow="ALWAYS" />
+                                </HBox>
                             </VBox>
                         </HBox>
 

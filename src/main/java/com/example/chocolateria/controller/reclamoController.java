@@ -8,11 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
+
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,10 +18,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
 public class reclamoController {
 
     @FXML private TextField        txtId;
-    @FXML private ComboBox<String> cbCliente;
+    @FXML private TextField        txtIdCliente;
+    @FXML private TextField        txtNombreCliente;
+    @FXML private TextField        txtIdEmpleado;
+    @FXML private TextField        txtNombreEmpleado;
     @FXML private ComboBox<String> cbTipoReclamo;
     @FXML private ComboBox<String> cbEstado;
     @FXML private ComboBox<String> cbOrden;
@@ -36,15 +37,13 @@ public class reclamoController {
     @FXML private RadioButton rbBaja;
 
     private reclamoModelo reclamoCargado = null;
-    private final ObservableList<ordenClienteModelo> listaOrdenes  = FXCollections.observableArrayList();
+    private final ObservableList<ordenClienteModelo> listaOrdenes = FXCollections.observableArrayList();
     private final conexion con = new conexion();
-    private final Map<String, Integer> mapaClientes = new HashMap<>();
-    private final Map<String, Integer> mapaOrdenes  = new HashMap<>();
+    private final Map<String, Integer> mapaOrdenes = new HashMap<>();
     private ToggleGroup grupoPrioridad;
 
-    @FXML private Label lblUsuario;
+    @FXML private Label     lblUsuario;
     @FXML private ImageView imgFotoPerfil;
-
 
     @FXML private Button btnBuscar, btnLimpiar;
     @FXML private Button btnGuardar;
@@ -55,6 +54,7 @@ public class reclamoController {
     public void initialize() {
         actualizarBotones(0);
         CargarPerfil.aplicar(lblUsuario, imgFotoPerfil);
+
         cbTipoReclamo.setItems(FXCollections.observableArrayList(
             "Producto en mal estado",
             "Producto incorrecto",
@@ -78,46 +78,81 @@ public class reclamoController {
         rbBaja.setToggleGroup(grupoPrioridad);
         rbMedia.setSelected(true);
 
-
-        cbCliente.setOnAction(e -> {
-            String item = cbCliente.getValue();
-            if (item != null) {
-                int idCliente = mapaClientes.getOrDefault(item, 0);
-                cargarOrdenesCliente(idCliente);
-            }
+        txtIdCliente.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) buscarNombreCliente();
         });
+        txtIdCliente.setOnAction(e -> buscarNombreCliente());
 
+        txtIdEmpleado.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) buscarNombreEmpleado();
+        });
+        txtIdEmpleado.setOnAction(e -> buscarNombreEmpleado());
 
-        Task<Void> cargar = new Task<>() {
-            @Override protected Void call() {
-            cargarClientes();
-                return null;
-            }
-        };
-        new Thread(cargar).start();
         generarSiguienteId();
     }
 
-    private void cargarClientes() {
-        List<String> tmpItems = new ArrayList<>();
-        java.util.Map<String,Integer> tmpMapa = new java.util.LinkedHashMap<>();
-        String sql = "SELECT id_cliente, nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente ORDER BY nombre";
-        try (Connection conn = con.establecerConexion();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                int id     = rs.getInt("id_cliente");
-                String nom = rs.getString("nombre_completo");
-                String item= id + " - " + nom;
-                tmpItems.add(item);
-                tmpMapa.put(item, id);
-            }
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            Platform.runLater(() -> mostrarAlerta(Alert.AlertType.ERROR,"Error",msg));
+    @FXML
+    private void buscarNombreCliente() {
+        String idTexto = txtIdCliente.getText().trim();
+        if (idTexto.isEmpty()) {
+            txtNombreCliente.clear();
+            cbOrden.getItems().clear();
+            cbOrden.setValue(null);
+            mapaOrdenes.clear();
+            listaOrdenes.clear();
             return;
         }
-        Platform.runLater(() -> { cbCliente.getItems().addAll(tmpItems); mapaClientes.putAll(tmpMapa); });
+        try {
+            int id = Integer.parseInt(idTexto);
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(
+                     "SELECT nombre + ' ' + apellido AS nombre_completo FROM tbl_cliente WHERE id_cliente = ?")) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    txtNombreCliente.setText(rs.getString("nombre_completo"));
+                    cargarOrdenesCliente(id);
+                } else {
+                    txtNombreCliente.clear();
+                    cbOrden.getItems().clear();
+                    cbOrden.setValue(null);
+                    mapaOrdenes.clear();
+                    listaOrdenes.clear();
+                    mostrarAlerta(Alert.AlertType.WARNING, "Cliente no encontrado",
+                        "No existe un cliente con ID " + id + ".");
+                }
+            }
+        } catch (NumberFormatException e) {
+            txtNombreCliente.clear();
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void buscarNombreEmpleado() {
+        String idTexto = txtIdEmpleado.getText().trim();
+        if (idTexto.isEmpty()) { txtNombreEmpleado.clear(); return; }
+        try {
+            int id = Integer.parseInt(idTexto);
+            try (Connection conn = con.establecerConexion();
+                 PreparedStatement ps = conn.prepareStatement(
+                     "SELECT nombre + ' ' + apellido AS nombre_completo FROM tbl_empleado WHERE id_empleado = ?")) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    txtNombreEmpleado.setText(rs.getString("nombre_completo"));
+                } else {
+                    txtNombreEmpleado.clear();
+                    mostrarAlerta(Alert.AlertType.WARNING, "Empleado no encontrado",
+                        "No existe un empleado con ID " + id + ".");
+                }
+            }
+        } catch (NumberFormatException e) {
+            txtNombreEmpleado.clear();
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error", e.getMessage());
+        }
     }
 
     private void cargarOrdenesCliente(int idCliente) {
@@ -143,30 +178,37 @@ public class reclamoController {
                     fechaReg, fechaEnt,
                     rs.getString("metodo_pago"),
                     rs.getString("estado"),
-                    ""));
+                    "", ""));
 
                 String item = idOrden + " - " + fechaReg;
                 cbOrden.getItems().add(item);
                 mapaOrdenes.put(item, idOrden);
             }
-        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al cargar ordenes",e.getMessage()); }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al cargar ordenes", e.getMessage());
+        }
     }
 
     @FXML
     private void guardar() {
         if (estadoActual == 1) {
-            mostrarAlerta(Alert.AlertType.INFORMATION, "Acción no disponible", "Ya hay un registro cargado. Usa 'Editar' para modificarlo o 'Limpiar' para crear uno nuevo.");
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Acción no disponible",
+                "Ya hay un registro cargado. Usa 'Editar' para modificarlo o 'Limpiar' para crear uno nuevo.");
             return;
         }
+        if (!txtIdCliente.getText().trim().isEmpty() && txtNombreCliente.getText().trim().isEmpty()) buscarNombreCliente();
+        if (!txtIdEmpleado.getText().trim().isEmpty() && txtNombreEmpleado.getText().trim().isEmpty()) buscarNombreEmpleado();
         if (!validarCampos()) return;
-        String itemCliente   = cbCliente.getValue();
-        int idCliente        = mapaClientes.getOrDefault(itemCliente, 0);
-        String nombreCliente = itemCliente != null && itemCliente.contains(" - ") ? itemCliente.split(" - ",2)[1] : itemCliente;
+
+        int idCliente        = Integer.parseInt(txtIdCliente.getText().trim());
+        String nombreCliente = txtNombreCliente.getText().trim();
         String itemOrden     = cbOrden.getValue();
         int idOrden          = itemOrden != null ? mapaOrdenes.getOrDefault(itemOrden, 0) : 0;
         String prioridad     = rbAlta.isSelected() ? "Alta" : rbBaja.isSelected() ? "Baja" : "Media";
+        int idEmpleado       = txtIdEmpleado.getText().trim().isEmpty() ? 0
+                               : Integer.parseInt(txtIdEmpleado.getText().trim());
 
-        String sql = "INSERT INTO tbl_reclamo(id_cliente,cliente,id_orden,tipo_reclamo,estado,prioridad,descripcion,fecha_reclamo) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO tbl_reclamo(id_cliente,cliente,id_orden,tipo_reclamo,estado,prioridad,descripcion,fecha_reclamo,id_empleado) VALUES(?,?,?,?,?,?,?,?,?)";
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, idCliente);
@@ -177,14 +219,14 @@ public class reclamoController {
             ps.setString(6, prioridad);
             ps.setString(7, txtDescripcion.getText().trim());
             ps.setDate(8, Date.valueOf(LocalDate.now()));
+            ps.setObject(9, idEmpleado > 0 ? idEmpleado : null);
             ps.executeUpdate();
 
             ResultSet rs = ps.getGeneratedKeys();
             int nuevoId = rs.next() ? rs.getInt(1) : 0;
-            mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo #" + nuevoId + " registrado correctamente.");
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Exito", "Reclamo #" + nuevoId + " registrado correctamente.");
 
-            // notifica por correo al admin y al encargado
-            final int idFinal     = nuevoId;
+            final int idFinal       = nuevoId;
             final String nomCliente = nombreCliente;
             final String tipo       = cbTipoReclamo.getValue();
             final String prio       = prioridad;
@@ -195,41 +237,56 @@ public class reclamoController {
             ).start();
 
             limpiar();
-        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al guardar",e.getMessage()); }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al guardar", e.getMessage());
+        }
     }
 
     @FXML
     private void fnEditar() {
         actualizarBotones(2);
-        if (reclamoCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Busca un reclamo por ID primero para editar."); return; }
+        if (reclamoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atencion", "Busca un reclamo por ID primero para editar.");
+            return;
+        }
+        if (!txtIdCliente.getText().trim().isEmpty() && txtNombreCliente.getText().trim().isEmpty()) buscarNombreCliente();
+        if (!txtIdEmpleado.getText().trim().isEmpty() && txtNombreEmpleado.getText().trim().isEmpty()) buscarNombreEmpleado();
         if (!validarCampos()) return;
 
-        String itemCliente   = cbCliente.getValue();
-        int idCliente        = mapaClientes.getOrDefault(itemCliente, 0);
-        String nombreCliente = itemCliente != null && itemCliente.contains(" - ") ? itemCliente.split(" - ",2)[1] : itemCliente;
+        int idCliente        = Integer.parseInt(txtIdCliente.getText().trim());
+        String nombreCliente = txtNombreCliente.getText().trim();
         String itemOrden     = cbOrden.getValue();
         int idOrden          = itemOrden != null ? mapaOrdenes.getOrDefault(itemOrden, 0) : 0;
         String prioridad     = rbAlta.isSelected() ? "Alta" : rbBaja.isSelected() ? "Baja" : "Media";
+        int idEmpleado       = txtIdEmpleado.getText().trim().isEmpty() ? 0
+                               : Integer.parseInt(txtIdEmpleado.getText().trim());
 
-        String sql = "UPDATE tbl_reclamo SET id_cliente=?,cliente=?,id_orden=?,tipo_reclamo=?,estado=?,prioridad=?,descripcion=? WHERE id_reclamo=?";
+        String sql = "UPDATE tbl_reclamo SET id_cliente=?,cliente=?,id_orden=?,tipo_reclamo=?,estado=?,prioridad=?,descripcion=?,id_empleado=? WHERE id_reclamo=?";
         try (Connection conn = con.establecerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idCliente); ps.setString(2, nombreCliente);
+            ps.setInt(1, idCliente);
+            ps.setString(2, nombreCliente);
             ps.setObject(3, idOrden > 0 ? idOrden : null);
             ps.setString(4, cbTipoReclamo.getValue());
             ps.setString(5, cbEstado.getValue());
             ps.setString(6, prioridad);
             ps.setString(7, txtDescripcion.getText().trim());
-            ps.setInt(8, reclamoCargado.getIdReclamo());
+            ps.setObject(8, idEmpleado > 0 ? idEmpleado : null);
+            ps.setInt(9, reclamoCargado.getIdReclamo());
             ps.executeUpdate();
-            mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo actualizado correctamente.");
+            mostrarAlerta(Alert.AlertType.INFORMATION, "Exito", "Reclamo actualizado correctamente.");
             limpiar();
-        } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al editar",e.getMessage()); }
+        } catch (Exception e) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error al editar", e.getMessage());
+        }
     }
 
     @FXML
     private void fnEliminar() {
-        if (reclamoCargado == null) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Busca un reclamo por ID primero para eliminar."); return; }
+        if (reclamoCargado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atencion", "Busca un reclamo por ID primero para eliminar.");
+            return;
+        }
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setHeaderText(null);
         confirm.setContentText("Eliminar el reclamo #" + reclamoCargado.getIdReclamo() + "?");
@@ -237,10 +294,13 @@ public class reclamoController {
             if (r == ButtonType.OK) {
                 try (Connection conn = con.establecerConexion();
                      PreparedStatement ps = conn.prepareStatement("DELETE FROM tbl_reclamo WHERE id_reclamo=?")) {
-                    ps.setInt(1, reclamoCargado.getIdReclamo()); ps.executeUpdate();
-                    mostrarAlerta(Alert.AlertType.INFORMATION,"Exito","Reclamo eliminado correctamente.");
+                    ps.setInt(1, reclamoCargado.getIdReclamo());
+                    ps.executeUpdate();
+                    mostrarAlerta(Alert.AlertType.INFORMATION, "Exito", "Reclamo eliminado correctamente.");
                     limpiar();
-                } catch (Exception e) { mostrarAlerta(Alert.AlertType.ERROR,"Error al eliminar",e.getMessage()); }
+                } catch (Exception e) {
+                    mostrarAlerta(Alert.AlertType.ERROR, "Error al eliminar", e.getMessage());
+                }
             }
         });
     }
@@ -249,40 +309,57 @@ public class reclamoController {
     private void fnBuscar() {
         actualizarBotones(0);
         String idTexto = txtId.getText().trim();
-        if (idTexto.isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Atencion","Escribe un ID para buscar."); return; }
+        if (idTexto.isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Atencion", "Escribe un ID para buscar.");
+            return;
+        }
         try {
             int idBuscar = Integer.parseInt(idTexto);
-            String sql = "SELECT id_reclamo,id_cliente,cliente,ISNULL(id_orden,0) AS id_orden,tipo_reclamo,estado,prioridad,descripcion,fecha_reclamo FROM tbl_reclamo WHERE id_reclamo=?";
+            String sql = "SELECT id_reclamo,id_cliente,cliente,ISNULL(id_orden,0) AS id_orden,tipo_reclamo,estado,prioridad,descripcion,fecha_reclamo,ISNULL(id_empleado,0) AS id_empleado FROM tbl_reclamo WHERE id_reclamo=?";
             try (Connection conn = con.establecerConexion();
                  PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setInt(1, idBuscar);
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
                     Date d = rs.getDate("fecha_reclamo");
-                    cargarEnFormulario(new reclamoModelo(
+                    reclamoModelo r = new reclamoModelo(
                         rs.getInt("id_reclamo"), rs.getInt("id_cliente"),
                         rs.getString("cliente"), rs.getInt("id_orden"),
                         rs.getString("tipo_reclamo"), rs.getString("estado"),
                         rs.getString("prioridad"),
                         rs.getString("descripcion") != null ? rs.getString("descripcion") : "",
-                        d != null ? d.toLocalDate() : null));
-                actualizarBotones(1);
-                    mostrarAlerta(Alert.AlertType.INFORMATION,"Encontrado","Reclamo encontrado y cargado en el formulario.");
+                        d != null ? d.toLocalDate() : null,
+                        rs.getInt("id_empleado"));
+                    actualizarBotones(1);
+                    cargarEnFormulario(r);
                 } else {
-                    mostrarAlerta(Alert.AlertType.WARNING,"No encontrado","No existe reclamo con el ID " + idBuscar + ".");
+                    mostrarAlerta(Alert.AlertType.WARNING, "No encontrado",
+                        "No existe reclamo con el ID " + idBuscar + ".");
                 }
             }
-        } catch (NumberFormatException ex) { mostrarAlerta(Alert.AlertType.WARNING,"ID invalido","El ID debe ser un numero entero."); }
-        catch (Exception ex) { mostrarAlerta(Alert.AlertType.ERROR,"Error de busqueda",ex.getMessage()); }
+        } catch (NumberFormatException ex) {
+            mostrarAlerta(Alert.AlertType.WARNING, "ID invalido", "El ID debe ser un numero entero.");
+        } catch (Exception ex) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Error de busqueda", ex.getMessage());
+        }
     }
 
     @FXML
     private void limpiar() {
         actualizarBotones(0);
-        txtId.clear(); cbCliente.setValue(null); cbTipoReclamo.setValue(null);
-        cbEstado.setValue(null); cbOrden.getItems().clear(); cbOrden.setValue(null);
-        txtDescripcion.clear(); rbMedia.setSelected(true);
-        listaOrdenes.clear(); mapaOrdenes.clear();
+        txtId.clear();
+        txtIdCliente.clear();
+        txtNombreCliente.clear();
+        txtIdEmpleado.clear();
+        txtNombreEmpleado.clear();
+        cbTipoReclamo.setValue(null);
+        cbEstado.setValue(null);
+        cbOrden.getItems().clear();
+        cbOrden.setValue(null);
+        txtDescripcion.clear();
+        rbMedia.setSelected(true);
+        listaOrdenes.clear();
+        mapaOrdenes.clear();
         reclamoCargado = null;
         generarSiguienteId();
     }
@@ -290,12 +367,16 @@ public class reclamoController {
     private void cargarEnFormulario(reclamoModelo r) {
         this.reclamoCargado = r;
         txtId.setText(String.valueOf(r.getIdReclamo()));
-        cbCliente.getItems().stream()
-            .filter(i -> i.startsWith(r.getIdCliente() + " - "))
-            .findFirst().ifPresent(item -> {
-                cbCliente.setValue(item);
-                cargarOrdenesCliente(r.getIdCliente());
-            });
+        txtIdCliente.setText(String.valueOf(r.getIdCliente()));
+        txtNombreCliente.setText(r.getCliente());
+        cargarOrdenesCliente(r.getIdCliente());
+        if (r.getIdEmpleado() > 0) {
+            txtIdEmpleado.setText(String.valueOf(r.getIdEmpleado()));
+            buscarNombreEmpleado();
+        } else {
+            txtIdEmpleado.clear();
+            txtNombreEmpleado.clear();
+        }
         cbTipoReclamo.setValue(r.getTipoReclamo());
         cbEstado.setValue(r.getEstado());
         txtDescripcion.setText(r.getDescripcion());
@@ -316,23 +397,38 @@ public class reclamoController {
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery("SELECT ISNULL(MAX(id_reclamo),0)+1 AS sig FROM tbl_reclamo")) {
             if (rs.next()) txtId.setText(String.valueOf(rs.getInt("sig")));
-        } catch (Exception e) { txtId.setText("1"); }
+        } catch (Exception e) {
+            txtId.setText("1");
+        }
     }
 
     private boolean validarCampos() {
-        if (cbCliente.getValue() == null) { mostrarAlerta(Alert.AlertType.WARNING,"Requerido","Selecciona un cliente."); return false; }
-        if (cbTipoReclamo.getValue() == null) { mostrarAlerta(Alert.AlertType.WARNING,"Requerido","Selecciona el tipo de reclamo."); return false; }
-        if (cbEstado.getValue() == null) { mostrarAlerta(Alert.AlertType.WARNING,"Requerido","Selecciona el estado."); return false; }
-        if (txtDescripcion.getText().trim().isEmpty()) { mostrarAlerta(Alert.AlertType.WARNING,"Requerido","Escribe una descripcion del reclamo."); return false; }
+        if (txtNombreCliente.getText().trim().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Requerido", "Ingresa el ID del cliente.");
+            return false;
+        }
+        if (cbTipoReclamo.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Requerido", "Selecciona el tipo de reclamo.");
+            return false;
+        }
+        if (cbEstado.getValue() == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Requerido", "Selecciona el estado.");
+            return false;
+        }
+        if (txtDescripcion.getText().trim().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Requerido", "Escribe una descripcion del reclamo.");
+            return false;
+        }
         return true;
     }
 
     private void mostrarAlerta(Alert.AlertType tipo, String titulo, String msg) {
-        Alert a = new Alert(tipo); a.setTitle(titulo); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
+        Alert a = new Alert(tipo);
+        a.setTitle(titulo);
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
     }
-
-    // navegacion
-    // generar reporte Jasper
 
     @FXML
     private void generarReporte() {
@@ -378,24 +474,26 @@ public class reclamoController {
 
     private int estadoActual = 0;
 
-    // estado de botones
-    // estado: 0=libre/nuevo 1=encontrado 2=editando
     private void actualizarBotones(int estado) {
         this.estadoActual = estado;
-        // estado: 0=libre/nuevo 1=encontrado 2=editando
         btnBuscar.setDisable(false);
         btnBuscar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         btnLimpiar.setDisable(false);
         btnLimpiar.setStyle("-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;");
         boolean actGuardar = (estado != 1);
         btnGuardar.setDisable(false);
-        btnGuardar.setStyle(actGuardar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#e8d5f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
+        btnGuardar.setStyle(actGuardar
+            ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"
+            : "-fx-background-color:#e8d5f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
         boolean actEditar = (estado == 1);
         btnEditar.setDisable(false);
-        btnEditar.setStyle(actEditar ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#e8d5f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
+        btnEditar.setStyle(actEditar
+            ? "-fx-background-color:#6d3c87; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"
+            : "-fx-background-color:#e8d5f0; -fx-text-fill:#9b6baf; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
         boolean actEliminar = (estado != 0);
         btnEliminar.setDisable(false);
-        btnEliminar.setStyle(actEliminar ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;" : "-fx-background-color:#f5d0da; -fx-text-fill:#c47a8a; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
+        btnEliminar.setStyle(actEliminar
+            ? "-fx-background-color:#a83c5b; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:12;"
+            : "-fx-background-color:#f5d0da; -fx-text-fill:#c47a8a; -fx-font-weight:bold; -fx-background-radius:12; -fx-cursor:hand;");
     }
-
 }

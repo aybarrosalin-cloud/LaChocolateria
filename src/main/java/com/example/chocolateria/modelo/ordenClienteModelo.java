@@ -13,10 +13,12 @@ public class ordenClienteModelo {
     private final SimpleStringProperty             metodoPago;
     private final SimpleStringProperty             estado;
     private final SimpleStringProperty             observaciones;
+    private final SimpleStringProperty             cajero;
 
     public ordenClienteModelo(int idOrden, int idCliente, String cliente,
                                LocalDate fechaRegistro, LocalDate fechaEntrega,
-                               String metodoPago, String estado, String observaciones) {
+                               String metodoPago, String estado, String observaciones,
+                               String cajero) {
         this.idOrden       = new SimpleIntegerProperty(idOrden);
         this.idCliente     = new SimpleIntegerProperty(idCliente);
         this.cliente       = new SimpleStringProperty(cliente);
@@ -25,6 +27,7 @@ public class ordenClienteModelo {
         this.metodoPago    = new SimpleStringProperty(metodoPago);
         this.estado        = new SimpleStringProperty(estado);
         this.observaciones = new SimpleStringProperty(observaciones);
+        this.cajero        = new SimpleStringProperty(cajero != null ? cajero : "");
     }
 
     public int       getIdOrden()       { return idOrden.get(); }
@@ -35,6 +38,7 @@ public class ordenClienteModelo {
     public String    getMetodoPago()    { return metodoPago.get(); }
     public String    getEstado()        { return estado.get(); }
     public String    getObservaciones() { return observaciones.get(); }
+    public String    getCajero()        { return cajero.get(); }
 
     public void setCliente(String v)          { cliente.set(v); }
     public void setFechaRegistro(LocalDate v) { fechaRegistro.set(v); }
@@ -42,6 +46,7 @@ public class ordenClienteModelo {
     public void setMetodoPago(String v)       { metodoPago.set(v); }
     public void setEstado(String v)           { estado.set(v); }
     public void setObservaciones(String v)    { observaciones.set(v); }
+    public void setCajero(String v)           { cajero.set(v); }
 
     public SimpleIntegerProperty           idOrdenProperty()       { return idOrden; }
     public SimpleIntegerProperty           idClienteProperty()     { return idCliente; }
@@ -51,4 +56,5 @@ public class ordenClienteModelo {
     public SimpleStringProperty            metodoPagoProperty()    { return metodoPago; }
     public SimpleStringProperty            estadoProperty()        { return estado; }
     public SimpleStringProperty            observacionesProperty() { return observaciones; }
+    public SimpleStringProperty            cajeroProperty()        { return cajero; }
 }
